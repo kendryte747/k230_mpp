@@ -32,12 +32,14 @@ extern struct connector_driver_dev hx8399_connector_drv;
 extern struct connector_driver_dev lt9611_connector_drv;
 extern struct connector_driver_dev st7701_connector_drv;
 extern struct connector_driver_dev ili9806_connector_drv;
+extern struct connector_driver_dev virtdev_connector_drv;
 
 struct connector_driver_dev *connector_drv_list[CONNECTOR_NUM_MAX] = {
     &hx8399_connector_drv,
     &lt9611_connector_drv,
     &st7701_connector_drv,
     &ili9806_connector_drv,
+    &virtdev_connector_drv,
 };
 
 

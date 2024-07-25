@@ -15,21 +15,11 @@ MP4_PLAYER = $(LOCAL_SRC_DIR)/mp4_player
 KDMEDIA = $(LOCAL_SRC_DIR)/kdmedia
 
 all:
-	cd $(LIVE555) ; make
-	cd $(RTSP_CLIENT) ; make
-	cd $(RTSP_SERVER) ; make
 	cd $(MP4_FORMAT) ; make
-	cd $(MP4_PLAYER) ; make
-	cd $(KDMEDIA) ; make
 
 
 clean:
 	echo "${PWD}/Makefile clean"
-	@cd $(LIVE555); make clean
-	@cd $(RTSP_CLIENT); make clean
-	@cd $(RTSP_SERVER); make clean
 	@cd $(MP4_FORMAT); make clean
-	@cd $(MP4_PLAYER); make clean
-	@cd $(KDMEDIA); make clean
 
 .PHONY: all clean

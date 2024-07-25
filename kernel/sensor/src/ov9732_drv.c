@@ -503,27 +503,6 @@ static int ov9732_power_rest(k_s32 on)
     return 0;
 }
 
-static k_s32 ov9732_sensor_get_chip_id(void *ctx, k_u32 *chip_id)
-{
-    k_s32 ret = 0;
-    k_u16 id_high = 0;
-    k_u16 id_low = 0;
-    struct sensor_driver_dev *dev = ctx;
-    pr_info("%s enter\n", __func__);
-
-    ret = sensor_reg_read(&dev->i2c_info, OV9732_REG_CHIP_ID_H, &id_high);
-    ret |= sensor_reg_read(&dev->i2c_info, OV9732_REG_CHIP_ID_L, &id_low);
-    if (ret) {
-        rt_kprintf("%s error\n", __func__);;
-        return -1;
-    }
-
-    *chip_id = (id_high << 8) | id_low;
-    pr_info("%s chip_id[0x%08X]\n", __func__, *chip_id);
-    return ret;
-}
-
-
 static int ov9732_i2c_init(k_sensor_i2c_info *i2c_info)
 {
     i2c_info->i2c_bus = rt_i2c_bus_device_find(i2c_info->i2c_name);
@@ -536,6 +515,29 @@ static int ov9732_i2c_init(k_sensor_i2c_info *i2c_info)
     return 0;
 }
 
+static k_s32 ov9732_sensor_get_chip_id(void *ctx, k_u32 *chip_id)
+{
+    k_s32 ret = 0;
+    k_u16 id_high = 0;
+    k_u16 id_low = 0;
+    struct sensor_driver_dev *dev = ctx;
+    pr_info("%s enter\n", __func__);
+
+    ov9732_i2c_init(&dev->i2c_info);
+    
+    ret = sensor_reg_read(&dev->i2c_info, OV9732_REG_CHIP_ID_H, &id_high);
+    ret |= sensor_reg_read(&dev->i2c_info, OV9732_REG_CHIP_ID_L, &id_low);
+    if (ret) {
+        // rt_kprintf("%s error\n", __func__);;
+        return -1;
+    }
+
+    *chip_id = (id_high << 8) | id_low;
+    pr_info("%s chip_id[0x%08X]\n", __func__, *chip_id);
+    return ret;
+}
+
+
 static k_s32 ov9732_sensor_power_on(void *ctx, k_s32 on)
 {
     k_s32 ret = 0;
@@ -545,7 +547,11 @@ static k_s32 ov9732_sensor_power_on(void *ctx, k_s32 on)
     if (on) {
         ov9732_power_rest(on);
         ov9732_i2c_init(&dev->i2c_info);
-        ov9732_sensor_get_chip_id(ctx, &chip_id);
+        ret = ov9732_sensor_get_chip_id(ctx, &chip_id);
+        if(ret < 0)
+        {
+            pr_err("%s, iic read chip id err \n", __func__);
+        }
     } else {
         ov9732_power_rest(on);
     }

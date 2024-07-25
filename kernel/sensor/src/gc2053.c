@@ -45,7 +45,20 @@
 
 #define GC2053_MIN_GAIN_STEP    (1.0f/64.0f)
 
+static k_u32 mirror_flag = 0;
 
+static k_sensor_reg gc2053_mirror[] = {
+    {0xfe, 0x00},	//Page 0
+    {0x17, 0x03}, 
+    {REG_NULL, 0x00},
+};
+
+static const k_sensor_reg sensor_enable_regs[] = {
+    {0xfe, 0x00},
+	{0x3e, 0x81},
+    {0x3e, 0x91},
+    {REG_NULL, 0x00},
+};
 
 static const k_sensor_reg gc2053_mipi4lane_1080p_30fps_linear[] = {
 
@@ -218,14 +231,24 @@ static const k_sensor_reg gc2053_mipi4lane_1080p_30fps_linear[] = {
 	{0x06, 0x4c},
 	{0x07, 0x00},	//Vblank = 0x11 = 17
 	{0x08, 0x11},
+
 	{0x09, 0x00},	//raw start = 0x02
-	{0x0a, 0x02},
+	{0x0a, 0x04},
+
 	{0x0b, 0x00},	//col start = 0x02
-	{0x0c, 0x02},
+	{0x0c, 0x04},      //0x02
+
 	{0x0d, 0x04},	//win_height = 1088
-	{0x0e, 0x40},
+	{0x0e, 0x40},   //0x40
+
+    {0x0f, 0x07},	//win_w = 1940 
+	{0x10, 0x88},   //0x94
+
 	{0x12, 0xe2},
 	{0x13, 0x16},
+
+    {0x17, 0x03},   // vflip
+
 	{0x19, 0x0a},
 	{0x21, 0x1c},
 	{0x28, 0x0a},
@@ -333,9 +356,9 @@ static const k_sensor_reg gc2053_mipi4lane_1080p_30fps_linear[] = {
 	{0x03, 0x8e},
 	{0x12, 0x80},
 	{0x13, 0x07},
-	{0xfe, 0x00},
-	{0x3e, 0x81},
-    {0x3e, 0x91},
+	// {0xfe, 0x00},
+	// {0x3e, 0x81},
+    // {0x3e, 0x91},
 
 	{REG_NULL, 0x00},
 #endif
@@ -357,7 +380,7 @@ static k_sensor_mode gc2053_mode_info[] = {
         .fps = 30000,
         .hdr_mode = SENSOR_MODE_LINEAR,
         .bit_width = 10,
-        .bayer_pattern = BAYER_PAT_RGGB,
+        .bayer_pattern =BAYER_PAT_BGGR,//BAYER_PAT_BGGR, //BAYER_PAT_RGGB,
         .mipi_info = {
             .csi_id = 0,
             .mipi_lanes = 2,
@@ -375,6 +398,38 @@ static k_sensor_mode gc2053_mode_info[] = {
             {K_FALSE},
         },
     },
+     {
+        .index = 1,
+        .sensor_type = GC2053_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
+        .size = {
+            .bounds_width = 1920,
+            .bounds_height = 1080,
+            .top = 0,
+            .left = 0,
+            .width = 1920,
+            .height = 1080,
+        },
+        .fps = 30000,
+        .hdr_mode = SENSOR_MODE_LINEAR,
+        .bit_width = 10,
+        .bayer_pattern = BAYER_PAT_BGGR, //BAYER_PAT_RGGB,
+        .mipi_info = {
+            .csi_id = 0,
+            .mipi_lanes = 2,
+            .data_type = 0x2B,
+        },
+        .reg_list = gc2053_mipi4lane_1080p_30fps_linear,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK2,
+                .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
+                .setting.mclk_div = 25,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+    },
 };
 
 static k_bool gc2053_init_flag = K_FALSE;
@@ -382,7 +437,7 @@ static k_sensor_mode *current_mode = NULL;
 
 static int gc2053_power_rest(k_s32 on)
 {
-    #define VICAP_GC2053_RST_GPIO     (0)  //24// 
+    // #define VICAP_GC2053_RST_GPIO     (0)  //24// 
 
     kd_pin_mode(VICAP_GC2053_RST_GPIO, GPIO_DM_OUTPUT);
 
@@ -400,27 +455,6 @@ static int gc2053_power_rest(k_s32 on)
     return 0;
 }
 
-static k_s32 gc2053_sensor_get_chip_id(void *ctx, k_u32 *chip_id)
-{
-    k_s32 ret = 0;
-    k_u16 id_high = 0;
-    k_u16 id_low = 0;
-    struct sensor_driver_dev *dev = ctx;
-    pr_info("%s enter\n", __func__);
-
-    ret = sensor_reg_read(&dev->i2c_info, GC2053_REG_CHIP_ID_H, &id_high);
-    ret |= sensor_reg_read(&dev->i2c_info, GC2053_REG_CHIP_ID_L, &id_low);
-    if (ret) {
-        pr_err("%s error\n", __func__);
-        return -1;
-    }
-
-    *chip_id = (id_high << 8) | id_low;
-    rt_kprintf("%s chip_id[0x%08X]\n", __func__, *chip_id);
-    return ret;
-}
-
-
 static int gc2053_i2c_init(k_sensor_i2c_info *i2c_info)
 {
     i2c_info->i2c_bus = rt_i2c_bus_device_find(i2c_info->i2c_name);
@@ -433,6 +467,32 @@ static int gc2053_i2c_init(k_sensor_i2c_info *i2c_info)
     return 0;
 }
 
+static k_s32 gc2053_sensor_get_chip_id(void *ctx, k_u32 *chip_id)
+{
+    k_s32 ret = 0;
+    k_u16 id_high = 0;
+    k_u16 id_low = 0;
+    struct sensor_driver_dev *dev = ctx;
+    pr_info("%s enter\n", __func__);
+
+    kd_pin_mode(VICAP_GC2053_RST_GPIO, GPIO_DM_OUTPUT);
+    kd_pin_write(VICAP_GC2053_RST_GPIO, GPIO_PV_HIGH); // GPIO_PV_LOW  GPIO_PV_HIGH
+
+    gc2053_i2c_init(&dev->i2c_info);
+
+    ret = sensor_reg_read(&dev->i2c_info, GC2053_REG_CHIP_ID_H, &id_high);
+    ret |= sensor_reg_read(&dev->i2c_info, GC2053_REG_CHIP_ID_L, &id_low);
+    if (ret) {
+        // pr_err("%s error\n", __func__);
+        return -1;
+    }
+
+    *chip_id = (id_high << 8) | id_low;
+    rt_kprintf("%s chip_id[0x%08X]\n", __func__, *chip_id);
+    return ret;
+}
+
+
 static k_s32 gc2053_sensor_power_on(void *ctx, k_s32 on)
 {
     k_s32 ret = 0;
@@ -444,7 +504,11 @@ static k_s32 gc2053_sensor_power_on(void *ctx, k_s32 on)
             gc2053_power_rest(on);
             gc2053_i2c_init(&dev->i2c_info);
         // }
-        gc2053_sensor_get_chip_id(ctx, &chip_id);
+        ret = gc2053_sensor_get_chip_id(ctx, &chip_id);
+        if(ret < 0)
+        {
+            pr_err("%s, iic read chip id err \n", __func__);
+        }
     } else {
         gc2053_init_flag = K_FALSE;
         gc2053_power_rest(on);
@@ -452,6 +516,8 @@ static k_s32 gc2053_sensor_power_on(void *ctx, k_s32 on)
 
     return ret;
 }
+
+
 
 static k_s32 gc2053_sensor_init(void *ctx, k_sensor_mode mode)
 {
@@ -484,6 +550,16 @@ static k_s32 gc2053_sensor_init(void *ctx, k_sensor_mode mode)
 
         ret = sensor_reg_list_write(&dev->i2c_info, current_mode->reg_list);
 
+        if(mirror_flag == 1)
+        {
+            sensor_reg_list_write(&dev->i2c_info, gc2053_mirror);
+
+            k_u16 val = 0;
+            ret = sensor_reg_read(&dev->i2c_info, 0x0f, &val);
+            pr_err("0x0f val is %x \n", val);
+            ret = sensor_reg_read(&dev->i2c_info, 0x10, &val);
+            pr_err("0x10 val is %x \n", val);
+        }
 
         current_mode->ae_info.frame_length = 2200;
         current_mode->ae_info.cur_frame_length = current_mode->ae_info.frame_length;
@@ -652,6 +728,7 @@ static k_s32 gc2053_sensor_set_stream(void *ctx, k_s32 enable)
     pr_info("%s enter, enable(%d)\n", __func__, enable);
     if (enable) {
         // ret = sensor_reg_write(&dev->i2c_info, 0x0100, 0x01);
+        ret = sensor_reg_list_write(&dev->i2c_info, sensor_enable_regs);
     } else {
         // ret = sensor_reg_write(&dev->i2c_info, 0x0100, 0x00);
     }
@@ -933,6 +1010,49 @@ k_s32 gc2053_sensor_get_otp_data(void *ctx, void *data)
 
 static k_s32 gc2053_sensor_mirror_set(void *ctx, k_vicap_mirror_mode mirror)
 {
+    k_s32 ret = 0;
+    struct sensor_driver_dev *dev = ctx;
+
+    rt_kprintf("mirror mirror is %d , sensor tpye is %d \n", mirror.mirror, mirror.sensor_type);
+
+    // get current sensor type
+    for (k_s32 i = 0; i < sizeof(gc2053_mode_info) / sizeof(k_sensor_mode); i++) {
+        if (gc2053_mode_info[i].sensor_type == mirror.sensor_type) {
+            // default flip 0x17 = 0x03
+            switch(mirror.mirror)
+            {
+                case VICAP_MIRROR_NONE :
+                    gc2053_mode_info[i].bayer_pattern = BAYER_PAT_BGGR;
+                    mirror_flag = 0;
+                    return 0;
+                case VICAP_MIRROR_HOR :
+                    // set mirror
+                    gc2053_mirror[1].val = 0x02;
+                    // set sensor info bayer pattern 
+                    gc2053_mode_info[i].bayer_pattern = BAYER_PAT_GBRG;
+                    break;
+                case VICAP_MIRROR_VER :
+                    // set mirror
+                    gc2053_mirror[1].val = 0x01;
+                    // set sensor info bayer pattern 
+                    gc2053_mode_info[i].bayer_pattern = BAYER_PAT_GRBG;
+                    break;
+                case VICAP_MIRROR_BOTH :
+                    // set mirror
+                    gc2053_mirror[1].val = 0x00;
+                    // set sensor info bayer pattern 
+                    gc2053_mode_info[i].bayer_pattern = BAYER_PAT_RGGB;
+                    break;
+                default: 
+                    rt_kprintf("mirror type is not support \n");
+                    return -1;
+                    break;
+            }
+            rt_kprintf("mirror_flag is gc2053_mirror[0].val %d", mirror_flag);
+            mirror_flag = 1;
+            return 0;
+        }
+    }
     return 0;
 }
 
@@ -940,7 +1060,7 @@ static k_s32 gc2053_sensor_mirror_set(void *ctx, k_vicap_mirror_mode mirror)
 struct sensor_driver_dev gc2053_sensor_drv = {
     .i2c_info = {
         .i2c_bus = NULL,
-        .i2c_name = "i2c3",   //"i2c0", //"i2c3",
+        .i2c_name = GC2053_CSI0_IIC, //"i2c3",   //"i2c0", //"i2c3",
         .slave_addr = 0x37,
         .reg_addr_size = SENSOR_REG_VALUE_8BIT,
         .reg_val_size = SENSOR_REG_VALUE_8BIT,

@@ -12,11 +12,9 @@ MIDDLEWARE_SAMPLE= $(LOCAL_SRC_DIR)/sample
 
 all:
 	cd $(MIDDLEWARE_SRC) ; make
-	cd $(MIDDLEWARE_SAMPLE) ; make
 
 clean:
 	echo "${PWD}/Makefile clean"
 	@cd $(MIDDLEWARE_SRC); make clean
-	@cd $(MIDDLEWARE_SAMPLE); make clean
 
 .PHONY: all clean

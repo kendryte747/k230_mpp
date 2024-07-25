@@ -1,6 +1,10 @@
 include $(MPP_SRC_DIR)/userapps/src/mpp.mk
 include $(MPP_SRC_DIR)/userapps/src/rt-smart.mk
 
+ifneq ($(shell [ -d ${SDK_BUILD_IMAGES_DIR}/bin ] && echo 1 || echo 0),1)
+$(shell mkdir -p ${SDK_BUILD_IMAGES_DIR}/bin)
+endif
+
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
 LIB = $(MPP_SRC_DIR)/userapps/lib/lib$(CURRECT_DIR_NAME).a
@@ -17,11 +21,11 @@ DWCFGS = $(patsubst %.yml,%.bin,$(YMLS))
 
 all: $(LIB) $(DWCFGS)
 	@-rm -rf $(OBJS)
-	rm -rf build
-	mkdir -p $(RTSMART_SRC_DIR)/userapps/root/bin/
-	cp $(PWD)/config/* $(RTSMART_SRC_DIR)/userapps/root/bin/
-	cp $(PWD)/dewarp/*.bin $(RTSMART_SRC_DIR)/userapps/root/bin/
-	echo "${PWD}/Makefile all"
+	@rm -rf build
+	@rm -rf ${SDK_BUILD_IMAGES_DIR}/bin/*
+	@cp $(PWD)/config/* ${SDK_BUILD_IMAGES_DIR}/bin
+	@cp $(PWD)/dewarp/*.bin ${SDK_BUILD_IMAGES_DIR}/bin
+	@echo "${PWD}/Makefile all"
 
 $(OBJS): %.o : %.c
 	@$(CC) $(CC_CFLAGS) $(LOCAL_CFLAGS) $(BSP_CFLGAS) $(RTSMART_CFLAGS) $(MPP_USER_CFLGAS) -c $< -o $@

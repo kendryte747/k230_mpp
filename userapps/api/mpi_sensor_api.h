@@ -454,6 +454,8 @@ k_s32 kd_mpi_sensor_otpdata_set(k_s32 fd, void *ota_data);
 
 k_s32 kd_mpi_sensor_mirror_set(k_s32 fd, k_vicap_mirror_mode mirror);
 
+k_s32 kd_mpi_sensor_adapt_get(k_vicap_probe_config *config, k_vicap_sensor_info *info);
+
 /** @} */ /** <!-- ==== SENSOR End ==== */
 
 #ifdef __cplusplus

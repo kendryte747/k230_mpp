@@ -67,7 +67,7 @@ k_u32 get_mirror_by_sensor_type(k_vicap_sensor_type type) {
 }
 #else
 k_u32 get_mirror_by_sensor_type(k_vicap_sensor_type type) {
-  printf("unsupport board type %s\n", CONFIG_BOARD);
+  printf("unsupport board type %s\n", CONFIG_BOARD_NAME);
 
   return 0;
 }

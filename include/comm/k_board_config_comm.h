@@ -41,13 +41,13 @@ extern "C" {
 #endif /* End of #ifdef __cplusplus */
 
 
-// sip gpio board config 
+// sip gpio board config
 #if defined(CONFIG_BOARD_K230D)
-// display gpio 
+// display gpio
 #define DISPLAY_LCD_RST_GPIO                            21
 #define DISPLAY_LCD_BACKLIGHT_EN                        20
 
-// imx335 gpio config 
+// imx335 gpio config
 #define VICAP_IMX335_RST_GPIO                           37
 #define VICAP_IMX335_MASTER_GPIO                        33
 //OV9286 gpio cinfig
@@ -75,12 +75,12 @@ extern "C" {
 #define LT9611_I2C_BUS      "i2c4"
 
 #elif defined(CONFIG_BOARD_K230_EVB)
-// usip evb gpio config 
-// display gpio 
+// usip evb gpio config
+// display gpio
 #define DISPLAY_LCD_RST_GPIO                            9
 #define DISPLAY_LCD_BACKLIGHT_EN                        31
 
-// imx335 gpio config 
+// imx335 gpio config
 #define VICAP_IMX335_RST_GPIO                           46
 #define VICAP_IMX335_MASTER_GPIO                        28
 //OV9286 gpio cinfig
@@ -136,6 +136,7 @@ extern "C" {
 #define LT9611_SLAVE_ADDR   0x3b
 #define LT9611_I2C_BUS      "i2c4"
 
+
 #elif defined(CONFIG_BOARD_K230D_CANMV)
 // usip evb gpio config
 // display gpio
@@ -150,6 +151,44 @@ extern "C" {
 #define OV5647_IIC "i2c1"
 #define OV5647_CAM_PIN                                  20
 #define OV5647_CAM_PIN_CSI2                             (24)
+#define OV5647_CAM_PIN_CSI1                             (23)
+#define OV9732_RST_PIN                                  (24)
+
+#define OV5647_CSI2_IIC "i2c4"
+#define OV5647_CSI1_IIC "i2c0"
+
+#define GC2053_CSI0_IIC "i2c3"
+#define VICAP_GC2053_RST_GPIO                           (0)
+
+#define GC2093_CSI0_IIC "i2c3"
+#define VICAP_GC2093_RST_GPIO                           (0)
+
+
+
+#define LT9611_RESET_GPIO   42
+#define LT9611_SLAVE_ADDR   0x3b
+#define LT9611_I2C_BUS      "i2c3"
+
+#elif defined(CONFIG_BOARD_K230D_CANMV_BPI)
+// usip evb gpio config
+// display gpio
+// #define DISPLAY_LCD_RST_GPIO                            24  // old
+// #define DISPLAY_LCD_BACKLIGHT_EN                        25
+
+#define DISPLAY_LCD_RST_GPIO                            37    // for bipai
+#define DISPLAY_LCD_BACKLIGHT_EN                        255    // bipai not used
+
+
+// imx335 gpio config
+// #define VICAP_IMX335_RST_GPIO                           46 // old but error
+#define VICAP_IMX335_RST_GPIO                           63    // bipai
+#define VICAP_IMX335_MASTER_GPIO                        255    //
+//OV9286 gpio cinfig
+#define VICAP_OV9286_RST_GPIO                           20
+#define OV5647_IIC "i2c1"
+#define OV5647_CAM_PIN                                  20
+// #define OV5647_CAM_PIN_CSI2                             (24) // old
+#define OV5647_CAM_PIN_CSI2                             (62)    // for bipai
 #define OV5647_CAM_PIN_CSI1                             (23)
 #define OV9732_RST_PIN                                  (24)
 
@@ -271,7 +310,7 @@ extern "C" {
 #define DISPLAY_LCD_RST_GPIO                            9
 #define DISPLAY_LCD_BACKLIGHT_EN                        31
 
-// imx335 gpio config 
+// imx335 gpio config
 #define VICAP_IMX335_RST_GPIO                           46
 #define VICAP_IMX335_MASTER_GPIO                        28
 //OV9286 gpio cinfig

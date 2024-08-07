@@ -165,8 +165,8 @@ k_connector_info connector_info_list[] = {
         K_DSI_2LAN,
         K_BURST_MODE,
         K_VO_LP_MODE,
-        { 9, 196, 0x17, 0xa3},  //0x96
-        { 39600, 475200, 600, 480, 20, 20, 80, 1100, 800, 10, 70, 220},
+        { 9, 196, 0x17, 0xa3 }, // 0x96
+        { 39600, 475200, 600, 480, 20, 20, 80, 1100, 800, 10, 70, 220 },
         ST7701_V1_MIPI_2LAN_480X800_30FPS,
     },
 
@@ -183,6 +183,20 @@ k_connector_info connector_info_list[] = {
         { 10, 259, 0x27, 0x84 },
         { 23760, 285120, 660, 480, 10, 20, 150, 1200, 854, 10, 20, 316 },
         ST7701_V1_MIPI_2LAN_480X854_30FPS,
+    },
+    {
+        "ili9806",
+        0,
+        0,
+        BACKGROUND_PINK_COLOR,
+        9,
+        14,
+        K_DSI_2LAN,
+        K_NON_BURST_MODE_WITH_PULSES,
+        K_VO_LP_MODE,
+        { 4, 97, 0x19, 0x96 },
+        { 39600, 475200, 714, 480, 50, 100, 84, 895, 800, 15, 40, 40 },
+        ILI9806_MIPI_2LAN_480X800_30FPS,
     },
     {
         "virtdev",

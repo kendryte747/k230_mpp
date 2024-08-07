@@ -10,16 +10,27 @@ LOCAL_SRC_DIR = $(shell pwd)
 LIVE555= $(LOCAL_SRC_DIR)/live555
 RTSP_CLIENT= $(LOCAL_SRC_DIR)/rtsp_client
 RTSP_SERVER= $(LOCAL_SRC_DIR)/rtsp_server
+RTSP_PUSHER= $(LOCAL_SRC_DIR)/rtsp_pusher
 MP4_FORMAT = $(LOCAL_SRC_DIR)/mp4_format
 MP4_PLAYER = $(LOCAL_SRC_DIR)/mp4_player
 KDMEDIA = $(LOCAL_SRC_DIR)/kdmedia
+FFMPEG  = $(LOCAL_SRC_DIR)/ffmpeg/src
 
 all:
+	cd $(LIVE555) ; make
+	cd $(RTSP_CLIENT) ; make
+	cd $(RTSP_SERVER) ; make
 	cd $(MP4_FORMAT) ; make
-
+	cd $(MP4_PLAYER) ; make
+	cd $(KDMEDIA) ; make
 
 clean:
 	echo "${PWD}/Makefile clean"
+	@cd $(LIVE555); make clean
+	@cd $(RTSP_CLIENT); make clean
+	@cd $(RTSP_SERVER); make clean
 	@cd $(MP4_FORMAT); make clean
+	@cd $(MP4_PLAYER); make clean
+	@cd $(KDMEDIA); make clean
 
 .PHONY: all clean

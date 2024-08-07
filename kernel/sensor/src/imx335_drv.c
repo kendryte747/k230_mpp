@@ -782,7 +782,7 @@ static const k_sensor_reg imx335_mipi_4lane_raw10_3x_regs[] = {
     { 0x3058, (IMX335_VMAX_DOL3*4 - 3072)&0xFF}, //SHR0, 3072 ET Line,  4500*4 - 3072
     { 0x3059, (IMX335_VMAX_DOL3*4 - 3072)>>8},
     { 0x305a, 0x00},
-    { 0x305c, (DOL3_RHS1 - (3072>>4))&0xFF}, //SHR1, 3072/16 ET Line, RHS1 - 128 
+    { 0x305c, (DOL3_RHS1 - (3072>>4))&0xFF}, //SHR1, 3072/16 ET Line, RHS1 - 128
     { 0x305d, (DOL3_RHS1 - (3072>>4))>>8},
     { 0x305e, 0x00},
     { 0x3060, (DOL3_RHS2 - (3072>>8))&0xFF}, //SHR2, 3072/256 ET Line, RHS2 - 8
@@ -1028,12 +1028,15 @@ static int imx335_power_reset(k_s32 on)
     k_u8 rst_gpio, master_gpio;
 
     rst_gpio = VICAP_IMX335_RST_GPIO;
-    master_gpio = VICAP_IMX335_MASTER_GPIO;
+    if(VICAP_IMX335_MASTER_GPIO != 255) {
+        master_gpio = VICAP_IMX335_MASTER_GPIO;
 
-    kd_pin_mode(rst_gpio, GPIO_DM_OUTPUT);
-    kd_pin_mode(master_gpio, GPIO_DM_OUTPUT);
+        kd_pin_mode(rst_gpio, GPIO_DM_OUTPUT);
+        kd_pin_mode(master_gpio, GPIO_DM_OUTPUT);
 
-    kd_pin_write(master_gpio, GPIO_PV_LOW);
+        kd_pin_write(master_gpio, GPIO_PV_LOW);
+    }
+
     if (on) {
         kd_pin_write(rst_gpio, GPIO_PV_HIGH); // GPIO_PV_HIGH
         rt_thread_mdelay(1);
@@ -1220,7 +1223,7 @@ static k_s32 imx335_sensor_init(void* ctx, k_sensor_mode mode)
 
         current_mode->ae_info.max_integraion_line = 960; // * 6 * 16
         current_mode->ae_info.min_integraion_line = 96; // * 6 * 16
-        
+
         current_mode->ae_info.max_vs_integraion_line = 60;	//  * 6
         current_mode->ae_info.min_vs_integraion_line = 6;	//  * 6
 
@@ -1378,7 +1381,7 @@ static k_s32 imx335_sensor_init(void* ctx, k_sensor_mode mode)
 	    ret = sensor_reg_read(&dev->i2c_info, IMX335_REG_SHR0_L, &SHR0_l);
 	    ret |= sensor_reg_read(&dev->i2c_info, IMX335_REG_SHR0_M, &SHR0_m);
 	    exp_time =IMX335_VMAX_LINEAR - ((SHR0_m <<8) | SHR0_l);
-	
+
 	    current_mode->ae_info.cur_integration_time =  current_mode->ae_info.one_line_exp_time * exp_time;
   	}
   	else if (current_mode->hdr_mode == SENSOR_MODE_HDR_STITCH)
@@ -1394,7 +1397,7 @@ static k_s32 imx335_sensor_init(void* ctx, k_sensor_mode mode)
   			ret |= sensor_reg_read(&dev->i2c_info, IMX335_REG_SHR0_M, &SHR0_m);
   			exp_time = current_mode->ae_info.frame_length - ((SHR0_m <<8) | SHR0_l);
   			current_mode->ae_info.cur_long_integration_time = current_mode->ae_info.one_line_exp_time * exp_time;
- 
+
   			ret = sensor_reg_read(&dev->i2c_info, IMX335_REG_SHR1_L, &SHR1_l);
   			ret |= sensor_reg_read(&dev->i2c_info, IMX335_REG_SHR1_M, &SHR1_m);
   			ret = sensor_reg_read(&dev->i2c_info, IMX335_REG_RHS1_L, &RHS1_l);

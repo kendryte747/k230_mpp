@@ -924,6 +924,74 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         GC2053_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
     },
     {
+        "gc2053",
+        1280,
+        960,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        50,
+        GC2053_MIPI_CSI0_1280X960_50FPS_10BIT_LINEAR,
+    },
+    {
+        "gc2053",
+        1280,
+        960,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        50,
+        GC2053_MIPI_CSI2_1280X960_50FPS_10BIT_LINEAR,
+    },
+    {
+        "gc2053",
+        1280,
+        720,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        GC2053_MIPI_CSI0_1280X720_60FPS_10BIT_LINEAR,
+    },
+    {
+        "gc2053",
+        1280,
+        720,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        GC2053_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR,
+    },
+    {
         "gc2093",
         1920,
         1080,
@@ -1025,7 +1093,42 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         90,
         GC2093_MIPI_CSI2_1280X960_90FPS_10BIT_LINEAR,
     },
+    {
+        "gc2093",
+        1280,
+        720,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        GC2093_MIPI_CSI0_1280X720_90FPS_10BIT_LINEAR,
+    },
+    {
+        "gc2093",
+        1280,
+        720,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        90,
+        GC2093_MIPI_CSI2_1280X720_90FPS_10BIT_LINEAR,
+    },
 };
+
 
 const char *kd_mpi_vicap_get_sensor_string(k_vicap_sensor_type sensor_type)
 {
@@ -1554,6 +1657,87 @@ k_s32 kd_mpi_sensor_mirror_set(k_s32 fd, k_vicap_mirror_mode mirror)
 
     return ret;
 }
+
+
+k_s32 kd_mpi_adapt_sensor_get(k_vicap_adapt_id *csi0_adapt_id, k_vicap_adapt_id *csi1_adapt_id, k_vicap_adapt_id *csi2_adapt_id)
+{
+    k_s32 i = 0, j = 0;
+    k_s32 ret = 0;
+    k_s32 sensor_fd = -1;
+    k_u32 chip_id;
+    k_vicap_sensor_info sensor_info;
+    k_sensor_mode mode;
+
+    csi0_adapt_id->adapt_len = 0;
+    csi1_adapt_id->adapt_len = 0;
+    csi2_adapt_id->adapt_len = 0;
+
+    for (i = 0; i != SENSOR_TYPE_MAX; i++) 
+    {
+       memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
+       memset(&mode, 0, sizeof(k_sensor_mode));
+
+       ret = kd_mpi_vicap_get_sensor_info((k_vicap_sensor_type)i , &sensor_info);
+       if (ret) {
+            printf("kd_mpi_vicap_adapt_config, the sensor type not supported! i is %d \n", i);
+            continue;
+       }    
+       // open sensor 
+        sensor_fd = kd_mpi_sensor_open(sensor_info.sensor_name);
+        if (sensor_fd < 0) {
+            pr_err("%s, sensor open failed.\n", __func__);
+        }
+
+        mode.sensor_type = sensor_info.sensor_type;
+        ret = kd_mpi_sensor_mode_get(sensor_fd, &mode);
+        if (ret) {
+            pr_err("%s, sensor mode get failed. i is %d \n", __func__, i);
+        }
+
+        // check sensor need mclk
+        for(k_s32 idx = 0; idx < SENSOR_MCLK_MAX - 1; idx++)
+        {
+            if(mode.mclk_setting[idx].mclk_setting_en)
+            {
+                ret = kd_mpi_vicap_sensor_set_mclk(mode.mclk_setting[idx].setting);
+            }
+            else
+            {
+                ret = kd_mpi_vicap_sensor_disable_mclk(mode.mclk_setting[idx].setting);
+            }
+        }
+
+        // ret = kd_mpi_sensor_power_set(sensor_fd, K_TRUE);
+        ret = kd_mpi_sensor_id_get(sensor_fd, &chip_id);
+        if(ret == 0)
+        {
+            // chip ok
+            switch(sensor_info.csi_num)
+            {
+                case VICAP_CSI0 :
+                    csi0_adapt_id->adapt_id[csi0_adapt_id->adapt_len] = i;
+                    csi0_adapt_id->adapt_len = csi0_adapt_id->adapt_len + 1;
+                    break;
+                case VICAP_CSI1 :
+                    csi1_adapt_id->adapt_id[csi1_adapt_id->adapt_len] = i;
+                    csi1_adapt_id->adapt_len = csi1_adapt_id->adapt_len + 1;
+                    break;
+                case VICAP_CSI2 :
+                    csi2_adapt_id->adapt_id[csi2_adapt_id->adapt_len] = i;
+                    csi2_adapt_id->adapt_len = csi2_adapt_id->adapt_len + 1;
+                    break;
+                default : 
+                    printf("csi num err \n");
+                    break;
+            }
+        }
+
+        kd_mpi_sensor_close(sensor_fd);
+    }
+
+    return 0;
+}
+
 
 /*
 Sensor Name: Sensor1, FPS: 60, Width: 1920, Height: 1080

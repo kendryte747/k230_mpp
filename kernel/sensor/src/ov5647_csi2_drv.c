@@ -990,6 +990,12 @@ static k_s32 ov5647_sensor_power_on(void *ctx, k_s32 on)
         // write power on
         // ret = sensor_reg_list_write(&dev->i2c_info, sensor_oe_enable_regs);
     } else {
+
+#if defined(CONFIG_BOARD_K230D_CANMV)
+        ov5647_i2c_init(&dev->i2c_info);
+        ret = sensor_reg_write(&dev->i2c_info, 0x3018, 0xff);
+        ret = sensor_reg_write(&dev->i2c_info, OV5647_SW_STANDBY, 0x00);
+#endif
         ov5647_power_rest(on);
         // ret = sensor_reg_list_write(&dev->i2c_info, sensor_oe_disable_regs);
     }

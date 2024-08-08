@@ -26,9 +26,9 @@ RTSMART_CFLAGS = -I$(RTSMART_SRC_DIR)/kernel/rt-thread/include \
 BSP_CFLGAS = -I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/c908 \
 		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3 \
 		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/sysctl/sysctl_boot \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/sysctl/sysctl_power \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/sysctl/sysctl_reset \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/gpio \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/extdrv/regulator \
-		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/extcomponents/usage
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/interdrv/sysctl/sysctl_boot \
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/interdrv/sysctl/sysctl_power \
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/interdrv/sysctl/sysctl_reset \
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/interdrv/gpio \
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/extdrv/regulator \
+		-I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/drivers/extcomponents/usage

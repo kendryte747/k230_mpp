@@ -7,7 +7,7 @@ BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 AI_LIBPATH=$(MPP_SRC_DIR)/../nncase
-KMODEL_LIBPATH=$(MPP_SRC_DIR)/../kmodel
+KMODEL_LIBPATH=$(MPP_SRC_DIR)/userapps/sample/kmodel
 
 LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR) -I$(LOCAL_SRC_DIR)/../sample_vo
 

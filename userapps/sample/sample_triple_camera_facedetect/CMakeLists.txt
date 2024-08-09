@@ -8,7 +8,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-T ${nncase_sdk_root}/examples/cmake/link.lds --stat
 set(src main.cc model.cc mobile_retinaface.cc anchors_320.cc util.cc)
 set(bin sample_triple_camera_facedetect.elf)
 set(script ./script/init.sh)
-set(data ../../../../kmodel/mobile_retinaface/test.kmodel)
+set(data $ENV{MPP_SRC_DIR}/userapps/sample/kmodel/mobile_retinaface/test.kmodel)
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/../" CACHE STRING "The path to use for make install" FORCE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -march=rv64imafdcv -mabi=lp64d -mcmodel=medany" CACHE STRING "" FORCE)
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}")

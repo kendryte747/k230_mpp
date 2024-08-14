@@ -23,6 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string.h>
 #ifdef RT_USING_POSIX
 #include <dfs_posix.h>
 #include <dfs_poll.h>
@@ -32,8 +33,14 @@
 #include "sensor_dev.h"
 #include "k_sensor_comm.h"
 
-struct sensor_driver_dev *g_sensor_drv[SENSOR_NUM_MAX];
+struct sensor_driver_dev g_sensor_drv[3];
 
+static sensor_probe_impl sensor_probes[] = {
+#ifdef CONFIG_MPP_ENABLE_SENSOR_GC2093
+    sensor_gc2093_probe,
+#endif // CONFIG_MPP_ENABLE_SENSOR_GC2093
+    0, // end
+};
 
 static k_s32 sensor_dev_open(struct dfs_fd *file)
 {
@@ -123,19 +130,62 @@ k_s32 sensor_drv_dev_init(struct sensor_driver_dev *pdriver_dev)
 
     device->fops = &sensor_dev_fops;
     device->user_data = pdriver_dev;
+
     return 0;
 }
 
+#if !defined (CONFIG_MPP_ENABLE_CSI_DEV_0) && !defined (CONFIG_MPP_ENABLE_CSI_DEV_1) && !(defined (CONFIG_MPP_ENABLE_CSI_DEV_2))
+#error "Must Enable one csi dev"
+#endif
 
-k_s32 sensor_device_init(void)
-{
-    sensor_drv_list_init(sensor_drv_list);
+k_s32 sensor_device_init(void) {
+  struct k_sensor_probe_cfg probe_cfg[] = {
+#ifdef CONFIG_MPP_ENABLE_CSI_DEV_0
+      {
+          .csi_num = 0,
+          .i2c_name = CONFIG_MPP_CSI_DEV0_I2C_DEV,
+          .pwd_gpio = CONFIG_MPP_CSI_DEV0_POWER,
+          .reset_gpio = CONFIG_MPP_CSI_DEV0_RESET,
+      },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+#ifdef CONFIG_MPP_ENABLE_CSI_DEV_1
+      {
+          .csi_num = 1,
+          .i2c_name = CONFIG_MPP_CSI_DEV1_I2C_DEV,
+          .pwd_gpio = CONFIG_MPP_CSI_DEV1_POWER,
+          .reset_gpio = CONFIG_MPP_CSI_DEV1_RESET,
+      },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+#ifdef CONFIG_MPP_ENABLE_CSI_DEV_2
+      {
+          .csi_num = 2,
+          .i2c_name = CONFIG_MPP_CSI_DEV2_I2C_DEV,
+          .pwd_gpio = CONFIG_MPP_CSI_DEV2_POWER,
+          .reset_gpio = CONFIG_MPP_CSI_DEV2_RESET,
+      },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 
-    for (k_u32 sensor_id = 0; sensor_id < SENSOR_NUM_MAX; sensor_id++) {
-        if (g_sensor_drv[sensor_id] != NULL)
-            sensor_drv_dev_init(g_sensor_drv[sensor_id]);
+    // MAX 3 configure, because we just have 3 csi device
+  };
+
+  memset(&g_sensor_drv[0], 0, sizeof(g_sensor_drv));
+
+  for (size_t i = 0; i < (sizeof(probe_cfg) / sizeof(probe_cfg[0])); i++) {
+    struct k_sensor_probe_cfg *cfg = &probe_cfg[i];
+    struct sensor_driver_dev *dev = &g_sensor_drv[cfg->csi_num];
+
+    for(int j = 0; sensor_probes[j]; j++) {
+        if(0x00 == sensor_probes[j](cfg, dev)) {
+            sensor_drv_dev_init(dev);
+            rt_kprintf("Find sensor(%s) on csi%d\n", dev->sensor_name, cfg->csi_num);
+            break;
+        }
     }
 
-    return 0;
-}
+    if(NULL == dev->sensor_func.sensor_init) {
+        rt_kprintf("Can't find sensor on csi%d\n", cfg->csi_num);
+    }
+  }
 
+  return 0;
+}

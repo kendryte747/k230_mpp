@@ -2,6 +2,8 @@
 include $(MPP_SRC_DIR)/kernel/mpp.mk
 include $(MPP_SRC_DIR)/kernel/rt-smart.mk
 
+include $(SDK_SRC_ROOT_DIR)/.config
+
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
 LIB = $(MPP_SRC_DIR)/kernel/lib/lib$(CURRECT_DIR_NAME).a
@@ -9,9 +11,10 @@ LIB = $(MPP_SRC_DIR)/kernel/lib/lib$(CURRECT_DIR_NAME).a
 LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR)/src/ \
 			   -I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/gpio
 
-SRCS = $(wildcard $(LOCAL_SRC_DIR)/src/*.c)
+obj-y := src/sensor_comm.o src/sensor_dev.o
+obj-$(CONFIG_MPP_ENABLE_SENSOR_GC2093) += src/gc2093.o
 
-OBJS = $(patsubst %.c,%.o,$(SRCS))
+OBJS = $(obj-y)
 
 all: $(LIB)
 	@-rm -f $(OBJS)
@@ -29,5 +32,3 @@ clean:
 	-rm -f $(OBJS)
 
 .PHONY: all clean
-
-

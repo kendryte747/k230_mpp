@@ -23,47 +23,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "k_type.h"
 #include "sensor_dev.h"
 #include "k_sensor_ioctl.h"
 #include "k_sensor_comm.h"
-
-extern struct sensor_driver_dev ov9732_sensor_drv;
-extern struct sensor_driver_dev ov9286_sensor_drv;
-extern struct sensor_driver_dev imx335_sensor_drv;
-extern struct sensor_driver_dev sc035hgs_sensor_drv;
-extern struct sensor_driver_dev ov5647_sensor_drv;
-extern struct sensor_driver_dev sc201cs_sensor_drv;
-extern struct sensor_driver_dev ov5647_sensor_csi1_drv;
-extern struct sensor_driver_dev ov5647_sensor_csi2_drv;
-extern struct sensor_driver_dev xs9950_csi0_sensor_drv;
-extern struct sensor_driver_dev xs9950_csi1_sensor_drv;
-extern struct sensor_driver_dev xs9950_csi2_sensor_drv;
-extern struct sensor_driver_dev gc2053_sensor_drv;
-extern struct sensor_driver_dev gc2093_sensor_drv;
-
-struct sensor_driver_dev *sensor_drv_list[SENSOR_NUM_MAX] = {
-    &ov9732_sensor_drv,
-    &ov9286_sensor_drv,
-    &imx335_sensor_drv,
-    &sc035hgs_sensor_drv,
-    &ov5647_sensor_drv,
-    &sc201cs_sensor_drv,
-    &ov5647_sensor_csi1_drv,
-    &ov5647_sensor_csi2_drv,
-    &xs9950_csi0_sensor_drv,
-    &xs9950_csi1_sensor_drv,
-    &xs9950_csi2_sensor_drv,
-    &gc2053_sensor_drv,
-    &gc2093_sensor_drv,
-};
-
-void sensor_drv_list_init(struct sensor_driver_dev *drv_list[])
-{
-    for (k_u32 sensor_id = 0; sensor_id < SENSOR_NUM_MAX; sensor_id++) {
-        if (drv_list[sensor_id] != NULL)
-            g_sensor_drv[sensor_id] = drv_list[sensor_id];
-    }
-}
 
 k_s32 sensor_reg_read(k_sensor_i2c_info *i2c_info, k_u16 reg_addr, k_u16 *buf)
 {
@@ -833,16 +796,19 @@ static void i2c_read(k_s32 argc, char** argv)
 
     switch (i2c_id) {
         case 0:
-            i2c_info.i2c_name = "i2c0";
+            strncpy(&i2c_info.i2c_name[0], "i2c0", sizeof(i2c_info.i2c_name));
             break;
         case 1:
-            i2c_info.i2c_name = "i2c1";
+            strncpy(&i2c_info.i2c_name[0], "i2c1", sizeof(i2c_info.i2c_name));
             break;
         case 2:
-            i2c_info.i2c_name = "i2c2";
+            strncpy(&i2c_info.i2c_name[0], "i2c2", sizeof(i2c_info.i2c_name));
             break;
         case 3:
-            i2c_info.i2c_name = "i2c3";
+            strncpy(&i2c_info.i2c_name[0], "i2c3", sizeof(i2c_info.i2c_name));
+            break;
+        case 4:
+            strncpy(&i2c_info.i2c_name[0], "i2c4", sizeof(i2c_info.i2c_name));
             break;
         default:
             rt_kprintf("i2c id error\n");
@@ -892,16 +858,19 @@ static void i2c_write(k_s32 argc, char** argv)
     rt_kprintf("i2c_write %d 0x%02x 0x%04x 0x%02x\n", i2c_id, salve_addr, reg_addr, reg_val);
     switch (i2c_id) {
         case 0:
-            i2c_info.i2c_name = "i2c0";
+            strncpy(&i2c_info.i2c_name[0], "i2c0", sizeof(i2c_info.i2c_name));
             break;
         case 1:
-            i2c_info.i2c_name = "i2c1";
+            strncpy(&i2c_info.i2c_name[0], "i2c1", sizeof(i2c_info.i2c_name));
             break;
         case 2:
-            i2c_info.i2c_name = "i2c2";
+            strncpy(&i2c_info.i2c_name[0], "i2c2", sizeof(i2c_info.i2c_name));
             break;
         case 3:
-            i2c_info.i2c_name = "i2c3";
+            strncpy(&i2c_info.i2c_name[0], "i2c3", sizeof(i2c_info.i2c_name));
+            break;
+        case 4:
+            strncpy(&i2c_info.i2c_name[0], "i2c4", sizeof(i2c_info.i2c_name));
             break;
         default:
             rt_kprintf("i2c id error\n");

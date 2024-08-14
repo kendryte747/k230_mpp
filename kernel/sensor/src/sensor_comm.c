@@ -28,6 +28,28 @@
 #include "k_sensor_ioctl.h"
 #include "k_sensor_comm.h"
 
+void sensor_set_mclk(const k_sensor_mclk_setting *setting)
+{
+    extern k_s32 vicap_set_mclk(k_vicap_mclk *mclk);
+
+    k_vicap_mclk mclk;
+
+    for (k_s32 idx = 0; idx < SENSOR_MCLK_MAX - 1; idx++) {
+        const k_sensor_mclk *sensor_mclk = &setting[idx].setting;
+
+        mclk.id = (k_vicap_mclk_id)sensor_mclk->id;
+        mclk.mclk_div = sensor_mclk->mclk_div;
+        mclk.mclk_sel = (k_vicap_mclk_sel)sensor_mclk->mclk_sel;
+
+        if(setting[idx].mclk_setting_en) {
+            mclk.mclk_en = 1;
+        } else {
+            mclk.mclk_en = 0;
+        }
+        vicap_set_mclk(&mclk);
+    }
+}
+
 k_s32 sensor_reg_read(k_sensor_i2c_info *i2c_info, k_u16 reg_addr, k_u16 *buf)
 {
     struct rt_i2c_msg msg[2];

@@ -12,7 +12,7 @@ LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR)/src/ \
 			   -I$(RTSMART_SRC_DIR)/kernel/bsp/maix3/board/interdrv/gpio
 
 obj-y := src/sensor_comm.o src/sensor_dev.o
-obj-$(CONFIG_MPP_ENABLE_SENSOR_GC2093) += src/gc2093.o
+obj-$(CONFIG_MPP_ENABLE_SENSOR_GC2093) += src/gc2093/gc2093.o
 
 OBJS = $(obj-y)
 

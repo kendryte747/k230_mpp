@@ -75,7 +75,7 @@ typedef struct {
 
 typedef struct {
     struct rt_i2c_bus_device *i2c_bus;
-    char i2c_name[8];
+    char i2c_name[16];
     k_u16 slave_addr;
     k_sensor_reg_bits reg_addr_size;
     k_sensor_reg_bits reg_val_size;
@@ -108,11 +108,12 @@ struct sensor_driver_dev {
     k_bool init_flag;                   /**< if set, indicated the driver have init the device */
     k_vicap_mirror_mode mirror_setting; /**< sensor mirrot setting, should apply when init sensor */
 
-    k_sensor_ae_info current_ae_info;
     k_sensor_mode current_sensor_mode;
 };
 
 extern struct sensor_driver_dev g_sensor_drv[3];
+
+void sensor_set_mclk(const k_sensor_mclk_setting *setting);
 
 k_s32 sensor_reg_read(k_sensor_i2c_info *i2c_info, k_u16 reg_addr, k_u16 *buf);
 k_s32 sensor_reg_write(k_sensor_i2c_info *i2c_info, k_u16 reg_addr, k_u16 reg_val);

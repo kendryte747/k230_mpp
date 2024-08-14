@@ -33,6 +33,8 @@
 #include "sensor_dev.h"
 #include "k_sensor_comm.h"
 
+#include "k_autoconf_comm.h"
+
 struct sensor_driver_dev g_sensor_drv[3];
 
 static sensor_probe_impl sensor_probes[] = {
@@ -172,12 +174,13 @@ k_s32 sensor_device_init(void) {
 
   for (size_t i = 0; i < (sizeof(probe_cfg) / sizeof(probe_cfg[0])); i++) {
     struct k_sensor_probe_cfg *cfg = &probe_cfg[i];
+
     struct sensor_driver_dev *dev = &g_sensor_drv[cfg->csi_num];
 
     for(int j = 0; sensor_probes[j]; j++) {
         if(0x00 == sensor_probes[j](cfg, dev)) {
             sensor_drv_dev_init(dev);
-            rt_kprintf("Find sensor(%s) on csi%d\n", dev->sensor_name, cfg->csi_num);
+            rt_kprintf("find sensor(%s) on csi%d\n", dev->sensor_name, cfg->csi_num);
             break;
         }
     }

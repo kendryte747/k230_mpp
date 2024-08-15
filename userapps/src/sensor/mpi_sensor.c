@@ -73,6 +73,38 @@ static const k_vicap_sensor_type_map sensor_type_map_list[] = {
 };
 
 static const k_vicap_sensor_info sensor_info_list[] = {
+#if defined (CONFIG_MPP_ENABLE_SENSOR_OV5647)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    {
+        "ov5647_csi2",
+        // "ov5647-1920x1080",
+        1920,
+        1080,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_TRUE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        OV_OV5647_MIPI_1920X1080_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
+
+#endif // CONFIG_MPP_ENABLE_SENSOR_OV5647
+
 #if defined (CONFIG_MPP_ENABLE_SENSOR_GC2093)
 // #if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
 //     {

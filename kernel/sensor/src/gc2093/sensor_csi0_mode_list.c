@@ -257,7 +257,7 @@ static k_sensor_ae_info sensor_csi0_ae_info[] = {
     },
 };
 
-static const k_sensor_mode sensor_csi0_mode_info[] = {
+static const k_sensor_mode sensor_csi0_mode_list[] = {
     {
         .index = 0,
         .sensor_type = GC2093_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR,

@@ -41,6 +41,9 @@ static sensor_probe_impl sensor_probes[] = {
 #ifdef CONFIG_MPP_ENABLE_SENSOR_GC2093
     sensor_gc2093_probe,
 #endif // CONFIG_MPP_ENABLE_SENSOR_GC2093
+#ifdef CONFIG_MPP_ENABLE_SENSOR_OV5647
+    sensor_ov5647_probe,
+#endif // CONFIG_MPP_ENABLE_SENSOR_OV5647
     0, // end
 };
 

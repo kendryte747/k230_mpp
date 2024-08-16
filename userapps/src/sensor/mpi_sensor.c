@@ -76,7 +76,7 @@ static const k_vicap_sensor_type_map sensor_type_map_list[] = {
 
 static const k_vicap_sensor_info sensor_info_list[] = {
 #if defined (CONFIG_MPP_ENABLE_SENSOR_OV5647)
-#if 0 //defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
     {
         "ov5647_csi0",
         2592,
@@ -164,7 +164,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
     },
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_0
 
-#if 0 //defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
     {
         "ov5647_csi1",
         2592,

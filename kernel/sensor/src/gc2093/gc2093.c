@@ -247,7 +247,7 @@ static k_s32 sensor_get_mode_impl(void *ctx, k_sensor_mode *mode)
     }
 
     for(k_u32 i = 0; i < dev->mode_count; i++) {
-        if(dev->sensor_mode_list[i].sensor_type == type) {
+        if(type == dev->sensor_mode_list[i].sensor_type) {
             memcpy(current_mode, &dev->sensor_mode_list[i], sizeof(k_sensor_mode));
             memcpy(&current_mode->ae_info, current_mode->sensor_ae_info, sizeof(k_sensor_ae_info));
 

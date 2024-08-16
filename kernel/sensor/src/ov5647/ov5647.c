@@ -154,14 +154,14 @@ static k_s32 sensor_init_impl(void *ctx, k_sensor_mode mode)
     struct sensor_driver_dev *dev = ctx;
     k_sensor_mode *current_mode = &dev->current_sensor_mode;
 
-    k_vicap_sensor_type type = mode.sensor_type;
+    const k_vicap_sensor_type type = mode.sensor_type;
 
     pr_info("%s enter, sensor_type:%d %s\n", __func__, type, dev->sensor_name);
 
     memset(current_mode, 0, sizeof(k_sensor_mode));
 
     for(k_u32 i = 0; i < dev->mode_count; i++) {
-        if(dev->sensor_mode_list[i].sensor_type == type) {
+        if(type == dev->sensor_mode_list[i].sensor_type) {
             memcpy(current_mode, &dev->sensor_mode_list[i], sizeof(k_sensor_mode));
             memcpy(&current_mode->ae_info, current_mode->sensor_ae_info, sizeof(k_sensor_ae_info));
             break;
@@ -181,16 +181,17 @@ static k_s32 sensor_init_impl(void *ctx, k_sensor_mode mode)
     ret = sensor_reg_write(&dev->i2c_info, OV5647_REG_MIPI_CTRL14, channel_id | (0 << 6));
 
     // set mirror
+    int set_mirror_reg = 1;
+
     k_sensor_reg sensor_mirror_reg[] = {
         {0x3820, 0x00},
         {0x3821, 0x00},
         {REG_NULL, 0x00},
     };
+
     switch(dev->mirror_setting.mirror) {
         case VICAP_MIRROR_NONE: {
-            sensor_mirror_reg[0].val = 0x0;
-            sensor_mirror_reg[1].val = 0x0;
-            current_mode->bayer_pattern = BAYER_PAT_GBRG;
+            set_mirror_reg = 0;
         } break;
         case VICAP_MIRROR_HOR: {
             sensor_mirror_reg[0].val = 0x0;
@@ -211,9 +212,28 @@ static k_s32 sensor_init_impl(void *ctx, k_sensor_mode mode)
             pr_err("%s, not support mirror setting %d\n", __func__, dev->mirror_setting.mirror);
         } break;
     }
+
     // write sensor reg 
     ret = sensor_reg_list_write(&dev->i2c_info, current_mode->reg_list);
-    ret |= sensor_reg_list_write(&dev->i2c_info, sensor_mirror_reg);
+
+    // write mirror reg
+    if(set_mirror_reg) {
+        k_u16 flip = 0;
+        k_u16 mirror_reg = 0;
+        k_u32 width = current_mode->size.width;
+        k_u32 height = current_mode->size.height;
+
+        if(((1920 == width) || (2592 == width)) && ((1080 == height) || (1944 == height))) {
+            /* do nothing. */
+        } else {
+            ret = sensor_reg_read(&dev->i2c_info, 0x3820, &flip);
+            ret = sensor_reg_read(&dev->i2c_info, 0x3821, &mirror_reg);
+
+            sensor_mirror_reg[0].val = sensor_mirror_reg[0].val | (flip & 0x1);
+            sensor_mirror_reg[1].val = sensor_mirror_reg[1].val | (mirror_reg & 0x1);
+        }
+        ret |= sensor_reg_list_write(&dev->i2c_info, sensor_mirror_reg);
+    }
 
     current_mode->sensor_again = 0;
     current_mode->et_line = 0;
@@ -263,18 +283,18 @@ static k_s32 sensor_get_chip_id_impl(void *ctx, k_u32 *chip_id)
 static k_s32 sensor_get_mode_impl(void *ctx, k_sensor_mode *mode)
 {
     struct sensor_driver_dev *dev = ctx;
-    k_vicap_sensor_type type = mode->sensor_type;
+    const k_vicap_sensor_type type = mode->sensor_type;
     k_sensor_mode *current_mode = &dev->current_sensor_mode;
 
     pr_info("%s enter, sensor_type(%d) %s\n", __func__, mode->sensor_type, dev->sensor_name);
 
-    if(current_mode->sensor_type == type) {
+    if(type == current_mode->sensor_type) {
         memcpy(mode, current_mode, sizeof(k_sensor_mode));
         return 0;
     }
 
     for(k_u32 i = 0; i < dev->mode_count; i++) {
-        if(dev->sensor_mode_list[i].sensor_type == type) {
+        if(type == dev->sensor_mode_list[i].sensor_type) {
             memcpy(current_mode, &dev->sensor_mode_list[i], sizeof(k_sensor_mode));
             memcpy(&current_mode->ae_info, current_mode->sensor_ae_info, sizeof(k_sensor_ae_info));
 

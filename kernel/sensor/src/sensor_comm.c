@@ -787,6 +787,36 @@ k_s32 sensor_priv_ioctl(struct sensor_driver_dev *dev, k_u32 cmd, void *args)
             }
             break;
         }
+        case KD_IOC_SENSOR_G_CSI_DEV_NAME :
+        {
+            int csi;
+            char name[SENSOR_NAME_MAX_LEN + 1];
+
+            ret = 0;
+            
+            if ((sizeof(name)) != lwp_get_from_user(&name[0], args, sizeof(name))){
+                rt_kprintf("%s:%d lwp_get_from_user err\n", __func__, __LINE__);
+                return -1;
+            }
+
+            csi = name[0];
+            if(csi > (sizeof(g_sensor_drv) / sizeof(g_sensor_drv[0]))) {
+                rt_kprintf("%s:%d csi%d not support\n", __func__, __LINE__, csi);
+                return -1;
+            }
+
+            if(NULL == g_sensor_drv[csi].sensor_mode_list) {
+                rt_kprintf("%s:%d csi%d no sensor\n", __func__, __LINE__, csi);
+                return -1;
+            }
+            strncpy(&name[1], g_sensor_drv[csi].sensor_name, SENSOR_NAME_MAX_LEN);
+
+            if (SENSOR_NAME_MAX_LEN != lwp_put_to_user(args, &name[1], SENSOR_NAME_MAX_LEN)){
+                rt_kprintf("%s:%d lwp_put_to_user err\n", __func__, __LINE__);
+                return -1;
+            }
+            break;
+        }
     	default:
         {
             rt_kprintf("unsupported command 0x%08x\n", cmd);

@@ -16,7 +16,7 @@ enum class KdMediaVideoType {
 
 struct KdMediaInputConfig {
     bool video_valid = false;
-    k_vicap_sensor_type sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
+    k_vicap_sensor_type sensor_type = IMX335_MIPI_CSI0_2LANE_1920X1080_30FPS_12BIT_LINEAR;
     int sensor_num = 1;
     KdMediaVideoType video_type = KdMediaVideoType::kVideoTypeH265;
     int venc_width = 1280;

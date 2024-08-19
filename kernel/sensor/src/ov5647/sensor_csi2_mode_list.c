@@ -279,7 +279,7 @@ static k_sensor_ae_info sensor_csi2_ae_info[] = {
 static const k_sensor_mode sensor_csi2_mode_list[] = {
     {
         .index = 0,
-        .sensor_type = OV_OV5647_MIPI_CSI2_2592x1944_10FPS_10BIT_LINEAR,
+        .sensor_type = OV5647_MIPI_CSI2_2592x1944_10FPS_10BIT_LINEAR,
         .size = {
             .bounds_width = 2592,
             .bounds_height = 1944,
@@ -307,7 +307,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
     },
     {
         .index = 1,
-        .sensor_type = OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
+        .sensor_type = OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
         .size = {
             .bounds_width = 1920,
             .bounds_height = 1080,
@@ -335,7 +335,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
     },
     {
         .index = 2,
-        .sensor_type = OV_OV5647_MIPI_CSI2_1280X960_45FPS_10BIT_LINEAR,
+        .sensor_type = OV5647_MIPI_CSI2_1280X960_45FPS_10BIT_LINEAR,
         .size = {
             .bounds_width = 1280,
             .bounds_height = 960,
@@ -363,7 +363,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
     },
     {
         .index = 3,
-        .sensor_type = OV_OV5647_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR,
+        .sensor_type = OV5647_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR,
         .size = {
             .bounds_width = 1280,
             .bounds_height = 720,
@@ -391,7 +391,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
     },
     {
         .index = 4,
-        .sensor_type = OV_OV5647_MIPI_CSI2_640x480_90FPS_10BIT_LINEAR,
+        .sensor_type = OV5647_MIPI_CSI2_640x480_90FPS_10BIT_LINEAR,
         .size = {
             .bounds_width = 640,
             .bounds_height = 480,

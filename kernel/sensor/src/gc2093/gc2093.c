@@ -54,7 +54,19 @@
 /* include sensor register configure */
 #include "sensor_reg_table.c"
 
-static k_s32 _gc2093_sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 *chip_id)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    #include "sensor_csi0_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+    #include "sensor_csi1_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    #include "sensor_csi2_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
+
+static k_s32 _sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 *chip_id)
 {
     k_s32 ret = 0;
     k_u16 id_high = 0;
@@ -80,6 +92,7 @@ static k_s32 _gc2093_sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 
 
     if(chip_id) {
         *chip_id = (id_high << 8) | id_low;
+        pr_info("%s chip id 0x%x\n", __func__, *chip_id);
     }
 
     return ret;
@@ -223,7 +236,7 @@ static k_s32 sensor_get_chip_id_impl(void *ctx, k_u32 *chip_id)
 
     pr_info("%s enter, %s\n", __func__, dev->sensor_name);
 
-    ret = _gc2093_sensor_read_chip_id_r(dev, chip_id);
+    ret = _sensor_read_chip_id_r(dev, chip_id);
 
     if(chip_id && (GC2093_CHIP_ID != *chip_id)) {
         ret = -1;
@@ -776,18 +789,6 @@ static const k_sensor_function sensor_functions = {
     .sensor_mirror_set = sensor_mirror_set_impl,
 };
 /*****************************************************************************/
-#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
-    #include "sensor_csi0_mode_list.c"
-#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
-
-#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
-    #include "sensor_csi1_mode_list.c"
-#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
-
-#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
-    #include "sensor_csi2_mode_list.c"
-#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
-
 k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_dev *dev)
 {
     k_s32 ret = 0;
@@ -829,10 +830,6 @@ k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     dev->pwd_gpio = cfg->pwd_gpio;
     dev->reset_gpio = cfg->reset_gpio;
 
-    /** NEW SENSOR MODIFY START */
-    dev->i2c_info.reg_addr_size = SENSOR_REG_VALUE_16BIT;
-    dev->i2c_info.reg_val_size = SENSOR_REG_VALUE_8BIT;
-    /** NEW SENSOR MODIFY END */
     if(NULL == (dev->i2c_info.i2c_bus = rt_i2c_bus_device_find(cfg->i2c_name))) {
         rt_kprintf("Can't find %s\n", cfg->i2c_name);
         goto _on_failed;
@@ -850,13 +847,15 @@ k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     _sensor_power_state_set(dev, 1);
 
     /* probe different slave address */
+    dev->i2c_info.reg_addr_size = SENSOR_REG_VALUE_16BIT;
+    dev->i2c_info.reg_val_size = SENSOR_REG_VALUE_8BIT;
     dev->i2c_info.slave_addr = (0xFC >> 1); /* TYS-K230-200W-V2 */
-    if((0x00 != _gc2093_sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
+    if((0x00 != _sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
         _sensor_power_state_set(dev, 1);
 
         dev->i2c_info.slave_addr = (0x6E >> 1); /* TYS-2093-V31 */
-        if((0x00 != _gc2093_sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
-            rt_kprintf("gc2093 read chip id failed, 0x%x\n", chip_id);
+        if((0x00 != _sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
+            rt_kprintf("gc2093 read chip id failed, 0x%04x\n", chip_id);
             goto _on_failed;
         }
     }

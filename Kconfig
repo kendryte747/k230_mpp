@@ -100,6 +100,15 @@ menu "MPP Configuration"
                     depends on MPP_ENABLE_CSI_DEV_2
             endif
 
+        menuconfig MPP_ENABLE_SENSOR_IMX335
+            bool "Enable IMX335 - Only support CSI0"
+
+            if MPP_ENABLE_SENSOR_IMX335
+                config MPP_SENSOR_IMX335_ON_CSI0_USE_CHIP_CLK
+                    bool "IMX335 On CSI0 Use CHIP MCLK"
+                    default n
+                    depends on MPP_ENABLE_CSI_DEV_0
+            endif
     endmenu
 
     menu "Dsiplay Configuration"

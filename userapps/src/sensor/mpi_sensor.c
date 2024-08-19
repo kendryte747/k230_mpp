@@ -61,20 +61,76 @@ static const k_vicap_sensor_type_map sensor_type_map_list[] = {
     },
     {
         "cam-ov5647-mode0",
-        OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR
+        OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR
     },
     {
         "cam-ov5647-mode1",
-        OV_OV5647_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR
+        OV5647_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR
     },
     {
         "cam-ov5647-mode2",
-        OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR
+        OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR
     }
 #endif
 };
 
 static const k_vicap_sensor_info sensor_info_list[] = {
+#if defined (CONFIG_MPP_ENABLE_SENSOR_IMX335)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    {
+        "imx335",
+        1920,
+        1080,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW12,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        IMX335_MIPI_CSI0_2LANE_1920X1080_30FPS_12BIT_LINEAR
+    },
+    {
+        "imx335",
+        2592,
+        1944,
+        VICAP_CSI0,
+        VICAP_MIPI_4LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW12,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        IMX335_MIPI_CSI0_4LANE_2592X1944_30FPS_12BIT_LINEAR,
+    },
+    {
+        "imx335",
+        2592,
+        1944,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW12,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        IMX335_MIPI_CSI0_2LANE_2592X1944_30FPS_12BIT_LINEAR
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+#endif // CONFIG_MPP_ENABLE_SENSOR_IMX335
+
 #if defined (CONFIG_MPP_ENABLE_SENSOR_OV5647)
 #if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
     {
@@ -92,7 +148,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         15,
-        OV_OV5647_MIPI_CSI0_2592x1944_10FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI0_2592x1944_10FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi0",
@@ -109,7 +165,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         30,
-        OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi0",
@@ -126,7 +182,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         45,
-        OV_OV5647_MIPI_CSI0_1280X960_45FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI0_1280X960_45FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi0",
@@ -143,7 +199,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         60,
-        OV_OV5647_MIPI_CSI0_1280X720_60FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI0_1280X720_60FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi0",
@@ -160,7 +216,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         90,
-        OV_OV5647_MIPI_CSI0_640x480_90FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI0_640x480_90FPS_10BIT_LINEAR,
     },
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_0
 
@@ -180,7 +236,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         15,
-        OV_OV5647_MIPI_CSI1_2592x1944_10FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI1_2592x1944_10FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi1",
@@ -197,7 +253,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         30,
-        OV_OV5647_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi1",
@@ -214,7 +270,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         45,
-        OV_OV5647_MIPI_CSI1_1280X960_45FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI1_1280X960_45FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi1",
@@ -231,7 +287,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         60,
-        OV_OV5647_MIPI_CSI1_1280X720_60FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI1_1280X720_60FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi1",
@@ -248,7 +304,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         90,
-        OV_OV5647_MIPI_CSI1_640x480_90FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI1_640x480_90FPS_10BIT_LINEAR,
     },
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_1
 
@@ -268,7 +324,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         15,
-        OV_OV5647_MIPI_CSI2_2592x1944_10FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI2_2592x1944_10FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi2",
@@ -285,7 +341,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         30,
-        OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi2",
@@ -302,7 +358,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         45,
-        OV_OV5647_MIPI_CSI2_1280X960_45FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI2_1280X960_45FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi2",
@@ -319,7 +375,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         60,
-        OV_OV5647_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR,
     },
     {
         "ov5647_csi2",
@@ -336,7 +392,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
         90,
-        OV_OV5647_MIPI_CSI2_640x480_90FPS_10BIT_LINEAR,
+        OV5647_MIPI_CSI2_640x480_90FPS_10BIT_LINEAR,
     },
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 

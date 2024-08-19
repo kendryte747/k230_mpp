@@ -298,7 +298,18 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI0_USE_CHIP_CLK)
-        #error "TODO"
+        .reg_list = ov5647_2592x1944_10bpp,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK0,
+                .setting.mclk_sel = SENSOR_PLL0_CLK_DIV4,
+                .setting.mclk_div = 16,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .sensor_ae_info = &sensor_csi0_ae_info[0],
 #else
         .reg_list = ov5647_2592x1944_10bpp,
         .mclk_setting = {{K_FALSE}, {K_FALSE}, {K_FALSE}},
@@ -326,7 +337,18 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI0_USE_CHIP_CLK)
-        #error "TODO"
+        .reg_list = ov5647_mipi2lane_1080p_30fps_linear,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK0,
+                .setting.mclk_sel = SENSOR_PLL0_CLK_DIV4,
+                .setting.mclk_div = 16,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .sensor_ae_info = &sensor_csi0_ae_info[1],
 #else
         .reg_list = ov5647_mipi2lane_1080p_30fps_linear,
         .mclk_setting = {{K_FALSE}, {K_FALSE}, {K_FALSE}},
@@ -354,7 +376,18 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI0_USE_CHIP_CLK)
-        #error "TODO"
+        .reg_list = ov5647_1280x960p45_10bpp,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK0,
+                .setting.mclk_sel = SENSOR_PLL0_CLK_DIV4,
+                .setting.mclk_div = 16,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .sensor_ae_info = &sensor_csi0_ae_info[2],
 #else
         .reg_list = ov5647_1280x960p45_10bpp,
         .mclk_setting = {{K_FALSE}, {K_FALSE}, {K_FALSE}},
@@ -382,7 +415,18 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI0_USE_CHIP_CLK)
-        #error "TODO"
+        .reg_list = mode_1280x720_60fps,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK0,
+                .setting.mclk_sel = SENSOR_PLL0_CLK_DIV4,
+                .setting.mclk_div = 16,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .sensor_ae_info = &sensor_csi0_ae_info[3],
 #else
         .reg_list = mode_1280x720_60fps,
         .mclk_setting = {{K_FALSE}, {K_FALSE}, {K_FALSE}},
@@ -410,7 +454,18 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI0_USE_CHIP_CLK)
-        #error "TODO"
+        .reg_list = ov5647_640x480_10bpp,
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = SENSOR_MCLK0,
+                .setting.mclk_sel = SENSOR_PLL0_CLK_DIV4,
+                .setting.mclk_div = 16,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .sensor_ae_info = &sensor_csi0_ae_info[4],
 #else
         .reg_list = ov5647_640x480_10bpp,
         .mclk_setting = {{K_FALSE}, {K_FALSE}, {K_FALSE}},

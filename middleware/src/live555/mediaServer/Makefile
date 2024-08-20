@@ -41,6 +41,7 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 all:$(BIN)
 	#@-rm -f *.o
 	@echo "${PWD}/Makefile all"
+	@mv $(BIN) $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)
 
 $(OBJS): %.o : %.c
 	@echo CC $@
@@ -52,7 +53,7 @@ $(CPP_OBJS): %.o : %.cpp
 
 $(BIN): $(OBJS) $(CPP_OBJS)
 	@echo LD $@
-	@$(CPP) -o $(BIN)  $(LINKFLAG) -Wl,--whole-archive -Wl,--no-whole-archive -n --static $^ -L$(LIBPATH) $(CXX_FLAGS) $(LOCAL_LIBS) $(LOCAL_LIBS_PATH) -Wl,--start-group $(LIBS) -Wl,--end-group
+	@$(CPP) -o $(BIN)  $(LINKFLAG) -Wl,--whole-archive -Wl,--no-whole-archive -n --static $^ -L$(LIBPATH) -L$(MPP_MIDDLEWARE_LIB_INSTALL_PATH) $(CXX_FLAGS) $(LOCAL_LIBS) $(LOCAL_LIBS_PATH) -Wl,--start-group $(LIBS) -Wl,--end-group
 
 clean:
 	echo "${PWD}/Makefile clean"

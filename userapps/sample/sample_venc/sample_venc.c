@@ -908,7 +908,7 @@ void sample_venc_usage(char *sPrgNm)
 
 int main(int argc, char *argv[])
 {
-    k_vicap_sensor_type sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
+    k_vicap_sensor_type sensor_type = GC2093_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
     pthread_t exit_thread_handle;
     int case_index = 0;
     int ret = 0;

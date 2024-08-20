@@ -1,6 +1,9 @@
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
+$(shell if [ ! -e $(MPP_MIDDLEWARE_LIB_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_LIB_INSTALL_PATH); fi)
+$(shell if [ ! -e $(MPP_MIDDLEWARE_ELF_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_ELF_INSTALL_PATH); fi)
+
 AR = riscv64-unknown-linux-musl-ar
 ARFLAGS = -rc
 
@@ -16,5 +19,7 @@ all:
 clean:
 	echo "${PWD}/Makefile clean"
 	@cd $(MIDDLEWARE_SRC); make clean
+	@rm -rf $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/*.*
+	@rm -rf $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)/*.*
 
 .PHONY: all clean

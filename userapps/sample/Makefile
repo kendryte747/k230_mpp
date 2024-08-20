@@ -18,7 +18,7 @@ all:
 	@cd sample_vdss; make || exit 1
 	@cd sample_dpu; make || exit 1
 	@cd sample_dma_bind; make || exit 1
-	@cd sample_vicap; make || exit 1
+	# @cd sample_vicap; make || exit 1
 	@cd sample_gpio; make || exit 1
 	@cd sample_mcm; make || exit 1
 	@cd sample_adc; make || exit 1
@@ -63,7 +63,7 @@ clean:
 	@cd sample_vdss; make clean
 	@cd sample_dpu; make clean
 	@cd sample_dma_bind; make clean
-	@cd sample_vicap; make clean
+	# @cd sample_vicap; make clean
 	@cd sample_mcm; make clean
 	@cd sample_gpio; make clean
 	@cd sample_adc; make clean

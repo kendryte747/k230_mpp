@@ -32,6 +32,7 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 all:$(BIN)
 	#@-rm -f *.o
 	@echo "${PWD}/Makefile all"
+	@mv $(BIN) $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)
 
 $(OBJS): %.o : %.c
 	@echo CC $@

@@ -271,7 +271,7 @@ int sample_vivcap_init( void )
 {
     k_s32 ret = 0;
     // sensor_type = OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
-    sensor_type = OV_OV5647_MIPI_1920X1080_30FPS_10BIT_LINEAR;
+    sensor_type = GC2093_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
     vicap_dev = VICAP_DEV_ID_0;
 
     memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));

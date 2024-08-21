@@ -131,7 +131,7 @@ static k_s32 _sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 *chip_i
 }
 
 /* Sensor functions **********************************************************/
-static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on)
+static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on, k_u32 delay)
 {
     const k_s32 pwd_gpio = dev->pwd_gpio;
     const k_s32 reset_gpio = dev->reset_gpio;
@@ -151,9 +151,9 @@ static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on)
 
     if (on) {
         kd_pin_write(reset_gpio, GPIO_PV_HIGH);
-        rt_thread_mdelay(10);
+        rt_thread_mdelay(delay);
         kd_pin_write(reset_gpio, GPIO_PV_LOW);
-        rt_thread_mdelay(10);
+        rt_thread_mdelay(delay);
         kd_pin_write(reset_gpio, GPIO_PV_HIGH);
     } else {
         kd_pin_write(reset_gpio, GPIO_PV_LOW);
@@ -170,7 +170,7 @@ static k_s32 sensor_power_impl(void *ctx, k_s32 on)
 
     pr_info("%s enter, %s\n", __func__, dev->sensor_name);
 
-    _sensor_power_state_set(dev, on);
+    _sensor_power_state_set(dev, on, 100);
     dev->init_flag = on;
 
     return ret;
@@ -743,13 +743,13 @@ k_s32 sensor_imx335_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     // strncpy(dev->sensor_name, "imx335_csi0", sizeof(dev->sensor_name));
     strncpy(dev->sensor_name, "imx335", sizeof(dev->sensor_name));
 
-    _sensor_power_state_set(dev, 1);
+    _sensor_power_state_set(dev, 1, 1);
 
     dev->i2c_info.reg_addr_size = SENSOR_REG_VALUE_16BIT;
     dev->i2c_info.reg_val_size = SENSOR_REG_VALUE_8BIT;
     dev->i2c_info.slave_addr = 0x1A; /* TYS-335-FPC-V1 */
     if((0x00 != _sensor_read_chip_id_r(dev, &chip_id))/* || (IMX355_CHIP_ID != chip_id) */) {
-        rt_kprintf("imx335 read chip id failed, 0x%04x\n", chip_id);
+        // rt_kprintf("imx335 read chip id failed, 0x%04x\n", chip_id);
         goto _on_failed;
     }
 

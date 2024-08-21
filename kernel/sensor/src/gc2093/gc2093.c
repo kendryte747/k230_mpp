@@ -99,7 +99,7 @@ static k_s32 _sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 *chip_i
 }
 
 /* Sensor functions **********************************************************/
-static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on)
+static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on, k_u32 delay)
 {
     const k_s32 pwd_gpio = dev->pwd_gpio;
     const k_s32 reset_gpio = dev->reset_gpio;
@@ -110,13 +110,18 @@ static int _sensor_power_state_set(struct sensor_driver_dev *dev, k_s32 on)
         return 0;
     }
 
+    if(-1 != pwd_gpio) {
+        kd_pin_mode(pwd_gpio, GPIO_DM_OUTPUT);
+        kd_pin_write(pwd_gpio, GPIO_PV_LOW);
+    }
+
     kd_pin_mode(reset_gpio, GPIO_DM_OUTPUT);
 
     if (on) {
         kd_pin_write(reset_gpio, GPIO_PV_HIGH);
-        rt_thread_mdelay(100);
+        rt_thread_mdelay(delay);
         kd_pin_write(reset_gpio, GPIO_PV_LOW);
-        rt_thread_mdelay(100);
+        rt_thread_mdelay(delay);
         kd_pin_write(reset_gpio, GPIO_PV_HIGH);
     } else {
         kd_pin_write(reset_gpio, GPIO_PV_LOW);
@@ -137,7 +142,7 @@ static k_s32 sensor_power_impl(void *ctx, k_s32 on)
         ret = sensor_reg_write(&dev->i2c_info, 0x03fe, 0xf0);
     }
 
-    _sensor_power_state_set(dev, on);
+    _sensor_power_state_set(dev, on, 100);
     dev->init_flag = on;
 
     return ret;
@@ -844,18 +849,18 @@ k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     // snprintf(dev->sensor_name, sizeof(dev->sensor_name), "gc2093_csi%d", cfg->csi_num);
     strncpy(dev->sensor_name, "gc2093", sizeof(dev->sensor_name));
 
-    _sensor_power_state_set(dev, 1);
+    _sensor_power_state_set(dev, 1, 1);
 
     /* probe different slave address */
     dev->i2c_info.reg_addr_size = SENSOR_REG_VALUE_16BIT;
     dev->i2c_info.reg_val_size = SENSOR_REG_VALUE_8BIT;
     dev->i2c_info.slave_addr = (0xFC >> 1); /* TYS-K230-200W-V2 */
     if((0x00 != _sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
-        _sensor_power_state_set(dev, 1);
+        _sensor_power_state_set(dev, 1, 1);
 
         dev->i2c_info.slave_addr = (0x6E >> 1); /* TYS-2093-V31 */
         if((0x00 != _sensor_read_chip_id_r(dev, &chip_id)) || (GC2093_CHIP_ID != chip_id)) {
-            rt_kprintf("gc2093 read chip id failed, 0x%04x\n", chip_id);
+            // rt_kprintf("gc2093 read chip id failed, 0x%04x\n", chip_id);
             goto _on_failed;
         }
     }

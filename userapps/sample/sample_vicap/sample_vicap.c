@@ -1027,6 +1027,21 @@ chn_parse:
                             device_obj[cur_dev].sensor_type =  GC2053_MIPI_CSI2_1280X720_60FPS_10BIT_LINEAR;
                             break;
                         }
+                        case 56:
+                        {
+                            device_obj[cur_dev].sensor_type =  GC2093_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR;
+                            break;
+                        }
+                        case 57:
+                        {
+                            device_obj[cur_dev].sensor_type =  GC2093_MIPI_CSI1_1920X1080_60FPS_10BIT_LINEAR;
+                            break;
+                        }
+                        case 58:
+                        {
+                            device_obj[cur_dev].sensor_type =  GC2093_MIPI_CSI1_1280X720_90FPS_10BIT_LINEAR;
+                            break;
+                        }
                         default:
                         {
                             printf("unsupport sensor type.\n");

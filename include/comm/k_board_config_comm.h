@@ -40,6 +40,10 @@
 extern "C" {
 #endif /* End of #ifdef __cplusplus */
 
+//通过排线外接sensor
+#define CONNECTOR_EXTERNAL_BOARD_SENOSR                 0
+//直接插到板子上，不需要外接排线
+#define CONNECTOR_ON_BOARD_SENOSR                       1
 
 // sip gpio board config
 #if defined(CONFIG_BOARD_K230D)
@@ -66,9 +70,17 @@ extern "C" {
 #define VICAP_GC2053_RST_GPIO                           (0)
 
 #define GC2093_CSI0_IIC "i2c3"
-#define VICAP_GC2093_RST_GPIO                           (0)
+#define GC2093_SLAVE_ADDR   0x37
+#define VICAP_GC2093_RST_GPIO                           (20)
 
 
+#define GC2093_CSI1_IIC         "i2c3"
+#define GC2093_CSI1_SLAVE_ADDR   0x27
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c1"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (24)
 
 #define LT9611_RESET_GPIO   42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -98,7 +110,20 @@ extern "C" {
 #define VICAP_GC2053_RST_GPIO                           (0)
 
 #define GC2093_CSI0_IIC "i2c3"
+#define GC2093_SLAVE_ADDR   0x37
 #define VICAP_GC2093_RST_GPIO                           (0)
+
+#define GC2093_CSI1_IIC         "i2c3"
+#define GC2093_CSI1_SLAVE_ADDR   0x27
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 
 #define LT9611_RESET_GPIO   42
@@ -129,8 +154,21 @@ extern "C" {
 #define GC2053_CSI0_IIC "i2c3"
 #define VICAP_GC2053_RST_GPIO                           (0)
 
-#define GC2093_CSI0_IIC "i2c3"
+#define GC2093_CSI0_IIC     "i2c3"
+#define GC2093_SLAVE_ADDR   0x37 //0x37
 #define VICAP_GC2093_RST_GPIO                           (0)
+
+#define GC2093_CSI1_IIC         "i2c0"
+#define GC2093_CSI1_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c1"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (24)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_ON_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO   42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -162,8 +200,20 @@ extern "C" {
 
 #define GC2093_CSI0_IIC "i2c3"
 #define VICAP_GC2093_RST_GPIO                           (0)
+#define GC2093_SLAVE_ADDR   0x37
 
 
+#define GC2093_CSI1_IIC         "i2c0"
+#define GC2093_CSI1_SLAVE_ADDR   0x3f
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO   42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -198,10 +248,21 @@ extern "C" {
 #define GC2053_CSI0_IIC "i2c3"
 #define VICAP_GC2053_RST_GPIO                           (0)
 
-#define GC2093_CSI0_IIC "i2c3"
+#define GC2093_CSI0_IIC "i2c4"
+#define GC2093_SLAVE_ADDR   0x7e //0x37 //0x3f
 #define VICAP_GC2093_RST_GPIO                           (0)
 
+#define GC2093_CSI1_IIC         "i2c0"
+#define GC2093_CSI1_SLAVE_ADDR   0x37//0x3f
+#define GC2093_CSI1_RST_GPIO                            (23)
 
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO   42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -229,13 +290,27 @@ extern "C" {
 #define GC2053_CSI0_IIC "i2c4"
 #define VICAP_GC2053_RST_GPIO                           (62)
 
-#define GC2093_CSI0_IIC "i2c4"
-#define VICAP_GC2093_RST_GPIO                           (62)
+#define GC2093_CSI0_IIC "i2c0" //"i2c4"
+#define GC2093_SLAVE_ADDR   0x37 //0x37
+#define VICAP_GC2093_RST_GPIO                           (45)
 
+#define GC2093_CSI1_IIC         "i2c1"
+#define GC2093_CSI1_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI1_RST_GPIO                            (45)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                                 CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                                 CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                                 CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO                               22
 #define LT9611_SLAVE_ADDR                               0x3b
 #define LT9611_I2C_BUS                                  "i2c3"
+
+
 
 #elif defined(CONFIG_BOARD_K230_CANMV_V2)
 // usip evb gpio config
@@ -264,8 +339,20 @@ extern "C" {
 #define VICAP_GC2053_RST_GPIO                           (21)
 
 #define GC2093_CSI0_IIC "i2c3"
+#define GC2093_SLAVE_ADDR   0x37
 #define VICAP_GC2093_RST_GPIO                           (0)
 
+#define GC2093_CSI1_IIC         "i2c3"
+#define GC2093_CSI1_SLAVE_ADDR   0x27
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO   24 //42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -298,7 +385,20 @@ extern "C" {
 #define VICAP_GC2053_RST_GPIO                           (21)
 
 #define GC2093_CSI0_IIC "i2c4"
+#define GC2093_SLAVE_ADDR   0x37
 #define VICAP_GC2093_RST_GPIO                           (21)
+
+#define GC2093_CSI1_IIC         "i2c3"
+#define GC2093_CSI1_SLAVE_ADDR   0x27
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO   24 //42
 #define LT9611_SLAVE_ADDR   0x3b
@@ -327,7 +427,20 @@ extern "C" {
 #define VICAP_GC2053_RST_GPIO                           (21)
 
 #define GC2093_CSI0_IIC "i2c3"
+#define GC2093_SLAVE_ADDR   0x37
 #define VICAP_GC2093_RST_GPIO                           (0)
+
+#define GC2093_CSI1_IIC         "i2c3"
+#define GC2093_CSI1_SLAVE_ADDR   0x27
+#define GC2093_CSI1_RST_GPIO                            (23)
+
+#define GC2093_CSI2_IIC         "i2c4"
+#define GC2093_CSI2_SLAVE_ADDR   0x37 //0x3f
+#define GC2093_CSI2_RST_GPIO                            (62)
+
+#define BOARD_CSI0_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI1_CONN                          CONNECTOR_EXTERNAL_BOARD_SENOSR
+#define BOARD_CSI2_CONN                          CONNECTOR_ON_BOARD_SENOSR
 
 #define LT9611_RESET_GPIO                               42
 #define LT9611_SLAVE_ADDR                               0x3b

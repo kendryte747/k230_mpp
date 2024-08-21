@@ -366,6 +366,7 @@ typedef union {
  */
 typedef struct {
     const char *sensor_name;
+    const char *database_name;
     k_u16 width;
     k_u16 height;
     k_vicap_csi_num csi_num;  /**< CSI NUM that the sensor connects to*/

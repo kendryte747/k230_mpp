@@ -846,8 +846,7 @@ k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     sensor_set_mclk(&sensor_mode->mclk_setting[0]);
 
     /** NEW SENSOR MODIFY START */
-    // snprintf(dev->sensor_name, sizeof(dev->sensor_name), "gc2093_csi%d", cfg->csi_num);
-    strncpy(dev->sensor_name, "gc2093", sizeof(dev->sensor_name));
+    snprintf(dev->sensor_name, sizeof(dev->sensor_name), "gc2093_csi%d", cfg->csi_num);
 
     _sensor_power_state_set(dev, 1, 1);
 

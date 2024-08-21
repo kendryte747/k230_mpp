@@ -451,7 +451,7 @@ static void *_test_ai_aenc_file_sysbind(void *arg)
 #endif
 int main(int argc, char const *argv[])
 {
-    k_vicap_sensor_type sensor_type = GC2093_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
+    k_vicap_sensor_type sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
 
 #ifdef ENABLE_MPI
 

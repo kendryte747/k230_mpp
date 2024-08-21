@@ -18,7 +18,7 @@ all:
 	@cd sample_vdss; make || exit 1
 	@cd sample_dpu; make || exit 1
 	@cd sample_dma_bind; make || exit 1
-	# @cd sample_vicap; make || exit 1
+	@cd sample_vicap; make || exit 1
 	@cd sample_gpio; make || exit 1
 	@cd sample_mcm; make || exit 1
 	@cd sample_adc; make || exit 1
@@ -36,9 +36,9 @@ all:
 	@cd sample_vdv; make || exit 1
 	@cd sample_face_ae; make || exit 1
 	@cd sample_face_detect; make || exit 1
-	# @cd fastboot_app; mkdir -p $(FASTBOOT_BUILD_DIR); cd $(FASTBOOT_BUILD_DIR); cmake $(MPP_SRC_DIR)/userapps/sample/fastboot_app;  make && make install;
+	@cd fastboot_app; mkdir -p $(FASTBOOT_BUILD_DIR); cd $(FASTBOOT_BUILD_DIR); cmake $(MPP_SRC_DIR)/userapps/sample/fastboot_app;  make && make install;
 	@cd sample_dpu_vicap; make || exit 1
-	# @cd sample_triple_camera_facedetect; mkdir -p $(TRIPLE_CAMERA_BUILD_DIR); cd $(TRIPLE_CAMERA_BUILD_DIR); cmake $(MPP_SRC_DIR)/userapps/sample/sample_triple_camera_facedetect;  make && make install;
+	@cd sample_triple_camera_facedetect; mkdir -p $(TRIPLE_CAMERA_BUILD_DIR); cd $(TRIPLE_CAMERA_BUILD_DIR); cmake $(MPP_SRC_DIR)/userapps/sample/sample_triple_camera_facedetect;  make && make install;
 	@cd sample_dpu_vo; make || exit 1
 	@cd sample_pwm; make || exit 1
 	@cd sample_pm; make || exit 1
@@ -48,6 +48,8 @@ all:
 	#@cd opencv_camera_test; make || exit 1
 	@cd sample_sensor_otp; make || exit 1
 	@cd sample_eeprom; make || exit 1
+	@$(MAKE) -C sample_i2c_slave
+
 clean:
 	@rm -f elf/*
 	@cd sample_audio; make clean
@@ -63,7 +65,7 @@ clean:
 	@cd sample_vdss; make clean
 	@cd sample_dpu; make clean
 	@cd sample_dma_bind; make clean
-	# @cd sample_vicap; make clean
+	@cd sample_vicap; make clean
 	@cd sample_mcm; make clean
 	@cd sample_gpio; make clean
 	@cd sample_adc; make clean
@@ -91,5 +93,5 @@ clean:
 	@cd sample_canaan_uart_tx; make clean
 	@cd sample_sensor_otp; make clean
 	@cd sample_eeprom; make clean
-
+	@$(MAKE) -C sample_i2c_slave clean
 

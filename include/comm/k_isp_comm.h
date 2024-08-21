@@ -516,6 +516,7 @@ typedef struct {
     k_sensor_mode sensor_mode;
     k_s32 sensor_fd;
     char sensor_name[32];
+    char database_name[64];
     k_bool dw_enable;
     k_bool dev_enable;
     k_u32 buffer_num;

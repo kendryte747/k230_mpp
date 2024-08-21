@@ -740,8 +740,7 @@ k_s32 sensor_imx335_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     sensor_set_mclk(&sensor_mode->mclk_setting[0]);
 
     /** NEW SENSOR MODIFY START */
-    // strncpy(dev->sensor_name, "imx335_csi0", sizeof(dev->sensor_name));
-    strncpy(dev->sensor_name, "imx335", sizeof(dev->sensor_name));
+    strncpy(dev->sensor_name, "imx335_csi0", sizeof(dev->sensor_name));
 
     _sensor_power_state_set(dev, 1, 1);
 

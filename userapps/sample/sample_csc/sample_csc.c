@@ -774,8 +774,8 @@ int main(int argc, char *argv[])
     memset(&g_nonai_2d_conf, 0, sizeof(nonai_2d_conf_t));
     g_nonai_2d_conf.width = 1280;
     g_nonai_2d_conf.height = 720;
-    g_nonai_2d_conf.sensor_type = GC2093_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
-    g_nonai_2d_conf.vo = LT9611_MIPI_4LAN_1920X1080_30FPS;
+    g_nonai_2d_conf.sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
+    g_nonai_2d_conf.vo = HX8377_V2_MIPI_4LAN_1080X1920_30FPS;
 
     for (int i = 1; i < argc; i++)
     {

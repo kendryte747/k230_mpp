@@ -3,21 +3,14 @@ include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
+BIN = $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 
 LIBS_FOR_CONSOLE_APPLICATION = -lssl -lcrypto
 CC_CFLAGS_EX=-mcmodel=medany -march=rv64imafdcv -mabi=lp64d -Wall -O0 -g -gdwarf-2 -n --static $(KCFLAGS)
 
-LIVE555_USAGEENVIRONMENT= $(MPP_SRC_DIR)/middleware/src/live555/UsageEnvironment
-LIVE555_BASICUSAGEENVIRONMENT= $(MPP_SRC_DIR)/middleware/src/live555/BasicUsageEnvironment
-LIVE555_GROUPSOCK = $(MPP_SRC_DIR)/middleware/src/live555/groupsock
-LIVE555_LIVEMEDIA = $(MPP_SRC_DIR)/middleware/src/live555/liveMedia
-LIVE555_RTSPSERVER = $(MPP_SRC_DIR)/middleware/src/rtsp_server
-KDMEDIA = $(MPP_SRC_DIR)/middleware/src/kdmedia
-
-LOCAL_LIBS_PATH = -L$(KDMEDIA) -L$(LIVE555_RTSPSERVER) -L$(LIVE555_USAGEENVIRONMENT) -L$(LIVE555_BASICUSAGEENVIRONMENT) -L$(LIVE555_GROUPSOCK) -L$(LIVE555_LIVEMEDIA)
+LOCAL_LIBS_PATH = -L$(MPP_MIDDLEWARE_LIB_INSTALL_PATH)
 LOCAL_LIBS = -lkdmedia -lrtsp_server -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
 
 LIVE555_COMPILE_OPTS = -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -DNO_OPENSSL=1
@@ -40,7 +33,6 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 all:$(BIN)
 	#@-rm -f *.o
 	@echo "${PWD}/Makefile all"
-	@mv $(BIN) $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)
 
 $(OBJS): %.o : %.c
 	@echo CC $@

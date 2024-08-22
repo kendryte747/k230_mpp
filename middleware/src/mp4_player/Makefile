@@ -6,7 +6,7 @@ ARFLAGS = -rc
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = lib$(CURRECT_DIR_NAME).a
+BIN = $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/lib$(CURRECT_DIR_NAME).a
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 
@@ -36,7 +36,6 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 all:$(BIN)
 	#@-rm -f *.o
 	@echo "${PWD}/Makefile all"
-	@mv $(BIN) $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)
 
 $(OBJS): %.o : %.c
 	@echo CC $@

@@ -3,7 +3,7 @@ include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
+BIN = $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 
@@ -32,7 +32,6 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 all:$(BIN)
 	#@-rm -f *.o
 	@echo "${PWD}/Makefile all"
-	@mv $(BIN) $(MPP_MIDDLEWARE_ELF_INSTALL_PATH)
 
 $(OBJS): %.o : %.c
 	@echo CC $@

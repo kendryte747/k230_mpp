@@ -1,6 +1,9 @@
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
+$(shell if [ ! -e $(MPP_MIDDLEWARE_LIB_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_LIB_INSTALL_PATH); fi)
+$(shell if [ ! -e $(MPP_MIDDLEWARE_ELF_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_ELF_INSTALL_PATH); fi)
+
 AR = riscv64-unknown-linux-musl-ar
 ARFLAGS = -rc
 
@@ -39,5 +42,6 @@ clean:
 	# @cd $(X264) ; make uninstall;make clean
 	# @cd $(FFMPEG) ; make uninstall;make clean
 	# @cd $(RTSP_PUSHER); make clean
+	@rm -rf $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/*.*
 
 .PHONY: all clean

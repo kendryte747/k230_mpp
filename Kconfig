@@ -143,4 +143,40 @@ menu "MPP Configuration"
             endif
     endmenu
 
+    menu "Enable build MPP samples"
+
+        menuconfig MPP_ENABLE_USERAPPS_SAMPLES
+            bool "Enable userapps samples"
+
+            if MPP_ENABLE_USERAPPS_SAMPLES
+
+            endif
+
+        menuconfig MPP_ENABLE_MIDDLEWARE_SAMPLES
+            bool "Enable middleware samples"
+
+            if MPP_ENABLE_MIDDLEWARE_SAMPLES
+
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_DEMUXER
+                    bool "Demuxer sample"
+                    default n
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_MUXER
+                    bool "Muxer sample"
+                    default n
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_PLAYER
+                    bool "Player sample"
+                    default n
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_CLIENT
+                    bool "RTSP Client sample"
+                    default n
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_PUSHER
+                    bool "RTSP Pusher sample"
+                    default n
+                config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_SERVER
+                    bool "RTSP Server sample"
+                    default n
+            endif
+
+    endmenu
+
 endmenu

@@ -1,6 +1,11 @@
+
+
+
+
 MPP_BUILD_DIR ?= $(shell pwd)
 FASTBOOT_BUILD_DIR=$(MPP_BUILD_DIR)/userapps/sample/fastboot_app/build
 TRIPLE_CAMERA_BUILD_DIR=$(MPP_BUILD_DIR)/userapps/sample/sample_triple_camera_facedetect/build
+
 all:
 	@rm -f elf/*
 	@cd sample_audio; make || exit 1

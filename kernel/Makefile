@@ -1,12 +1,13 @@
+include $(SDK_SRC_ROOT_DIR)/.config
+
+subdirs-y := sensor fft connector mediafreq
+
+subdirs-$(CONFIG_MPP_ENABLE_PM)	+= pm
+
 all:
-	@cd sensor; make || exit 1
-	@cd fft; make || exit 1
-	@cd connector; make || exit 1
-	@cd mediafreq; make || exit 1
-	@cd pm; make || exit 1
+	@$(foreach dir,$(subdirs-y),make -C $(dir) all;)
+	@echo "Make MPP Kernel done."
+
 clean:
-	@cd sensor; make clean
-	@cd fft; make clean
-	@cd connector; make clean
-	@cd mediafreq; make clean
-	@cd pm; make clean
+	@$(foreach dir,$(subdirs-y),make -C $(dir) clean;)
+	@echo "Make MPP Kernel clean done."

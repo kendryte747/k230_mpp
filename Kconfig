@@ -179,11 +179,4 @@ menu "MPP Configuration"
 
     endmenu
 
-    menuconfig MPP_ENABLE_PM
-        bool "Enable PM Support"
-
-        if MPP_ENABLE_PM
-
-        endif
-
 endmenu

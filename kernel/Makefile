@@ -1,8 +1,6 @@
 include $(SDK_SRC_ROOT_DIR)/.config
 
-subdirs-y := sensor fft connector mediafreq
-
-subdirs-$(CONFIG_MPP_ENABLE_PM)	+= pm
+subdirs-y := sensor fft connector mediafreq pm
 
 all:
 	@$(foreach dir,$(subdirs-y),make -C $(dir) all;)

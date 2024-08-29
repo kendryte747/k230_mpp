@@ -139,6 +139,7 @@ char out_filename[50] = {"\0"};
 FILE *output_file = NULL;
 VENC_SAMPLE_STATUS g_venc_sample_status = VENC_SAMPLE_STATUS_IDLE;
 venc_conf_t g_venc_conf;
+k_u32 intbuf_size=0;
 
 static inline void CHECK_RET(k_s32 ret, const char *func, const int line)
 {
@@ -584,6 +585,12 @@ k_s32 sample_venc_h265(k_vicap_sensor_type sensor_type)
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_INIT;
 
+    if (intbuf_size > 0)
+    {
+        kd_mpi_venc_set_intbuf_size(ch, intbuf_size);
+        printf("%s>intbuf_size %d\n", __func__, intbuf_size);
+    }
+
     ret = kd_mpi_venc_start_chn(ch);
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_START;
@@ -641,6 +648,12 @@ k_s32 sample_venc_jpeg(k_vicap_sensor_type sensor_type)
     ret = kd_mpi_venc_create_chn(ch, &attr);
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_INIT;
+
+    if (intbuf_size > 0)
+    {
+        kd_mpi_venc_set_intbuf_size(ch, intbuf_size);
+        printf("%s>intbuf_size %d\n", __func__, intbuf_size);
+    }
 
     ret = kd_mpi_venc_start_chn(ch);
     CHECK_RET(ret, __func__, __LINE__);
@@ -719,6 +732,12 @@ k_s32 sample_venc_osd_h264(k_vicap_sensor_type sensor_type)
     ret = kd_mpi_venc_create_chn(ch, &attr);
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_INIT;
+
+    if (intbuf_size > 0)
+    {
+        kd_mpi_venc_set_intbuf_size(ch, intbuf_size);
+        printf("%s>intbuf_size %d\n", __func__, intbuf_size);
+    }
 
     ret = kd_mpi_venc_start_chn(ch);
     CHECK_RET(ret, __func__, __LINE__);
@@ -832,6 +851,12 @@ k_s32 sample_venc_osd_border_h265(k_vicap_sensor_type sensor_type)
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_INIT;
 
+    if (intbuf_size > 0)
+    {
+        kd_mpi_venc_set_intbuf_size(ch, intbuf_size);
+        printf("%s>intbuf_size %d\n", __func__, intbuf_size);
+    }
+
     ret = kd_mpi_venc_start_chn(ch);
     CHECK_RET(ret, __func__, __LINE__);
     g_venc_sample_status = VENC_SAMPLE_STATUS_START;
@@ -943,6 +968,10 @@ int main(int argc, char *argv[])
                 venc_debug("Cannot open output file\n");
             }
             printf("out_filename: %s\n", out_filename);
+        }
+        else if(strcmp(argv[i], "-buf") == 0)
+        {
+            intbuf_size = atoi(argv[i + 1]);
         }
     }
 

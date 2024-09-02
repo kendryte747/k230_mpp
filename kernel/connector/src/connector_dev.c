@@ -33,7 +33,7 @@
 #include "k_connector_comm.h"
 #include "sysctl_pwr.h"
 
-struct connector_driver_dev *g_connector_drv[CONNECTOR_NUM_MAX];
+#include "k_autoconf_comm.h"
 
 static k_s32 connector_dev_open(struct dfs_fd *file)
 {
@@ -131,14 +131,36 @@ k_s32 connector_drv_dev_init(struct connector_driver_dev *pdriver_dev)
     return 0;
 }
 
+struct connector_driver_dev* connector_drv_list[] = {
+#ifdef CONFIG_MPP_DSI_ENABLE_VIRT
+    &virtdev_connector_drv,
+#endif // CONFIG_MPP_DSI_ENABLE_VIRT
+
+#ifdef CONFIG_MPP_DSI_ENABLE_HDMI_LT9611
+    &lt9611_connector_drv,
+#endif // CONFIG_MPP_DSI_ENABLE_HDMI_LT9611
+
+#ifdef CONFIG_MPP_DSI_ENABLE_HDMI_HX8399
+    &hx8399_connector_drv,
+#endif // CONFIG_MPP_DSI_ENABLE_HDMI_HX8399
+
+#ifdef CONFIG_MPP_DSI_ENABLE_LCD_ST7701
+    &st7701_connector_drv,
+#endif // CONFIG_MPP_DSI_ENABLE_LCD_ST7701
+
+#ifdef CONFIG_MPP_DSI_ENABLE_LCD_ILI9806
+    &ili9806_connector_drv,
+#endif // CONFIG_MPP_DSI_ENABLE_LCD_ILI9806
+    NULL,
+};
 
 k_s32 connector_device_init(void)
 {
-    connector_drv_list_init(connector_drv_list);
+    int index = 0;
 
-    for (k_u32 connector_id = 0; connector_id < CONNECTOR_NUM_MAX; connector_id++) {
-        if (g_connector_drv[connector_id] != NULL)
-            connector_drv_dev_init(g_connector_drv[connector_id]);
+    while(connector_drv_list[index]) {
+        connector_drv_dev_init(connector_drv_list[index]);
+        index++;
     }
 
     return 0;

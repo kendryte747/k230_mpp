@@ -28,7 +28,6 @@
 #include "drv_gpio.h"
 #include "k_vo_comm.h"
 #include "k_connector_comm.h"
-#include "k_board_config_comm.h"
 
 #define DELAY_MS_BACKLIGHT_DEFAULT     200
 #define DELAY_MS_BACKLIGHT_FIRST       1
@@ -98,8 +97,9 @@ static void hx8399_v2_init(k_u8 test_mode_en)
 static void hx8399_power_reset(k_s32 on)
 {
     k_u8 rst_gpio;
-
-    rst_gpio = DISPLAY_LCD_RST_GPIO;
+    if(0 > (rst_gpio = CONFIG_MPP_DSI_LCD_RESET_PIN)) {
+        return;
+    }
 
     kd_pin_mode(rst_gpio, GPIO_DM_OUTPUT);
     
@@ -113,8 +113,9 @@ static void hx8399_power_reset(k_s32 on)
 static void hx8399_set_backlight(k_s32 on)
 {
     k_u8 backlight_gpio;
-
-    backlight_gpio = DISPLAY_LCD_BACKLIGHT_EN;
+    if(0 > (backlight_gpio = CONFIG_MPP_DSI_LCD_BACKLIGHT_PIN)) {
+        return;
+    }
 
     kd_pin_mode(backlight_gpio, GPIO_DM_OUTPUT);
     if (on)

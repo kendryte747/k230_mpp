@@ -28,27 +28,6 @@
 #include "k_connector_comm.h"
 #include "tick.h"
 
-extern struct connector_driver_dev hx8399_connector_drv;
-extern struct connector_driver_dev lt9611_connector_drv;
-extern struct connector_driver_dev st7701_connector_drv;
-extern struct connector_driver_dev ili9806_connector_drv;
-extern struct connector_driver_dev virtdev_connector_drv;
-
-struct connector_driver_dev* connector_drv_list[CONNECTOR_NUM_MAX] = {
-    &hx8399_connector_drv,
-    &lt9611_connector_drv,
-    &st7701_connector_drv,
-    &ili9806_connector_drv,
-    &virtdev_connector_drv,
-};
-
-void connector_drv_list_init(struct connector_driver_dev* drv_list[])
-{
-    for (k_u32 connector_id = 0; connector_id < CONNECTOR_NUM_MAX; connector_id++) {
-        if (drv_list[connector_id] != NULL)
-            g_connector_drv[connector_id] = drv_list[connector_id];
-    }
-}
 
 k_s32 connector_priv_ioctl(struct connector_driver_dev* dev, k_u32 cmd, void* args)
 {

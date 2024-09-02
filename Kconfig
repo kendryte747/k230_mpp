@@ -112,35 +112,58 @@ menu "MPP Configuration"
     endmenu
 
     menu "Dsiplay Configuration"
-        menuconfig MPP_ENABLE_DSI_LT9611
-            bool "Enable HDMI Display Converter LT9611"
+        menuconfig MPP_ENABLE_DSI_HDMI
+            bool "Enable HDMI Display Driver"
 
-            if MPP_ENABLE_DSI_LT9611
+            if MPP_ENABLE_DSI_HDMI
+                config MPP_DSI_HDMI_RESET_PIN
+                    int "DSI-HDMI Reset GPIO"
+                    default 22
 
-                config MPP_DSI_LT9611_RESET
-                    int "LT9611 Reset GPIO"
-                    default -1
-
-                config MPP_DSI_LT9611_I2C_DEV
-                    string "DSI I2c Bus"
+                config MPP_DSI_HDMI_I2C_DEV
+                    string "DSI-HDMI I2c Bus"
                     default "i2c3"
+            endif
 
+        menuconfig MPP_ENABLE_DSI_LCD
+            bool "Enable LCD Display Driver"
+
+            if MPP_ENABLE_DSI_LCD
+                config MPP_DSI_LCD_RESET_PIN
+                    int "DSI-LCD Reset GPIO"
+                    default 24
+
+                config MPP_DSI_LCD_BACKLIGHT_PIN
+                    int "DSI-LCD BackLight GPIO"
+                    default 25
+            endif
+
+        config MPP_DSI_ENABLE_VIRT
+            bool "Enable Display driver VIRT"
+            default y
+
+        menuconfig MPP_DSI_ENABLE_HDMI_LT9611
+            bool "Enable HDMI Display Converter LT9611"
+            depends on MPP_ENABLE_DSI_HDMI
+
+            if MPP_DSI_ENABLE_HDMI_LT9611
                 config MPP_DSI_LT9611_I2C_SLV_ADDR
                     hex "LT9611 Slave Address"
                     default 0x3b
             endif
 
-        menuconfig MPP_ENABLE_DSI_ST7701
-            bool "Enable LCD Display Driver ST7701"
+        config MPP_DSI_ENABLE_HDMI_HX8399
+            bool "Enable HDMI Display Converter HX8399"
+            default n
 
-            if MPP_ENABLE_DSI_ST7701
-                config MPP_DSI_ST7701_RESET
-                    int "ST7701 Reset GPIO"
-                    default -1
-                config MPP_DSI_ST7701_BACKLIGHT
-                    int "ST7701 BackLight GPIO"
-                    default -1
-            endif
+        config MPP_DSI_ENABLE_LCD_ST7701
+            bool "Enable LCD Display Driver ST7701s"
+            default n
+        
+        config MPP_DSI_ENABLE_LCD_ILI9806
+            bool "Enable LCD Display Driver ili9806"
+            default n
+
     endmenu
 
     menu "Enable build MPP samples"

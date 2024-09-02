@@ -28,7 +28,6 @@
 #include "drv_gpio.h"
 #include "k_vo_comm.h"
 #include "k_connector_comm.h"
-#include "k_board_config_comm.h"
 
 static k_s32 virtdev_power_on(void* ctx, k_s32 on)
 {

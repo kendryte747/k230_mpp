@@ -67,10 +67,13 @@ struct connector_driver_dev
     void *driver_data;
 };
 
+extern struct connector_driver_dev hx8399_connector_drv;
+extern struct connector_driver_dev lt9611_connector_drv;
+extern struct connector_driver_dev st7701_connector_drv;
+extern struct connector_driver_dev ili9806_connector_drv;
+extern struct connector_driver_dev virtdev_connector_drv;
 
-extern struct connector_driver_dev *g_connector_drv[CONNECTOR_NUM_MAX];
-extern struct connector_driver_dev *connector_drv_list[CONNECTOR_NUM_MAX];
-
+extern struct connector_driver_dev* connector_drv_list[];
 
 extern k_u32 dwc_mipi_phy_config(k_vo_mipi_phy_attr *phy);
 extern k_u32 dwc_lpdt_send_pkg(k_u8 *buf, k_u32 cmd_len);
@@ -87,7 +90,7 @@ extern void kd_vo_set_vtth_intr(k_bool status, k_u32 vpos);
 extern void k230_set_pixclk(k_u32 div);
 
 k_s32 connector_priv_ioctl(struct connector_driver_dev *dev, k_u32 cmd, void *args);
-void connector_drv_list_init(struct connector_driver_dev *drv_list[]);
+
 k_u32 connecter_dsi_send_pkg(k_u8 *buf, k_u32 cmd_len);
 k_u32 connecter_dsi_read_pkg(k_u8 data_addr);
 k_s32 connector_set_phy_freq(k_vo_mipi_phy_attr *phy);
@@ -101,4 +104,5 @@ void connector_set_vo_enable(void);
 void connector_set_vtth_intr(k_bool status, k_u32 vpos);
 void connector_delay_us(uint64_t us);
 void connector_set_pixclk(k_u32 div);
+
 #endif /* _SENSOR_DEV_H_ */

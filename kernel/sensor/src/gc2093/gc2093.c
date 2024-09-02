@@ -27,7 +27,6 @@
 #include "sensor_dev.h"
 #include "io.h"
 #include "drv_gpio.h"
-#include "k_board_config_comm.h"
 #include <stdio.h>
 
 #define pr_info(...) //rt_kprintf(__VA_ARGS__)

@@ -30,7 +30,6 @@
 #include "drv_gpio.h"
 #include "k_vo_comm.h"
 #include "k_connector_comm.h"
-#include "k_board_config_comm.h"
 
 #define DBG_TAG          "lt9611"
 #ifdef RT_DEBUG
@@ -145,7 +144,11 @@ k_s32 lt9611_write_multi_reg(k_i2c_info *i2c_info, const k_i2c_reg *reg_list, k_
 }
 
 static void lt9611_reset(k_u8 lt9611_reset_pin)
-{    
+{
+    if(0 < lt9611_reset_pin) {
+        return;
+    }
+
     kd_pin_mode(lt9611_reset_pin, GPIO_DM_OUTPUT);
     kd_pin_write(lt9611_reset_pin, GPIO_PV_LOW);
     rt_thread_mdelay(100);
@@ -508,8 +511,8 @@ static k_s32 lt9611_power_on(void* ctx, k_s32 on)
     struct lt9611_dev *lt9611_dev;
 
     k230_display_rst();
-    lt9611_reset(LT9611_RESET_GPIO);
-    lt9611_dev = lt9611_dev_create(LT9611_PORTB, LT9611_SLAVE_ADDR, LT9611_I2C_BUS);
+    lt9611_reset(CONFIG_MPP_DSI_HDMI_RESET_PIN);
+    lt9611_dev = lt9611_dev_create(LT9611_PORTB, CONFIG_MPP_DSI_LT9611_I2C_SLV_ADDR, CONFIG_MPP_DSI_HDMI_I2C_DEV);
     if (lt9611_dev == RT_NULL) {
         LOG_E("lt9611_dev_create failed \n");
         return K_FAILED;

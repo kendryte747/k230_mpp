@@ -28,7 +28,6 @@
 #include "drv_gpio.h"
 #include "k_vo_comm.h"
 #include "k_connector_comm.h"
-#include "k_board_config_comm.h"
 
 #define DELAY_MS_BACKLIGHT_DEFAULT     200
 #define DELAY_MS_BACKLIGHT_FIRST       1
@@ -228,9 +227,9 @@ static void st7701_480x854_init(k_u8 test_mode_en)
 static void st7701_power_reset(k_s32 on)
 {
     k_u8 rst_gpio;
-
-    rst_gpio = DISPLAY_LCD_RST_GPIO;
-
+    if(0 > (rst_gpio = CONFIG_MPP_DSI_LCD_RESET_PIN)) {
+        return;
+    }
     // rt_kprintf("rst_gpio is %d \n",rst_gpio);
 
     kd_pin_mode(rst_gpio, GPIO_DM_OUTPUT);
@@ -245,11 +244,9 @@ static void st7701_power_reset(k_s32 on)
 static void st7701_set_backlight(k_s32 on)
 {
     k_u8 backlight_gpio;
-
-    if(DISPLAY_LCD_BACKLIGHT_EN == 255) // unused
+    if(0 > (backlight_gpio = CONFIG_MPP_DSI_LCD_BACKLIGHT_PIN)) {
         return;
-
-    backlight_gpio = DISPLAY_LCD_BACKLIGHT_EN;
+    }
 
     // rt_kprintf("backlight_gpio is %d \n",backlight_gpio);
 

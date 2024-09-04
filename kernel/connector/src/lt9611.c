@@ -145,7 +145,7 @@ k_s32 lt9611_write_multi_reg(k_i2c_info *i2c_info, const k_i2c_reg *reg_list, k_
 
 static void lt9611_reset(k_u8 lt9611_reset_pin)
 {
-    if(0 < lt9611_reset_pin) {
+    if(0 > lt9611_reset_pin) {
         return;
     }
 

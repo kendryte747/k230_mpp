@@ -297,7 +297,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         },
         .sensor_ae_info = &sensor_csi2_ae_info[0],
 #else
-        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+        .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},

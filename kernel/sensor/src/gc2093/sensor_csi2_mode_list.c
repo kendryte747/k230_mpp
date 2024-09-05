@@ -286,6 +286,8 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
                 .mclk_setting_en = K_TRUE,
 #if defined(CONFIG_BOARD_K230_CANMV_V3P0)
                 .setting.id = SENSOR_MCLK0,
+#elif defined(CONFIG_BOARD_K230_CANMV_DONGSHANPI)
+		.setting.id = SENSOR_MCLK1,
 #else
                 .setting.id = SENSOR_MCLK2,
 #endif
@@ -297,7 +299,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         },
         .sensor_ae_info = &sensor_csi2_ae_info[0],
 #else
-        .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
+        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},

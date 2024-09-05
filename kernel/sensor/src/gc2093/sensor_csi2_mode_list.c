@@ -284,11 +284,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-#if defined(CONFIG_BOARD_K230_CANMV_V3P0)
-                .setting.id = SENSOR_MCLK0,
-#else
-                .setting.id = SENSOR_MCLK2,
-#endif
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 25,
             },
@@ -331,11 +327,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-#if defined(CONFIG_BOARD_K230_CANMV_V3P0)
-                .setting.id = SENSOR_MCLK0,
-#else
-                .setting.id = SENSOR_MCLK2,
-#endif
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 25,
             },
@@ -378,11 +370,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-#if defined(CONFIG_BOARD_K230_CANMV_V3P0)
-                .setting.id = SENSOR_MCLK0,
-#else
-                .setting.id = SENSOR_MCLK2,
-#endif
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 25,
             },
@@ -425,11 +413,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-#if defined(CONFIG_BOARD_K230_CANMV_V3P0)
-                .setting.id = SENSOR_MCLK0,
-#else
-                .setting.id = SENSOR_MCLK2,
-#endif
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 25,
             },
@@ -448,3 +432,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
 #endif
     },
 };
+
+#if defined (CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
+_Static_assert(CONFIG_MPP_CSI_DEV2_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV2_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV2_MCLK_NUM");
+#endif

@@ -418,3 +418,7 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
 #endif
     },
 };
+
+#if defined (CONFIG_MPP_SENSOR_OV5647_ON_CSI1_USE_CHIP_CLK)
+_Static_assert(CONFIG_MPP_CSI_DEV1_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV1_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV1_MCLK_NUM");
+#endif

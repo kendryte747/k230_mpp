@@ -20,6 +20,27 @@ menu "MPP Configuration"
                 config MPP_CSI_DEV0_I2C_DEV
                     string "CSI0 I2c Bus"
                     default "i2c0"
+
+                choice MPP_CSI_DEV0_MCLK_NUM
+                    bool "CSI0 MCLK num"
+                    default MPP_CSI_DEV0_MCLK_INVALID
+
+                    config MPP_CSI_DEV0_MCLK_INVALID
+                        bool "CSI0 use external clock"
+                    config MPP_CSI_DEV0_MCLK_1
+                        bool "CSI0 use chip MCLK1"
+                    config MPP_CSI_DEV0_MCLK_2
+                        bool "CSI0 use chip MCLK2"
+                    config MPP_CSI_DEV0_MCLK_3
+                        bool "CSI0 use chip MCLK3"
+                endchoice
+
+                config MPP_CSI_DEV0_MCLK_NUM
+                    int
+                    default -1 if MPP_CSI_DEV0_MCLK_INVALID
+                    default 1 if MPP_CSI_DEV0_MCLK_1
+                    default 2 if MPP_CSI_DEV0_MCLK_2
+                    default 3 if MPP_CSI_DEV0_MCLK_3
             endif
 
         menuconfig MPP_ENABLE_CSI_DEV_1
@@ -41,6 +62,27 @@ menu "MPP Configuration"
                 config MPP_CSI_DEV1_I2C_DEV
                     string "CSI1 I2c Bus"
                     default "i2c1"
+
+                choice MPP_CSI_DEV1_MCLK_NUM
+                    bool "CSI1 MCLK num"
+                    default MPP_CSI_DEV1_MCLK_INVALID
+
+                    config MPP_CSI_DEV1_MCLK_INVALID
+                        bool "CSI1 use external clock"
+                    config MPP_CSI_DEV1_MCLK_1
+                        bool "CSI1 use chip MCLK1"
+                    config MPP_CSI_DEV1_MCLK_2
+                        bool "CSI1 use chip MCLK2"
+                    config MPP_CSI_DEV1_MCLK_3
+                        bool "CSI1 use chip MCLK3"
+                endchoice
+
+                config MPP_CSI_DEV1_MCLK_NUM
+                    int
+                    default -1 if MPP_CSI_DEV1_MCLK_INVALID
+                    default 1 if MPP_CSI_DEV1_MCLK_1
+                    default 2 if MPP_CSI_DEV1_MCLK_2
+                    default 3 if MPP_CSI_DEV1_MCLK_3
             endif
 
         menuconfig MPP_ENABLE_CSI_DEV_2
@@ -62,6 +104,27 @@ menu "MPP Configuration"
                 config MPP_CSI_DEV2_I2C_DEV
                     string "CSI2 I2c Bus"
                     default "i2c2"
+
+                choice MPP_CSI_DEV2_MCLK_NUM
+                    bool "CSI2 MCLK num"
+                    default MPP_CSI_DEV2_MCLK_INVALID
+
+                    config MPP_CSI_DEV2_MCLK_INVALID
+                        bool "CSI2 use external clock"
+                    config MPP_CSI_DEV2_MCLK_1
+                        bool "CSI2 use chip MCLK1"
+                    config MPP_CSI_DEV2_MCLK_2
+                        bool "CSI2 use chip MCLK2"
+                    config MPP_CSI_DEV2_MCLK_3
+                        bool "CSI2 use chip MCLK3"
+                endchoice
+
+                config MPP_CSI_DEV2_MCLK_NUM
+                    int
+                    default -1 if MPP_CSI_DEV2_MCLK_INVALID
+                    default 1 if MPP_CSI_DEV2_MCLK_1
+                    default 2 if MPP_CSI_DEV2_MCLK_2
+                    default 3 if MPP_CSI_DEV2_MCLK_3
             endif
 
         menuconfig MPP_ENABLE_SENSOR_GC2093

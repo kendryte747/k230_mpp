@@ -153,7 +153,9 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2B,
         },
-
+#ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+    #error "INVALID CONFIGURE"
+#else
         .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
         .mclk_setting = {
             {K_FALSE},
@@ -161,6 +163,7 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             {K_FALSE},
         },
         .sensor_ae_info = &sensor_csi1_ae_info[0],  
+#endif
     },
     {
         .index = 1,
@@ -182,6 +185,9 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2B,
         },
+#ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+    #error "INVALID CONFIGURE"
+#else
         .reg_list = gc2093_mipi2lane_1080p_60fps_linear,
         .mclk_setting = {
             {K_FALSE},
@@ -189,6 +195,7 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             {K_FALSE},
         },
         .sensor_ae_info = &sensor_csi1_ae_info[1],  
+#endif
     },
     {
         .index = 2,
@@ -210,6 +217,9 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2B,
         },
+#ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+    #error "INVALID CONFIGURE"
+#else
         .reg_list = gc2093_mipi2lane_960p_90fps_linear,
         .mclk_setting = {
             {K_FALSE},
@@ -217,6 +227,7 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             {K_FALSE},
         },
         .sensor_ae_info = &sensor_csi1_ae_info[2],  
+#endif
     },
     {
         .index = 3,
@@ -238,12 +249,20 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2B,
         },
+#ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+    #error "INVALID CONFIGURE"
+#else
         .reg_list = gc2093_mipi2lane_720p_90fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi1_ae_info[3],  
+        .sensor_ae_info = &sensor_csi1_ae_info[3],
+#endif
     },
 };
+
+#if defined (CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK)
+_Static_assert(CONFIG_MPP_CSI_DEV1_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV1_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV1_MCLK_NUM");
+#endif

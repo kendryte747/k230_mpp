@@ -280,7 +280,6 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined(CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
-        .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -291,15 +290,20 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
+        .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
         .sensor_ae_info = &sensor_csi2_ae_info[0],
 #else
-        .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi2_ae_info[4],
+        // .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi2_ae_info[4],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[4],
 #endif
     },
     {
@@ -323,7 +327,6 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined(CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
-        .reg_list = gc2093_mipi2lane_1080p_60fps_linear,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -334,15 +337,20 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
+        .reg_list = gc2093_mipi2lane_1080p_60fps_linear,
         .sensor_ae_info = &sensor_csi2_ae_info[5],
 #else
-        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi2_ae_info[5],
+        // .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi2_ae_info[5],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[5],
 #endif
     },
     {
@@ -366,7 +374,6 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined(CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
-        .reg_list = gc2093_mipi2lane_960p_90fps_linear,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -377,15 +384,20 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
+        .reg_list = gc2093_mipi2lane_960p_90fps_linear,
         .sensor_ae_info = &sensor_csi2_ae_info[2],
 #else
-        .reg_list = gc2093_mipi2lane_960p_90fps_mclk_24m_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi2_ae_info[6],
+        // .reg_list = gc2093_mipi2lane_960p_90fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi2_ae_info[6],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[5],
 #endif
     },
     {
@@ -409,7 +421,6 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             .data_type = 0x2B,
         },
 #if defined(CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
-        .reg_list = gc2093_mipi2lane_720p_90fps_linear,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -420,15 +431,20 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
+        .reg_list = gc2093_mipi2lane_720p_90fps_linear,
         .sensor_ae_info = &sensor_csi2_ae_info[3],
 #else
-        .reg_list = gc2093_mipi2lane_720p_90fps_mclk_24m_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi2_ae_info[7],
+        // .reg_list = gc2093_mipi2lane_720p_90fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi2_ae_info[7],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_720p_90fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[7],
 #endif
     },
 };

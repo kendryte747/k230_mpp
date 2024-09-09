@@ -156,13 +156,17 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
     #error "INVALID CONFIGURE"
 #else
-        .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi1_ae_info[0],  
+        // .sensor_ae_info = &sensor_csi1_ae_info[0],
+        // .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_1080p_30fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[4],
 #endif
     },
     {
@@ -188,13 +192,17 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
     #error "INVALID CONFIGURE"
 #else
-        .reg_list = gc2093_mipi2lane_1080p_60fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi1_ae_info[1],  
+        // .sensor_ae_info = &sensor_csi1_ae_info[1],  
+        // .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_1080p_60fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[5],
 #endif
     },
     {
@@ -220,13 +228,17 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
     #error "INVALID CONFIGURE"
 #else
-        .reg_list = gc2093_mipi2lane_960p_90fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi1_ae_info[2],  
+        // .reg_list = gc2093_mipi2lane_960p_90fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi1_ae_info[2],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_960p_90fps_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[2],
 #endif
     },
     {
@@ -252,13 +264,17 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
     #error "INVALID CONFIGURE"
 #else
-        .reg_list = gc2093_mipi2lane_720p_90fps_linear,
         .mclk_setting = {
             {K_FALSE},
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi1_ae_info[3],
+        // .reg_list = gc2093_mipi2lane_720p_90fps_mclk_24m_linear,
+        // .sensor_ae_info = &sensor_csi1_ae_info[3],
+
+        // now, we just support one gc2093
+        .reg_list = gc2093_mipi2lane_720p_90fps_mclk_24m_linear,
+        .sensor_ae_info = &sensor_csi0_ae_info[7],
 #endif
     },
 };

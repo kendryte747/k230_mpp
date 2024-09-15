@@ -1086,8 +1086,13 @@ static const k_sensor_reg gc2093_mipi2lane_1080p_60fps_mclk_24m_linear[] = {
     {0x0010, 0x8c},
     {0x0013, 0x15},
     {0x0019, 0x0c},
+#if defined (CONFIG_MPP_SENSOR_GC2093_ON_CSI0_USE_CHIP_CLK) || defined (CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK) || defined (CONFIG_MPP_SENSOR_GC2093_ON_CSI2_USE_CHIP_CLK)
+    {0x0041, 0x04},	// frame length = 0x04c2 = 1218
+    {0x0042, 0xc2},
+#else
     {0x0041, 0x05 /* 0x04 */},	// frame length = 0x04c2 = 1218
     {0x0042, 0x00 /* 0xc2 */},
+#endif
     {0x0053, 0x60},
     {0x008d, 0x92},
     {0x0090, 0x00},

@@ -1,4 +1,4 @@
-static k_sensor_ae_info sensor_csi0_ae_info[] = {
+static k_sensor_ae_info sensor_csi1_ae_info[] = {
     {
         /* 30 fps */
         .frame_length = IMX335_VMAX_LINEAR,
@@ -75,10 +75,10 @@ static k_sensor_ae_info sensor_csi0_ae_info[] = {
     },
 };
 
-static const k_sensor_mode sensor_csi0_mode_list[] = {
+static const k_sensor_mode sensor_csi1_mode_list[] = {
     {
         .index = 0,
-        .sensor_type = IMX335_MIPI_CSI0_2LANE_1920X1080_30FPS_12BIT_LINEAR,
+        .sensor_type = IMX335_MIPI_CSI1_2LANE_1920X1080_30FPS_12BIT_LINEAR,
         .size = {
             .bounds_width = 1920,
             .bounds_height = 1080,
@@ -96,19 +96,19 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2C,
         },
-#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI1_USE_CHIP_CLK)
         .reg_list = imx335_mipi_2lane_raw12_1920x1080_30fps_mclk_74_25_regs,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-                .setting.id = CONFIG_MPP_CSI_DEV0_MCLK_NUM,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 8,
             },
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #else
         .reg_list = imx335_mipi_2lane_raw12_1920x1080_30fps_mclk_24m_regs,
         .mclk_setting = {
@@ -116,12 +116,12 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #endif
     },
     {
         .index = 1,
-        .sensor_type = IMX335_MIPI_CSI0_2LANE_2592X1944_30FPS_12BIT_LINEAR,
+        .sensor_type = IMX335_MIPI_CSI1_2LANE_2592X1944_30FPS_12BIT_LINEAR,
         .size = {
             .bounds_width = 2592,
             .bounds_height = 1944,
@@ -139,19 +139,19 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .mipi_lanes = 2,
             .data_type = 0x2C,
         },
-#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI1_USE_CHIP_CLK)
         .reg_list = imx335_mipi_2lane_raw12_2592x1944_30fps_mclk_74_25_regs,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-                .setting.id = CONFIG_MPP_CSI_DEV0_MCLK_NUM,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 8,
             },
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #else
         .reg_list = imx335_mipi_2lane_raw12_2592x1944_30fps_mclk_24m_regs,
         .mclk_setting = {
@@ -159,13 +159,13 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #endif
     },
 #if defined (CONFIG_MPP_SENSOR_IMX335_ENABLE_4LANE_CONFIGURE)
     {
         .index = 2,
-        .sensor_type = IMX335_MIPI_CSI0_4LANE_2592X1944_30FPS_12BIT_LINEAR,
+        .sensor_type = IMX335_MIPI_CSI1_4LANE_2592X1944_30FPS_12BIT_LINEAR,
         .size = {
             .bounds_width = 2592,
             .bounds_height = 1944,
@@ -183,19 +183,19 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .mipi_lanes = 4,
             .data_type = 0x2C,
         },
-#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI1_USE_CHIP_CLK)
         .reg_list = imx335_mipi_4lane_raw12_2592x1944_30fps_mclk_74_25_regs,
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-                .setting.id = CONFIG_MPP_CSI_DEV0_MCLK_NUM,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 8,
             },
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #else
         .reg_list = imx335_mipi_4lane_raw12_2592x1944_30fps_mclk_24m_regs,
         .mclk_setting = {
@@ -203,12 +203,12 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             {K_FALSE},
             {K_FALSE},
         },
-        .sensor_ae_info = &sensor_csi0_ae_info[0],
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
 #endif
     },
 #endif // CONFIG_MPP_SENSOR_IMX335_ENABLE_4LANE_CONFIGURE
 };
 
-#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI0_USE_CHIP_CLK)
-_Static_assert(CONFIG_MPP_CSI_DEV0_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV0_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV0_MCLK_NUM");
+#if defined (CONFIG_MPP_SENSOR_IMX335_ON_CSI1_USE_CHIP_CLK)
+_Static_assert(CONFIG_MPP_CSI_DEV1_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV1_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV1_MCLK_NUM");
 #endif

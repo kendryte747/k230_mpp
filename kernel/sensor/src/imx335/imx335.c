@@ -96,7 +96,17 @@
 /* include sensor register configure */
 #include "sensor_reg_table.c"
 
-#include "sensor_csi0_mode_list.c"
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    #include "sensor_csi0_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+    #include "sensor_csi1_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    #include "sensor_csi2_mode_list.c"
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 
 static k_s32 _sensor_read_chip_id_r(struct sensor_driver_dev *dev, k_u32 *chip_id)
 {
@@ -707,14 +717,28 @@ k_s32 sensor_imx335_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     k_u32 chip_id = 0;
     const k_sensor_mode *sensor_mode = NULL;
 
-    /* IMX335 only support on CSI0 */
-    if(0x00 != cfg->csi_num) {
-        goto _on_failed;
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    if(0x00 == cfg->csi_num) {
+        dev->mode_count = sizeof(sensor_csi0_mode_list) / sizeof(sensor_csi0_mode_list[0]);
+        dev->sensor_mode_list = &sensor_csi0_mode_list[0];
+        sensor_mode = &dev->sensor_mode_list[0];
+    } else
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1) && !defined (CONFIG_MPP_SENSOR_IMX335_ENABLE_4LANE_CONFIGURE)
+    // if enable 4Lane configure support, will disable CSI1
+    if(0x01 == cfg->csi_num) {
+        dev->mode_count = sizeof(sensor_csi1_mode_list) / sizeof(sensor_csi1_mode_list[0]);
+        dev->sensor_mode_list = &sensor_csi1_mode_list[0];
+        sensor_mode = &dev->sensor_mode_list[0];
+    } else 
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    if(0x02 == cfg->csi_num) {
+        dev->mode_count = sizeof(sensor_csi2_mode_list) / sizeof(sensor_csi2_mode_list[0]);
+        dev->sensor_mode_list = &sensor_csi2_mode_list[0];
+        sensor_mode = &dev->sensor_mode_list[0];
     }
-
-    dev->mode_count = sizeof(sensor_csi0_mode_list) / sizeof(sensor_csi0_mode_list[0]);
-    dev->sensor_mode_list = &sensor_csi0_mode_list[0];
-    sensor_mode = &dev->sensor_mode_list[0];
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 
     if(0x00 == dev->mode_count) {
         goto _on_failed;
@@ -740,7 +764,7 @@ k_s32 sensor_imx335_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_d
     sensor_set_mclk(&sensor_mode->mclk_setting[0]);
 
     /** NEW SENSOR MODIFY START */
-    strncpy(dev->sensor_name, "imx335_csi0", sizeof(dev->sensor_name));
+    snprintf(dev->sensor_name, sizeof(dev->sensor_name), "imx335_csi%d", cfg->csi_num);
 
     _sensor_power_state_set(dev, 1, 1);
 

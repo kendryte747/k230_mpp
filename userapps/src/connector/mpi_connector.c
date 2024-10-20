@@ -155,6 +155,42 @@ k_connector_info connector_info_list[] = {
     //     { 23760, 285120, 660, 480, 10, 20, 150, 1200, 800, 10, 20, 370 },
     //     ST7701_V1_MIPI_2LAN_480X800_30FPS,
     // },
+#if defined (CONFIG_BOARD_K230_CANMV_LCKFB)
+    {
+        "st7701",
+        0,
+        0,
+        BACKGROUND_BLACK_COLOR,
+        9,
+        21,
+        K_DSI_2LAN,
+        K_BURST_MODE,
+        K_VO_LP_MODE,
+
+        .phy_attr = {
+            .n = 3,
+            .m = 52,
+            .voc = 0x1f,
+            .hs_freq = 0x35 | 0x80,
+        },
+
+        .resolution = {
+            .pclk = 27000, // 27000 * 1000 / (480 + 32 + 32 + 9) / (800 + 4 + 3 + 8) = 59.9 fps
+            .phyclk = 324000,
+            .htotal = 480 + 32 + 32 + 9,
+            .hdisplay = 480,
+            .hsync_len = 32,
+            .hback_porch = 32,
+            .hfront_porch = 9,
+            .vtotal = 800 + 4 + 3 + 8,
+            .vdisplay = 800,
+            .vsync_len = 4,
+            .vback_porch = 3,
+            .vfront_porch = 8,
+        },
+        ST7701_V1_MIPI_2LAN_480X800_30FPS,
+    },
+#else
     {
         "st7701",
         0,
@@ -169,6 +205,7 @@ k_connector_info connector_info_list[] = {
         { 39600, 475200, 600, 480, 20, 20, 80, 1100, 800, 10, 70, 220 },
         ST7701_V1_MIPI_2LAN_480X800_30FPS,
     },
+#endif
 
     {
         "st7701",

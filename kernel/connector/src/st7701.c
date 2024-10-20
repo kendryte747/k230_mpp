@@ -37,6 +37,95 @@ static k_s32 g_blacklight_delay_ms = DELAY_MS_BACKLIGHT_FIRST;
 
 static void st7701_480x800_init(k_u8 test_mode_en)
 {
+#if defined (CONFIG_BOARD_K230_CANMV_LCKFB)
+    // Array of parameters for each command
+    uint8_t param1[] = {0x01};          // payload_len = 1, payload = 01
+    uint8_t param2[] = {0x11};          // payload_len = 1, payload = 11
+    uint8_t param3[] = {0xFF, 0x77, 0x01, 0x00, 0x00, 0x11};  // payload_len = 6
+    uint8_t param4[] = {0xD1, 0x11};    // payload_len = 2
+    uint8_t param5[] = {0x55, 0xB0};    // payload_len = 2
+    uint8_t param6[] = {0xFF, 0x77, 0x01, 0x00, 0x00, 0x10};  // payload_len = 6
+    uint8_t param7[] = {0xC0, 0x63, 0x00}; // payload_len = 3
+    uint8_t param8[] = {0xC1, 0x09, 0x02}; // payload_len = 3
+    uint8_t param9[] = {0xC2, 0x37, 0x08}; // payload_len = 3
+    uint8_t param10[] = {0xC7, 0x00};   // payload_len = 2
+    uint8_t param11[] = {0xCC, 0x38};   // payload_len = 2
+    uint8_t param12[] = {0xB0, 0x00, 0x11, 0x19, 0x0C, 0x10, 0x06, 0x07, 0x0A, 0x09, 0x22, 0x04, 0x10, 0x0E, 0x28, 0x30, 0x1C}; // payload_len = 17
+    uint8_t param13[] = {0xB1, 0x00, 0x12, 0x19, 0x0D, 0x10, 0x04, 0x06, 0x07, 0x08, 0x23, 0x04, 0x12, 0x11, 0x28, 0x30, 0x1C}; // payload_len = 17
+    uint8_t param14[] = {0xFF, 0x77, 0x01, 0x00, 0x00, 0x11};  // payload_len = 6
+    uint8_t param15[] = {0xB0, 0x4D};   // payload_len = 2
+    uint8_t param16[] = {0xB1, 0x60};   // payload_len = 2
+    uint8_t param17[] = {0xB2, 0x07};   // payload_len = 2
+    uint8_t param18[] = {0xB3, 0x80};   // payload_len = 2
+    uint8_t param19[] = {0xB5, 0x47};   // payload_len = 2
+    uint8_t param20[] = {0xB7, 0x8A};   // payload_len = 2
+    uint8_t param21[] = {0xB8, 0x21};   // payload_len = 2
+    uint8_t param22[] = {0xC1, 0x78};   // payload_len = 2
+    uint8_t param23[] = {0xC2, 0x78};   // payload_len = 2
+    uint8_t param24[] = {0xD0, 0x88};   // payload_len = 2
+    uint8_t param25[] = {0xE0, 0x00, 0x00, 0x02}; // payload_len = 4
+    uint8_t param26[] = {0xE1, 0x01, 0xA0, 0x03, 0xA0, 0x02, 0xA0, 0x04, 0xA0, 0x00, 0x44, 0x44}; // payload_len = 12
+    uint8_t param27[] = {0xE2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}; // payload_len = 13
+    uint8_t param28[] = {0xE3, 0x00, 0x00, 0x33, 0x33}; // payload_len = 5
+    uint8_t param29[] = {0xE4, 0x44, 0x44}; // payload_len = 3
+    uint8_t param30[] = {0xE5, 0x01, 0x26, 0xA0, 0xA0, 0x03, 0x28, 0xA0, 0xA0, 0x05, 0x2A, 0xA0, 0xA0, 0x07, 0x2C, 0xA0, 0xA0}; // payload_len = 17
+    uint8_t param31[] = {0xE6, 0x00, 0x00, 0x33, 0x33}; // payload_len = 5
+    uint8_t param32[] = {0xE7, 0x44, 0x44}; // payload_len = 3
+    uint8_t param33[] = {0xE8, 0x02, 0x26, 0xA0, 0xA0, 0x04, 0x28, 0xA0, 0xA0, 0x06, 0x2A, 0xA0, 0xA0, 0x08, 0x2C, 0xA0, 0xA0}; // payload_len = 17
+    uint8_t param34[] = {0xEB, 0x00, 0x01, 0xE4, 0xE4, 0x44, 0x00, 0x40}; // payload_len = 8
+    uint8_t param35[] = {0xED, 0xFF, 0xF7, 0x65, 0x4F, 0x0B, 0xA1, 0xCF, 0xFF, 0xFF, 0xFC, 0x1A, 0xB0, 0xF4, 0x56, 0x7F, 0xFF}; // payload_len = 17
+    uint8_t param36[] = {0xEE, 0x42};   // payload_len = 2
+    uint8_t param37[] = {0xFF, 0x77, 0x01, 0x00, 0x00, 0x00};  // payload_len = 6
+    uint8_t param38[] = {0x36, 0x00};   // payload_len = 2
+    uint8_t param39[] = {0x3A, 0x55};   // payload_len = 2
+    uint8_t param40[] = {0x11};         // payload_len = 1
+    uint8_t param41[] = {0x29};         // payload_len = 1
+
+    // Send commands and apply delays
+    connecter_dsi_send_pkg(param1, sizeof(param1));
+    connecter_dsi_send_pkg(param2, sizeof(param2));
+    connecter_dsi_send_pkg(param3, sizeof(param3));
+    connecter_dsi_send_pkg(param4, sizeof(param4));
+    connecter_dsi_send_pkg(param5, sizeof(param5));
+    connecter_dsi_send_pkg(param6, sizeof(param6));
+    connecter_dsi_send_pkg(param7, sizeof(param7));
+    connecter_dsi_send_pkg(param8, sizeof(param8));
+    connecter_dsi_send_pkg(param9, sizeof(param9));
+    connecter_dsi_send_pkg(param10, sizeof(param10));
+    connecter_dsi_send_pkg(param11, sizeof(param11));
+    connecter_dsi_send_pkg(param12, sizeof(param12));
+    connecter_dsi_send_pkg(param13, sizeof(param13));
+    connecter_dsi_send_pkg(param14, sizeof(param14));
+    connecter_dsi_send_pkg(param15, sizeof(param15));
+    connecter_dsi_send_pkg(param16, sizeof(param16));
+    connecter_dsi_send_pkg(param17, sizeof(param17));
+    connecter_dsi_send_pkg(param18, sizeof(param18));
+    connecter_dsi_send_pkg(param19, sizeof(param19));
+    connecter_dsi_send_pkg(param20, sizeof(param20));
+    connecter_dsi_send_pkg(param21, sizeof(param21));
+    connecter_dsi_send_pkg(param22, sizeof(param22));
+    connecter_dsi_send_pkg(param23, sizeof(param23));
+    connecter_dsi_send_pkg(param24, sizeof(param24));
+    connecter_dsi_send_pkg(param25, sizeof(param25));
+    connecter_dsi_send_pkg(param26, sizeof(param26));
+    connecter_dsi_send_pkg(param27, sizeof(param27));
+    connecter_dsi_send_pkg(param28, sizeof(param28));
+    connecter_dsi_send_pkg(param29, sizeof(param29));
+    connecter_dsi_send_pkg(param30, sizeof(param30));
+    connecter_dsi_send_pkg(param31, sizeof(param31));
+    connecter_dsi_send_pkg(param32, sizeof(param32));
+    connecter_dsi_send_pkg(param33, sizeof(param33));
+    connecter_dsi_send_pkg(param34, sizeof(param34));
+    connecter_dsi_send_pkg(param35, sizeof(param35));
+    connecter_dsi_send_pkg(param36, sizeof(param36));
+    connector_delay_us(100000);
+    connecter_dsi_send_pkg(param37, sizeof(param37));
+    connecter_dsi_send_pkg(param38, sizeof(param38));
+    connecter_dsi_send_pkg(param39, sizeof(param39));
+    connecter_dsi_send_pkg(param40, sizeof(param40));
+    connector_delay_us(50000); // 50ms delay
+    connecter_dsi_send_pkg(param41, sizeof(param41));
+#else
     // k_u8 param1[] = {0x11, 0x00};
     k_u8 param2[] = {0xFF, 0x77,0x01,0x00,0x00,0x13};
     k_u8 param3[] = {0xEF, 0x08};
@@ -140,6 +229,7 @@ static void st7701_480x800_init(k_u8 test_mode_en)
     connecter_dsi_send_pkg(param44, sizeof(param44));
     connecter_dsi_send_pkg(param45, sizeof(param45));
     connector_delay_us(50000);
+#endif
 }
 
 static void st7701_480x854_init(k_u8 test_mode_en)

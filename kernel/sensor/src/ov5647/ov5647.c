@@ -572,8 +572,8 @@ static k_s32 sensor_set_intg_time_impl(void *ctx, k_sensor_intg_time time)
             	ret |= sensor_reg_write(&dev->i2c_info, OV5647_REG_LONG_EXP_TIME_L, ( exp_line << 4) & 0xff);
     		}
     		else
-    		{            
-        		new_vts = exp_line + 12;
+    		{
+        		new_vts = exp_line + 50;
         		if(new_vts < min_vts) new_vts = min_vts;
         		else if(new_vts > max_vts) new_vts = max_vts;
         		if(current_mode->et_line<exp_line)

@@ -573,7 +573,7 @@ static k_s32 sensor_set_intg_time_impl(void *ctx, k_sensor_intg_time time)
     		}
     		else
     		{
-        		new_vts = exp_line + 50;
+        		new_vts = exp_line + 12;
         		if(new_vts < min_vts) new_vts = min_vts;
         		else if(new_vts > max_vts) new_vts = max_vts;
         		if(current_mode->et_line<exp_line)

@@ -15,6 +15,7 @@ obj-y := src/sensor_comm.o src/sensor_dev.o
 obj-$(CONFIG_MPP_ENABLE_SENSOR_GC2093) += src/gc2093/gc2093.o
 obj-$(CONFIG_MPP_ENABLE_SENSOR_OV5647) += src/ov5647/ov5647.o
 obj-$(CONFIG_MPP_ENABLE_SENSOR_IMX335) += src/imx335/imx335.o
+obj-$(CONFIG_MPP_ENABLE_SENSOR_SC132GS) += src/sc132gs/sc132gs.o
 
 OBJS = $(obj-y)
 

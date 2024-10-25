@@ -762,6 +762,125 @@ static const k_vicap_sensor_info sensor_info_list[] = {
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 #endif // CONFIG_MPP_ENABLE_SENSOR_GC2093
 
+#if defined (CONFIG_MPP_ENABLE_SENSOR_SC132GS)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    {
+        "sc132gs_csi0",
+        "sc132gs-1080x1280",
+        1080,
+        1280,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI0_1080X1200_30FPS_10BIT_LINEAR,
+    },
+    {
+        "sc132gs_csi0",
+        "sc132gs-640x480",
+        640,
+        480,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI0_640X480_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+    {
+        "sc132gs_csi1",
+        "sc132gs-1080x1280",
+        1080,
+        1280,
+        VICAP_CSI1,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI1,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI1_1080X1200_30FPS_10BIT_LINEAR,
+    },
+    {
+        "sc132gs_csi1",
+        "sc132gs-640x480",
+        640,
+        480,
+        VICAP_CSI1,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI1,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI1_640X480_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    {
+        "sc132gs_csi2",
+        "sc132gs-1080x1280",
+        1080,
+        1280,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI2_1080X1200_30FPS_10BIT_LINEAR,
+    },
+    {
+        "sc132gs_csi2",
+        "sc132gs-640x480",
+        640,
+        480,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_800M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        60,
+        SC132GS_MIPI_CSI2_640X480_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
+#endif // CONFIG_MPP_ENABLE_SENSOR_SC132GS
+
     /* the end of table */
     {
         .sensor_name = NULL,
@@ -835,7 +954,7 @@ k_s32 kd_mpi_sensor_open(const char *sensor_name)
     snprintf(dev_name, sizeof(dev_name), "/dev/sensor_%s", sensor_name);
     fd = open(dev_name, O_RDWR);
     if (fd < 0) {
-        pr_err("%s, %s failed(%d).\n", __func__, sensor_name, fd);
+        // pr_err("%s, %s failed(%d).\n", __func__, sensor_name, fd);
         return K_ERR_VICAP_NOTREADY;
     }
     return fd;
@@ -1438,7 +1557,7 @@ k_s32 kd_mpi_sensor_adapt_get(k_vicap_probe_config *config, k_vicap_sensor_info 
         last_sensor_open_failed = 0;
 
         if (0 > (sensor_fd = kd_mpi_sensor_open(p_sensor_info->sensor_name))) {
-            printf("open failed %s\n", p_sensor_info->sensor_name);
+            // printf("open failed %s\n", p_sensor_info->sensor_name);
 
             last_sensor_open_failed = 1;
             strncpy(last_failed_sensor_name, p_sensor_info->sensor_name, sizeof(last_failed_sensor_name));

@@ -127,6 +127,7 @@ typedef k_s32 (*sensor_probe_impl)(struct k_sensor_probe_cfg *, struct sensor_dr
 extern k_s32 sensor_gc2093_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_dev *dev);
 extern k_s32 sensor_ov5647_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_dev *dev);
 extern k_s32 sensor_imx335_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_dev *dev);
+extern k_s32 sensor_sc132gs_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_dev *dev);
 
 #endif /* _SENSOR_DEV_H_ */
 

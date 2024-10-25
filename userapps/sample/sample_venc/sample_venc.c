@@ -135,11 +135,13 @@ typedef struct
     k_bool ch_done;
 } venc_conf_t;
 
-char out_filename[50] = {"\0"};
-FILE *output_file = NULL;
-VENC_SAMPLE_STATUS g_venc_sample_status = VENC_SAMPLE_STATUS_IDLE;
-venc_conf_t g_venc_conf;
-k_u32 intbuf_size=0;
+static char out_filename[50] = {"\0"};
+static FILE *output_file = NULL;
+static VENC_SAMPLE_STATUS g_venc_sample_status = VENC_SAMPLE_STATUS_IDLE;
+static venc_conf_t g_venc_conf;
+static k_u32 intbuf_size=0;
+static k_u32 enc_width=1280;
+static k_u32 enc_height=720;
 
 static inline void CHECK_RET(k_s32 ret, const char *func, const int line)
 {
@@ -556,8 +558,8 @@ k_s32 sample_venc_h265(k_vicap_sensor_type sensor_type)
     int ch = 0;
     k_u32 output_frames = 10;
     k_u32 bitrate   = 4000;   //kbps
-    int width       = 1280;
-    int height      = 720;
+    int width       = enc_width;
+    int height      = enc_height;
     k_venc_rc_mode rc_mode  = K_VENC_RC_MODE_CBR;
     k_payload_type type     = K_PT_H265;
     k_venc_profile profile  = VENC_PROFILE_H265_MAIN;
@@ -621,8 +623,8 @@ k_s32 sample_venc_jpeg(k_vicap_sensor_type sensor_type)
     int chnum = 1;
     int ch = 0;
     k_u32 output_frames = 10;
-    int width       = 1280;
-    int height      = 720;
+    int width       = enc_width;
+    int height      = enc_height;
     k_venc_rc_mode rc_mode  = K_VENC_RC_MODE_MJPEG_FIXQP;
     k_payload_type type     = K_PT_JPEG;
     k_u32 q_factor          = 45;
@@ -686,8 +688,8 @@ k_s32 sample_venc_osd_h264(k_vicap_sensor_type sensor_type)
     int ch = 0;
     k_u32 output_frames = 10;
     k_u32 bitrate   = 4000;   //kbps
-    int width       = 1280;
-    int height      = 720;
+    int width       = enc_width;
+    int height      = enc_height;
     k_venc_rc_mode rc_mode  = K_VENC_RC_MODE_CBR;
     k_payload_type type     = K_PT_H264;
     k_venc_profile profile  = VENC_PROFILE_H264_HIGH;
@@ -795,8 +797,8 @@ k_s32 sample_venc_osd_border_h265(k_vicap_sensor_type sensor_type)
     int ch = 0;
     k_u32 output_frames = 10;
     k_u32 bitrate   = 4000;   //kbps
-    int width       = 1280;
-    int height      = 720;
+    int width       = enc_width;
+    int height      = enc_height;
 
     k_venc_rc_mode rc_mode  = K_VENC_RC_MODE_CBR;
     k_payload_type type     = K_PT_H265;
@@ -972,6 +974,14 @@ int main(int argc, char *argv[])
         else if(strcmp(argv[i], "-buf") == 0)
         {
             intbuf_size = atoi(argv[i + 1]);
+        }
+        else if(strcmp(argv[i], "-w") == 0)
+        {
+            enc_width = atoi(argv[i + 1]);
+        }
+        else if(strcmp(argv[i], "-h") == 0)
+        {
+            enc_height = atoi(argv[i + 1]);
         }
     }
 

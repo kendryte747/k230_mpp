@@ -91,7 +91,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-                .setting.id = SENSOR_MCLK2,
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 25,	// 594/25 = 23.76MHz
             },
@@ -134,7 +134,7 @@ static const k_sensor_mode sensor_csi2_mode_list[] = {
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
-                .setting.id = SENSOR_MCLK2,
+                .setting.id = CONFIG_MPP_CSI_DEV2_MCLK_NUM,
                 .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
                 .setting.mclk_div = 24,	// 594/25 = 23.76MHz
             },

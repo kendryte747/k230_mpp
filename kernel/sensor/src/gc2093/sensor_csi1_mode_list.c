@@ -3,6 +3,37 @@ static k_sensor_ae_info sensor_csi1_ae_info[] = {
      // list  for external  clk 23.76M
     // 1080P30 
     {
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .frame_length = 1206,
+        .cur_frame_length = 1206,
+        .one_line_exp_time = 0.000027652,
+        .gain_accuracy = 1024,
+        .min_gain = 1,
+        .max_gain = 18,
+        .int_time_delay_frame = 2,
+        .gain_delay_frame = 2,
+        .color_type = SENSOR_COLOR,
+        .integration_time_increment = 0.000027652,
+        .gain_increment = GC2093_MIN_GAIN_STEP,
+        .max_integraion_line = 1206 - 1,
+        .min_integraion_line = 1,
+        .max_integraion_time = 0.000027652 * (1206 - 1),
+        .min_integraion_time = 0.000027652 * 1,
+        .cur_integration_time = 0.0,
+        .cur_again = 1.0,
+        .cur_dgain = 1.0,
+        .a_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/64.0f),
+        },
+        .d_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/1024.0f),
+        },
+        .cur_fps = 30,
+#else
         .frame_length = 1218,
         .cur_frame_length = 1218,
         .one_line_exp_time = 0.000027375,
@@ -32,6 +63,7 @@ static k_sensor_ae_info sensor_csi1_ae_info[] = {
             .step = (1.0f/1024.0f),
         },
         .cur_fps = 30,
+#endif
     },
     // 1080P60 
     {
@@ -67,6 +99,37 @@ static k_sensor_ae_info sensor_csi1_ae_info[] = {
     },
      // 960P 90fps
     {
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .frame_length = 1072,
+        .cur_frame_length = 1072,
+        .one_line_exp_time =0.000010369,
+        .gain_accuracy = 1024,
+        .min_gain = 1,
+        .max_gain = 18,
+        .int_time_delay_frame = 2,
+        .gain_delay_frame = 2,
+        .color_type = SENSOR_COLOR,
+        .integration_time_increment = 0.000010369,
+        .gain_increment = GC2093_MIN_GAIN_STEP,
+        .max_integraion_line = 1072 - 1,
+        .min_integraion_line = 1,
+        .max_integraion_time = 0.000010369 * (1072 - 1),
+        .min_integraion_time = 0.000010369 * 1,
+        .cur_integration_time = 0.0,
+        .cur_again = 1.0,
+        .cur_dgain = 1.0,
+        .a_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/64.0f),
+        },
+        .d_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/1024.0f),
+        },
+        .cur_fps = 90,
+#else
         .frame_length = 1074,
         .cur_frame_length = 1074,
         .one_line_exp_time =0.00001095,
@@ -96,9 +159,11 @@ static k_sensor_ae_info sensor_csi1_ae_info[] = {
             .step = (1.0f/1024.0f),
         },
         .cur_fps = 90,
+#endif
     },
     //720P 90fps  
     {
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
         .frame_length = 837,
         .cur_frame_length = 837,
         .one_line_exp_time =0.000013273,
@@ -128,6 +193,37 @@ static k_sensor_ae_info sensor_csi1_ae_info[] = {
             .step = (1.0f/1024.0f),
         },
         .cur_fps = 90,
+#else
+        .frame_length = 837,
+        .cur_frame_length = 837,
+        .one_line_exp_time =0.000013273,
+        .gain_accuracy = 1024,
+        .min_gain = 1,
+        .max_gain = 18,
+        .int_time_delay_frame = 2,
+        .gain_delay_frame = 2,
+        .color_type = SENSOR_COLOR,
+        .integration_time_increment = 0.000013273,
+        .gain_increment = GC2093_MIN_GAIN_STEP,
+        .max_integraion_line = 837 - 1,
+        .min_integraion_line = 1,
+        .max_integraion_time = 0.000013273 * (837 - 1),
+        .min_integraion_time = 0.000013273 * 1,
+        .cur_integration_time = 0.0,
+        .cur_again = 1.0,
+        .cur_dgain = 1.0,
+        .a_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/64.0f),
+        },
+        .d_gain = {
+            .min = 1.0,
+            .max = 63.984375,
+            .step = (1.0f/1024.0f),
+        },
+        .cur_fps = 90,
+#endif
     },
 };
 
@@ -154,7 +250,22 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .data_type = 0x2B,
         },
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
+                .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
+                .setting.mclk_div = 25,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .reg_list = gc2093_mipi2lane_1080p_30fps_linear,
+        .sensor_ae_info = &sensor_csi1_ae_info[0],
+#else
     #error "INVALID CONFIGURE"
+#endif
 #else
         .mclk_setting = {
             {K_FALSE},
@@ -190,7 +301,22 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .data_type = 0x2B,
         },
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
+                .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
+                .setting.mclk_div = 25,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .reg_list = gc2093_mipi2lane_1080p_60fps_linear,
+        .sensor_ae_info = &sensor_csi1_ae_info[1],
+#else
     #error "INVALID CONFIGURE"
+#endif
 #else
         .mclk_setting = {
             {K_FALSE},
@@ -216,7 +342,11 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .width = 1280,
             .height = 960,
         },
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .fps = 90000,
+#else
         .fps = 60000,
+#endif
         .hdr_mode = SENSOR_MODE_LINEAR,
         .bit_width = 10,
         .bayer_pattern = BAYER_PAT_RGGB, //BAYER_PAT_RGGB,
@@ -226,7 +356,22 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .data_type = 0x2B,
         },
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
+                .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
+                .setting.mclk_div = 25,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .reg_list = gc2093_mipi2lane_960p_90fps_linear,
+        .sensor_ae_info = &sensor_csi1_ae_info[2],
+#else
     #error "INVALID CONFIGURE"
+#endif
 #else
         .mclk_setting = {
             {K_FALSE},
@@ -262,7 +407,22 @@ static const k_sensor_mode sensor_csi1_mode_list[] = {
             .data_type = 0x2B,
         },
 #ifdef CONFIG_MPP_SENSOR_GC2093_ON_CSI1_USE_CHIP_CLK
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        .mclk_setting = {
+            {
+                .mclk_setting_en = K_TRUE,
+                .setting.id = CONFIG_MPP_CSI_DEV1_MCLK_NUM,
+                .setting.mclk_sel = SENSOR_PLL1_CLK_DIV4,
+                .setting.mclk_div = 25,
+            },
+            {K_FALSE},
+            {K_FALSE},
+        },
+        .reg_list = gc2093_mipi2lane_720p_90fps_linear,
+        .sensor_ae_info = &sensor_csi1_ae_info[3],
+#else
     #error "INVALID CONFIGURE"
+#endif
 #else
         .mclk_setting = {
             {K_FALSE},

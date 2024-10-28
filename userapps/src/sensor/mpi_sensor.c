@@ -664,7 +664,11 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_FLASH_DISABLE,
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        90,
+#else
         60,
+#endif
         GC2093_MIPI_CSI1_1280X960_90FPS_10BIT_LINEAR,
     },
     {
@@ -682,7 +686,11 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         VICAP_FLASH_DISABLE,
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
+#if defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+        90,
+#else
         60,
+#endif
         GC2093_MIPI_CSI1_1280X720_90FPS_10BIT_LINEAR,
     },
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_1

@@ -104,13 +104,18 @@ static struct sensor_type_mirror_t type_mirror_tbl[] = {
 static struct sensor_type_mirror_t type_mirror_tbl[] = {
     // {.type =, .mirror = },
 };
+#elif defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+static struct sensor_type_mirror_t type_mirror_tbl[] = {
+    // {.type =, .mirror = },
+};
 #endif
 
 #if defined(CONFIG_BOARD_K230_CANMV) || defined(CONFIG_BOARD_K230_CANMV_V2) || \
     defined(CONFIG_BOARD_K230D_CANMV) ||                                       \
     defined(CONFIG_BOARD_K230_CANMV_01STUDIO) ||                               \
     defined(CONFIG_BOARD_K230_CANMV_DONGSHANPI) || \
-    defined(CONFIG_BOARD_K230D_CANMV_BPI_ZERO)
+    defined(CONFIG_BOARD_K230D_CANMV_BPI_ZERO) || \
+    defined(CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
 
 k_u32 get_mirror_by_sensor_type(k_vicap_sensor_type type) {
   k_u32 mirror = 0;

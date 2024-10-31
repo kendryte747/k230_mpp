@@ -86,7 +86,7 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
         .reg_list = sc132gs_mipi_2lane_1080x1280_init, //sc132gs_mipi_2lane_640x480_init, // sc132gs_mipi_2lane_1080x1280_init, 
-#if defined (MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -128,7 +128,7 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
             .data_type = 0x2B,
         },
         .reg_list = sc132gs_mipi_2lane_640x480_init, 
-#if defined (MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
         .mclk_setting = {
             {
                 .mclk_setting_en = K_TRUE,
@@ -151,6 +151,6 @@ static const k_sensor_mode sensor_csi0_mode_list[] = {
     },
 };
 
-#if defined (MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
+#if defined (CONFIG_MPP_ENABLE_SENSOR_SC132GS_ON_CSI0_USE_CHIP_CLK)
 _Static_assert(CONFIG_MPP_CSI_DEV0_MCLK_NUM >= 1 && (CONFIG_MPP_CSI_DEV0_MCLK_NUM <= 3), "Invalid CONFIG_MPP_CSI_DEV0_MCLK_NUM");
 #endif

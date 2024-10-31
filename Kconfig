@@ -213,6 +213,11 @@ menu "MPP Configuration"
     endmenu
 
     menu "Dsiplay Configuration"
+        config MPP_ENABLE_DSI_DEBUGGER
+            bool "Enable DSI Debuger"
+            default n
+            select APP_ENABLE_DSI_DEBUGGER
+
         menuconfig MPP_ENABLE_DSI_HDMI
             bool "Enable HDMI Display Driver"
 

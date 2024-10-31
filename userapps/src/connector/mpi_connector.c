@@ -15,6 +15,12 @@
 #define pr_err(...) printf(__VA_ARGS__)
 
 k_connector_info connector_info_list[] = {
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    {
+        .connector_name = "debugger",
+        .type = DSI_DEBUGGER_DEVICE,
+    },
+#endif
     {
         "hx8399",
         0,
@@ -158,33 +164,33 @@ k_connector_info connector_info_list[] = {
 #if defined (CONFIG_BOARD_K230_CANMV_LCKFB)
     {
         "st7701",
-        0,
-        0,
-        BACKGROUND_BLACK_COLOR,
-        9,
-        21,
-        K_DSI_2LAN,
-        K_BURST_MODE,
-        K_VO_LP_MODE,
+        .screen_test_mode = 0,
+        .dsi_test_mode = 0,
+        .bg_color = BACKGROUND_BLACK_COLOR,
+        .intr_line = 10, // 1024 lines
+        .pixclk_div = 17,
+        .lan_num = K_DSI_2LAN,
+        .work_mode = K_BURST_MODE,
+        .cmd_mode = K_VO_LP_MODE,
         .phy_attr = {
             .n = 3,
-            .m = 52,
+            .m = 64,
             .voc = 0x1f, // 0b00011111
-            .hs_freq = 0x80 | 0x22, // 0b10100010
+            .hs_freq = 0x80 | 0x13, // 0b10010011
         },
         .resolution = {
-            .pclk = 27000, // 27000 * 1000 / (480 + 32 + 32 + 9) / (800 + 4 + 3 + 8) = 59.9 fps
-            .phyclk = 324000,
-            .htotal = 480 + 32 + 32 + 9,
+            .pclk = 33000, // 33000 * 1000 / (480 + 10 + 60 + 50) / (800 + 20 + 80 + 200) = 50.00 fps
+            .phyclk = 396000,
+            .htotal = (480 + 10 + 60 + 50), // 600
             .hdisplay = 480,
-            .hsync_len = 32,
-            .hback_porch = 32,
-            .hfront_porch = 9,
-            .vtotal = 800 + 4 + 3 + 8,
+            .hsync_len = 10,
+            .hback_porch = 60,
+            .hfront_porch = 50,
+            .vtotal = (800 + 20 + 80 + 200), // 1100
             .vdisplay = 800,
-            .vsync_len = 4,
-            .vback_porch = 3,
-            .vfront_porch = 8,
+            .vsync_len = 20,
+            .vback_porch = 80,
+            .vfront_porch = 200,
         },
         ST7701_V1_MIPI_2LAN_480X800_30FPS,
     },
@@ -195,7 +201,7 @@ k_connector_info connector_info_list[] = {
         .screen_test_mode = 0,
         .dsi_test_mode = 0,
         .bg_color = BACKGROUND_BLACK_COLOR,
-        .intr_line = 9, // 512 lines
+        .intr_line = 10, // 1024 lines
         .pixclk_div = 21,
         .lan_num = K_DSI_2LAN,
         .work_mode = K_BURST_MODE,
@@ -207,18 +213,18 @@ k_connector_info connector_info_list[] = {
             .hs_freq = 0x80 | 0x22, // 0b10100010
         },
         .resolution = {
-            .pclk = 27000, // 27000 * 1000 / (480 + 2 + 16 + 50) / (800 + 2 + 16 + 40) = 57.42 fps
+            .pclk = 27000, // 27000 * 1000 / (480 + 2 + 16 + 50) / (800 + 180 + 60 + 60) = 44.79 fps
             .phyclk = 324000,
             .htotal = (480 + 2 + 16 + 50), // 548
             .hdisplay = 480,
             .hsync_len = 2,
             .hback_porch = 16,
             .hfront_porch = 50,
-            .vtotal = (800 + 2 + 16 + 40), // 858
+            .vtotal = (800 + 180 + 60 + 60), // 1100
             .vdisplay = 800,
-            .vsync_len = 2,
-            .vback_porch = 16,
-            .vfront_porch = 40,
+            .vsync_len = 60,
+            .vback_porch = 180,
+            .vfront_porch = 60,
         },
         .type = ST7701_V1_MIPI_2LAN_480X800_30FPS,
     },
@@ -298,6 +304,9 @@ k_connector_info connector_info_list[] = {
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         VIRTUAL_DISPLAY_DEVICE,
     },
+    {
+        .connector_name = NULL,
+    }
 };
 
 k_s32 kd_mpi_get_connector_info(k_connector_type connector_type, k_connector_info* connector_info)
@@ -306,6 +315,12 @@ k_s32 kd_mpi_get_connector_info(k_connector_type connector_type, k_connector_inf
         pr_err("%s, connector_info is null\n", __func__);
         return K_ERR_VO_NULL_PTR;
     }
+
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    if(DSI_DEBUGGER_DEVICE == connector_type) {
+        kd_mpi_connector_parse_setting(connector_info_list);
+    }
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
 
     for (k_s32 i = 0; i < sizeof(connector_info_list) / sizeof(k_connector_info); i++) {
         if (connector_type == connector_info_list[i].type) {

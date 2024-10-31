@@ -65,7 +65,11 @@ typedef enum {
     LT9611_MIPI_4LAN_1280X720_50FPS,
     LT9611_MIPI_4LAN_1280X720_30FPS,
     LT9611_MIPI_4LAN_640X480_60FPS = 120,
+
     VIRTUAL_DISPLAY_DEVICE = 200,
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    DSI_DEBUGGER_DEVICE = 201,
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
 } k_connector_type;
 
 typedef struct
@@ -107,6 +111,64 @@ typedef struct
     k_connector_type negotiated_types[256];
 } k_connector_negotiated_data;
 
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+enum k_connector_debugger_cmd_type {
+    // 0x05  Command type: Single byte data (DCS Short Write, no parameters) 
+    // 0x15  Command type: Two byte data (DCS Short Write, 1 parameter)
+    // 0x39  Command type: Multi byte data (DCS Long Write, n parameters n > 2)
+
+    CMD_TYPE_DCS_WRITE_05 = 0x05,
+    CMD_TYPE_DCS_WRITE_15 = 0x15,
+    CMD_TYPE_DCS_WRITE_39 = 0x39,
+
+    // 0x03 Command type: Single byte data  (Generic Short Write, no parameters)
+    // 0x13 Command type: Two byte data (Generic Short Write, 1 parameter)
+    // 0x23 Command type: Three byte data  (Generic Short Write, 2 parameters)
+    // 0x29 Command type: Multi byte data  (Generic Long Write, n parameters n > 2)
+
+    CMD_TYPE_GENERIC_WRITE_03 = 0x03,
+    CMD_TYPE_GENERIC_WRITE_13 = 0x13,
+    CMD_TYPE_GENERIC_WRITE_23 = 0x23,
+    CMD_TYPE_GENERIC_WRITE_29 = 0x29,
+};
+
+typedef struct {
+    k_u8 cmd_type;
+    k_u8 cmd_delay;
+    k_u8 cmd_size;
+    k_u8 cmd_data[0];
+} k_connector_debugger_cmd_slice;
+
+typedef struct {
+    k_u32 seq_size;
+    k_u8 seq[0];
+} k_connector_debugger_init_seq;
+
+typedef struct {
+    k_u32 pclk;
+    k_u32 fps;
+    k_dsi_lan_num lan_num;
+
+    k_u32 hdisplay;
+    k_u32 hsync_len;
+    k_u32 hback_porch;
+    k_u32 hfront_porch;
+
+    k_u32 vdisplay;
+    k_u32 vsync_len;
+    k_u32 vback_porch;
+    k_u32 vfront_porch;
+} k_connector_debugger_config;
+
+typedef struct {
+    k_u32 setting_size;
+
+    k_connector_info info;
+
+    // must at last
+    k_connector_debugger_init_seq init;
+} k_connector_debugger_setting;
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
 
 #ifdef __cplusplus
 }

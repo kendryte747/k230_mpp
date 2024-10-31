@@ -51,6 +51,10 @@ typedef struct {
     k_s32 (*connector_get_negotiated_data) (void *ctx, k_connector_negotiated_data *negotiated_data);
     k_s32 (*connector_conn_check)(void *ctx, k_s32 *conn);
     k_s32 (*connector_set_mirror)(void *ctx, k_connector_mirror *mirror);
+
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    k_s32 (*connector_debugger_apply_setting)(void *ctx, k_connector_debugger_setting *setting);
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
 } k_connector_function;
 
 
@@ -72,6 +76,10 @@ extern struct connector_driver_dev lt9611_connector_drv;
 extern struct connector_driver_dev st7701_connector_drv;
 extern struct connector_driver_dev ili9806_connector_drv;
 extern struct connector_driver_dev virtdev_connector_drv;
+
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+extern struct connector_driver_dev debugger_connector_dev;
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
 
 extern struct connector_driver_dev* connector_drv_list[];
 

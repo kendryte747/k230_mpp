@@ -37,6 +37,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include "k_autoconf_comm.h"
+
 /** \addtogroup     SYSTEM_CTRL */
 /** @{ */ /** <!-- [SYSTEM_CTRL] */
 

@@ -132,6 +132,10 @@ k_s32 connector_drv_dev_init(struct connector_driver_dev *pdriver_dev)
 }
 
 struct connector_driver_dev* connector_drv_list[] = {
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    &debugger_connector_dev,
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
+
 #ifdef CONFIG_MPP_DSI_ENABLE_VIRT
     &virtdev_connector_drv,
 #endif // CONFIG_MPP_DSI_ENABLE_VIRT

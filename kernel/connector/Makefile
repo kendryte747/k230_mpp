@@ -13,6 +13,8 @@ LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR)/src/ \
 
 obj-y := src/connector_comm.o src/connector_dev.o
 
+obj-$(CONFIG_MPP_ENABLE_DSI_DEBUGGER) += src/debugger.o
+
 obj-$(CONFIG_MPP_DSI_ENABLE_VIRT) += src/virtdev.o
 
 obj-$(CONFIG_MPP_DSI_ENABLE_HDMI_LT9611) += src/lt9611.o

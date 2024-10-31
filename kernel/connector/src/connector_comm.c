@@ -117,13 +117,46 @@ k_s32 connector_priv_ioctl(struct connector_driver_dev* dev, k_u32 cmd, void* ar
         ret = dev->connector_func.connector_set_mirror(dev, &mirror);
         break;
     }
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
+    case KD_IOC_CONNECTOR_S_DEBUGGER_SETTING: {
+        uint32_t setting_size;
+        k_connector_debugger_setting *setting = NULL;
+
+        if (dev->connector_func.connector_debugger_apply_setting == NULL) {
+            rt_kprintf("%s (%s)connector_debugger_apply_setting is null\n", __func__, dev->connector_name);
+            return -1;
+        }
+
+        // first get setting size
+        if (sizeof(setting_size) != lwp_get_from_user(&setting_size, args, sizeof(setting_size))) {
+            rt_kprintf("%s:%d lwp_get_from_user err\n", __func__, __LINE__);
+            return -2;
+        }
+
+        if(NULL == (setting = rt_malloc_align(setting_size, RT_CPU_CACHE_LINE_SZ))) {
+            rt_kprintf("%s:%d malloc failed\n", __func__, __LINE__);
+            return -3;
+        }
+
+        if (setting_size != lwp_get_from_user(setting, args, setting_size)) {
+            rt_kprintf("%s:%d lwp_get_from_user err\n", __func__, __LINE__);
+
+            rt_free_align(setting);
+            return -4;
+        }
+
+        ret = dev->connector_func.connector_debugger_apply_setting(dev, setting);
+
+        rt_free_align(setting);
+    } break;
+#endif // CONFIG_MPP_ENABLE_DSI_DEBUGGER
     default:
         break;
     }
     return ret;
 }
 
-static uint64_t perf_get_times(void)
+static inline uint64_t perf_get_times(void)
 {
     uint64_t cnt;
     __asm__ __volatile__(

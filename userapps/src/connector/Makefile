@@ -1,15 +1,18 @@
 include $(MPP_SRC_DIR)/userapps/src/mpp.mk
 include $(MPP_SRC_DIR)/userapps/src/rt-smart.mk
 
+include $(SDK_SRC_ROOT_DIR)/.config
+
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
 LIB = $(MPP_SRC_DIR)/userapps/lib/lib$(CURRECT_DIR_NAME).a
 
 LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR)/
 
-SRCS = $(wildcard $(LOCAL_SRC_DIR)/*.c)
+obj-y := mpi_connector.o
+obj-$(CONFIG_MPP_ENABLE_DSI_DEBUGGER) += debugger.o
 
-OBJS = $(patsubst %.c,%.o,$(SRCS))
+OBJS = $(obj-y)
 
 all: $(LIB)
 	@-rm -f $(OBJS)

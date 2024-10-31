@@ -46,7 +46,7 @@ static void st7701_480x800_init(k_u8 test_mode_en)
     uint8_t param5[] = {0x55, 0xB0};    // payload_len = 2
     uint8_t param6[] = {0xFF, 0x77, 0x01, 0x00, 0x00, 0x10};  // payload_len = 6
     uint8_t param7[] = {0xC0, 0x63, 0x00}; // payload_len = 3
-    uint8_t param8[] = {0xC1, 0x09, 0x02}; // payload_len = 3
+    uint8_t param8[] = {0xC1, 100, 200}; // payload_len = 3
     uint8_t param9[] = {0xC2, 0x37, 0x08}; // payload_len = 3
     uint8_t param10[] = {0xC7, 0x00};   // payload_len = 2
     uint8_t param11[] = {0xCC, 0x38};   // payload_len = 2

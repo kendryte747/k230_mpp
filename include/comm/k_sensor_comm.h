@@ -37,8 +37,6 @@
 #include "k_errno.h"
 #include "k_module.h"
 
-#include "k_autoconf_comm.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* End of #ifdef __cplusplus */

@@ -113,4 +113,6 @@ void connector_set_vtth_intr(k_bool status, k_u32 vpos);
 void connector_delay_us(uint64_t us);
 void connector_set_pixclk(k_u32 div);
 
+k_s32 connector_send_cmd(const k_u8 *cmd_seq, size_t cmd_size, k_bool dump);
+
 #endif /* _SENSOR_DEV_H_ */

@@ -179,18 +179,18 @@ k_connector_info connector_info_list[] = {
             .hs_freq = 0x80 | 0x13, // 0b10010011
         },
         .resolution = {
-            .pclk = 33000, // 33000 * 1000 / (480 + 10 + 60 + 50) / (800 + 20 + 80 + 200) = 50.00 fps
+            .pclk = 33000, // 33000 * 1000 / (480 + 8 + 32 + 32) / (800 + 10 + 140 + 150) = 54.35 fps
             .phyclk = 396000,
-            .htotal = (480 + 10 + 60 + 50), // 600
+            .htotal = (480 + 8 + 32 + 32), // 552
             .hdisplay = 480,
-            .hsync_len = 10,
-            .hback_porch = 60,
-            .hfront_porch = 50,
-            .vtotal = (800 + 20 + 80 + 200), // 1100
+            .hsync_len = 8,
+            .hback_porch = 32,
+            .hfront_porch = 32,
+            .vtotal = (800 + 10 + 140 + 150), // 1100
             .vdisplay = 800,
-            .vsync_len = 20,
-            .vback_porch = 80,
-            .vfront_porch = 200,
+            .vsync_len = 10,
+            .vback_porch = 150,
+            .vfront_porch = 140,
         },
         ST7701_V1_MIPI_2LAN_480X800_30FPS,
     },

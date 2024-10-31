@@ -633,7 +633,7 @@ int parse_and_append_command(const char *line, k_u8 *init_seq, k_u32 *init_seq_s
     k_u8 cmd_size = (k_u8)parsed_values[2];
 
     // Calculate the total size of the command slice
-    k_u32 slice_size = sizeof(k_connector_debugger_cmd_slice) + cmd_size;
+    k_u32 slice_size = sizeof(k_connector_cmd_slice) + cmd_size;
 
     // Check if there is enough space left in the init_seq buffer
     if (*init_seq_size + slice_size > max_seq_size) {
@@ -642,7 +642,7 @@ int parse_and_append_command(const char *line, k_u8 *init_seq, k_u32 *init_seq_s
     }
 
     // Copy the command slice into init_seq
-    k_connector_debugger_cmd_slice *cmd_slice = (k_connector_debugger_cmd_slice *)(init_seq + *init_seq_size);
+    k_connector_cmd_slice *cmd_slice = (k_connector_cmd_slice *)(init_seq + *init_seq_size);
     cmd_slice->cmd_type = cmd_type;
     cmd_slice->cmd_delay = cmd_delay;
     cmd_slice->cmd_size = cmd_size;
@@ -760,13 +760,13 @@ void kd_mpi_connector_parse_setting(k_connector_info *info_list) {
 
     {
         // dump init sequence
-        k_connector_debugger_cmd_slice *cmd;
+        k_connector_cmd_slice *cmd;
         const k_u8 *pcmd = init_seq, *pcmd_end = init_seq + init_seq_size;
         k_u32 cmd_remain = 0;
 
         printf("cmds:\ntotal size %u\n", init_seq_size);
         do {
-            cmd = (k_connector_debugger_cmd_slice *)pcmd;
+            cmd = (k_connector_cmd_slice *)pcmd;
             cmd_remain = pcmd_end - pcmd;
 
             if(cmd->cmd_size > cmd_remain) {
@@ -774,12 +774,12 @@ void kd_mpi_connector_parse_setting(k_connector_info *info_list) {
                 break;
             }
 
-            for(int i = 0; i < sizeof(k_connector_debugger_cmd_slice) + cmd->cmd_size; i++) {
+            for(int i = 0; i < sizeof(k_connector_cmd_slice) + cmd->cmd_size; i++) {
                 printf("%02X ", pcmd[i]);
             }
             printf("\n");
 
-            pcmd += sizeof(k_connector_debugger_cmd_slice) + cmd->cmd_size;
+            pcmd += sizeof(k_connector_cmd_slice) + cmd->cmd_size;
         } while(pcmd < pcmd_end);
     }
 

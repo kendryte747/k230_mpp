@@ -12,49 +12,7 @@ static k_connector_debugger_init_seq *s_init_seq = NULL;
 // cmd, cmd data size, cmd data
 static void connector_debugger_send_init_sequence(void)
 {
-    uint32_t cmd_remain = 0;
-    const uint8_t *pcmd = NULL, *pcmd_end = NULL;
-
-    k_connector_debugger_cmd_slice *cmd;
-
-    if(NULL == s_init_seq) {
-        rt_kprintf("no init sequence set.\n");
-        return;
-    }
-
-    pcmd = s_init_seq->seq;
-    pcmd_end = pcmd + s_init_seq->seq_size;
-
-    do {
-        cmd = (k_connector_debugger_cmd_slice *)pcmd;
-        cmd_remain = pcmd_end - pcmd;
-
-        if(cmd->cmd_size > cmd_remain) {
-            rt_kprintf("error cmd sequence.\n");
-            break;
-        }
-
-        if((CMD_TYPE_DCS_WRITE_05 == cmd->cmd_type) || (CMD_TYPE_DCS_WRITE_15 == cmd->cmd_type) || (CMD_TYPE_DCS_WRITE_39 == cmd->cmd_type)) {
-            connecter_dsi_send_pkg(cmd->cmd_data, cmd->cmd_size);
-
-            printf("send cmd:");
-            for(int i = 0; i < cmd->cmd_size; i++) {
-                printf("%02X ", cmd->cmd_data[i]);
-            }
-            printf("\n");
-
-            if(cmd->cmd_delay) {
-                uint64_t delay = (uint64_t)(cmd->cmd_delay) * 1000;
-
-                connector_delay_us(delay);
-            }
-        } else {
-            rt_kprintf("unsupport cmd type 0x%02X\n", cmd->cmd_type);
-            return;
-        }
-
-        pcmd += sizeof(k_connector_debugger_cmd_slice) + cmd->cmd_size;
-    } while(pcmd < pcmd_end);
+    connector_send_cmd(s_init_seq->seq, s_init_seq->seq_size, K_TRUE);
 }
 
 static void connector_debug_power_reset(k_s32 on)

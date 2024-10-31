@@ -111,8 +111,7 @@ typedef struct
     k_connector_type negotiated_types[256];
 } k_connector_negotiated_data;
 
-#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
-enum k_connector_debugger_cmd_type {
+enum k_connector_cmd_type {
     // 0x05  Command type: Single byte data (DCS Short Write, no parameters) 
     // 0x15  Command type: Two byte data (DCS Short Write, 1 parameter)
     // 0x39  Command type: Multi byte data (DCS Long Write, n parameters n > 2)
@@ -137,8 +136,9 @@ typedef struct {
     k_u8 cmd_delay;
     k_u8 cmd_size;
     k_u8 cmd_data[0];
-} k_connector_debugger_cmd_slice;
+} k_connector_cmd_slice;
 
+#if defined (CONFIG_MPP_ENABLE_DSI_DEBUGGER)
 typedef struct {
     k_u32 seq_size;
     k_u8 seq[0];

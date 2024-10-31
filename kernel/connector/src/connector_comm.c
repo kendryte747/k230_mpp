@@ -234,3 +234,57 @@ void connector_set_pixclk(k_u32 div)
 {
     k230_set_pixclk(div);
 }
+
+k_s32 connector_send_cmd(const k_u8 *cmd_seq, size_t cmd_size, k_bool dump)
+{
+    uint32_t cmd_remain = 0;
+    const uint8_t *pcmd = NULL, *pcmd_end = NULL;
+
+    k_connector_cmd_slice *cmd;
+
+    if(NULL == cmd_seq) {
+        rt_kprintf("no init sequence set.\n");
+        return -1;
+    }
+
+    pcmd = cmd_seq;
+    pcmd_end = pcmd + cmd_size;
+
+    do {
+        cmd = (k_connector_cmd_slice *)pcmd;
+        cmd_remain = pcmd_end - pcmd;
+
+        if(cmd->cmd_size > (cmd_remain - sizeof(k_connector_cmd_slice))) {
+            rt_kprintf("error cmd sequence. %d > %d\n", cmd->cmd_size, (cmd_remain - sizeof(k_connector_cmd_slice)));
+            break;
+        }
+
+        if(cmd->cmd_size && ((CMD_TYPE_DCS_WRITE_05 == cmd->cmd_type) || (CMD_TYPE_DCS_WRITE_15 == cmd->cmd_type) || (CMD_TYPE_DCS_WRITE_39 == cmd->cmd_type))) {
+            connecter_dsi_send_pkg(cmd->cmd_data, cmd->cmd_size);
+
+            if(dump) {
+                rt_kprintf("cmd -> delay %u, data:", cmd->cmd_delay);
+
+                for(int i = 0; i < cmd->cmd_size; i++) {
+                    rt_kprintf("%02X ", cmd->cmd_data[i]);
+                }
+                rt_kprintf("\n");
+            }
+
+            if(cmd->cmd_delay) {
+                uint64_t delay = (uint64_t)(cmd->cmd_delay) * 1000;
+
+                connector_delay_us(delay);
+            }
+        } else {
+            if(cmd->cmd_size) {
+                rt_kprintf("unsupport cmd type 0x%02X\n", cmd->cmd_type);
+                return -2;
+            }
+        }
+
+        pcmd += sizeof(k_connector_cmd_slice) + cmd->cmd_size;
+    } while(pcmd < pcmd_end);
+
+    return 0;
+}

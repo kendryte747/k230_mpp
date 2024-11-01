@@ -259,7 +259,7 @@ menu "MPP Configuration"
             endif
 
         config MPP_DSI_ENABLE_HDMI_HX8399
-            bool "Enable HDMI Display Converter HX8399"
+            bool "Enable LCD Display Converter HX8399"
             default n
 
         config MPP_DSI_ENABLE_LCD_ST7701

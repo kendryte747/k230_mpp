@@ -21,3 +21,6 @@ userapps/sample/elf/
 
 middleware/elf/
 middleware/lib/
+
+userapps/src/sensor/dewarp/imx335-1920x1080.bin
+userapps/src/sensor/dewarp/imx335-2592x1944.bin

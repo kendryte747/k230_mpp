@@ -192,6 +192,7 @@ static void _test_ai_i2s_in_data(const char *filename, int dev_num, int channel,
 #if ENABLE_SAVE_PCM
             {
                 k_u8 *raw_data = (k_u8 *)kd_mpi_sys_mmap(audio_frame.phys_addr, audio_frame.len);
+
                 // printf("raw_data:%p , audio_frame.len:%d\n", raw_data, audio_frame.len);
                 if (0 != audio_save_pcm_memory(raw_data, audio_frame.len))
                 {
@@ -496,7 +497,7 @@ k_s32 audio_sample_enable_audio_codec(k_bool enable_audio_codec)
     g_enable_audio_codec = enable_audio_codec;
     return K_SUCCESS;
 }
-k_s32 audio_sample_get_ai_i2s_data(const char *filename, k_audio_bit_width bit_width, k_u32 sample_rate,k_u32 channel_count,k_i2s_in_mono_channel  mono_channel, k_i2s_work_mode i2s_work_mode, k_bool enable_audio3a)
+k_s32 audio_sample_get_ai_i2s_data(const char *filename, k_audio_bit_width bit_width, k_u32 sample_rate,k_u32 channel_count,k_i2s_in_mono_channel  mono_channel, k_i2s_work_mode i2s_work_mode, k_u32 enable_audio3a)
 {
     k_aio_dev_attr aio_dev_attr;
     aio_dev_attr.audio_type = KD_AUDIO_INPUT_TYPE_I2S;
@@ -520,11 +521,33 @@ k_s32 audio_sample_get_ai_i2s_data(const char *filename, k_audio_bit_width bit_w
 
     if (enable_audio3a)
     {
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(0, 0, K_TRUE))
+        k_ai_vqe_enable vqe_enable;
+        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+        if (enable_audio3a&0x1)
+        {
+            vqe_enable.ans_enable = K_TRUE;
+            printf("ans_enable\n");
+        }
+        if (enable_audio3a&0x2)
+        {
+            vqe_enable.agc_enable = K_TRUE;
+            printf("agc_enable\n");
+        }
+        if (enable_audio3a&0x4)
+        {
+            vqe_enable.aec_enable = K_TRUE;
+            printf("aec_enable\n");
+        }
+
+        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(0, 0, vqe_enable))
         {
             printf("kd_mpi_ai_set_vqe_attr failed\n");
             return K_FAILED;
         }
+
+        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+        kd_mpi_ai_get_vqe_attr(0,0,&vqe_enable);
+        printf("========ans_enable:%d,agc_enable:%d,aec_enable:%d\n",vqe_enable.ans_enable,vqe_enable.agc_enable,vqe_enable.aec_enable);
     }
 
     kd_mpi_ai_enable(0);
@@ -536,7 +559,6 @@ k_s32 audio_sample_get_ai_i2s_data(const char *filename, k_audio_bit_width bit_w
     // exit
     kd_mpi_ai_disable_chn(0, 0);
     kd_mpi_ai_disable(0);
-
     return K_SUCCESS;
 }
 
@@ -671,7 +693,7 @@ k_s32 audio_sample_send_ao_data(const char *filename, int nDev, int nChannel, in
     return K_SUCCESS;
 }
 
-k_s32 audio_sample_api_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, int ao_channel, k_u32 sample_rate, k_audio_bit_width bit_width, k_i2s_work_mode i2s_work_mode, k_bool enable_audio3a)
+k_s32 audio_sample_api_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, int ao_channel, k_u32 sample_rate, k_audio_bit_width bit_width, k_i2s_work_mode i2s_work_mode, k_u32 enable_audio3a)
 {
     k_aio_dev_attr ai_dev_attr;
     ai_dev_attr.audio_type = (ai_dev_num == 0) ? KD_AUDIO_INPUT_TYPE_I2S : KD_AUDIO_INPUT_TYPE_PDM;
@@ -748,7 +770,24 @@ k_s32 audio_sample_api_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, 
 
     if (enable_audio3a)
     {
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, K_TRUE))
+        k_ai_vqe_enable vqe_enable;
+        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+        if (enable_audio3a&0x1)
+        {
+            vqe_enable.ans_enable = K_TRUE;
+            printf("ans_enable\n");
+        }
+        if (enable_audio3a&0x2)
+        {
+            vqe_enable.agc_enable = K_TRUE;
+            printf("agc_enable\n");
+        }
+        if (enable_audio3a&0x4)
+        {
+            vqe_enable.aec_enable = K_TRUE;
+            printf("aec_enable\n");
+        }
+        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, vqe_enable))
         {
             printf("kd_mpi_ai_set_vqe_attr failed\n");
             return K_FAILED;
@@ -779,7 +818,7 @@ k_s32 audio_sample_api_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, 
     return K_SUCCESS;
 }
 
-k_s32 audio_sample_bind_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, int ao_channel, k_u32 sample_rate, k_audio_bit_width bit_width, k_i2s_work_mode i2s_work_mode, k_bool enable_audio3a)
+k_s32 audio_sample_bind_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, int ao_channel, k_u32 sample_rate, k_audio_bit_width bit_width, k_i2s_work_mode i2s_work_mode, k_u32 enable_audio3a)
 {
     k_aio_dev_attr ai_dev_attr;
     if (ai_dev_num == 1)
@@ -858,7 +897,25 @@ k_s32 audio_sample_bind_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num,
 
     if (enable_audio3a)
     {
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, K_TRUE))
+        k_ai_vqe_enable vqe_enable;
+        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+        if (enable_audio3a&0x1)
+        {
+            vqe_enable.ans_enable = K_TRUE;
+            printf("ans_enable\n");
+        }
+        if (enable_audio3a&0x2)
+        {
+            vqe_enable.agc_enable = K_TRUE;
+            printf("agc_enable\n");
+        }
+        if (enable_audio3a&0x4)
+        {
+            vqe_enable.aec_enable = K_TRUE;
+            printf("aec_enable\n");
+        }
+
+        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, vqe_enable))
         {
             printf("kd_mpi_ai_set_vqe_attr failed\n");
             return K_FAILED;

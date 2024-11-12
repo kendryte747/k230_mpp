@@ -244,6 +244,40 @@ k_connector_info connector_info_list[] = {
         { 23760, 285120, 660, 480, 10, 20, 150, 1200, 854, 10, 20, 316 },
         ST7701_V1_MIPI_2LAN_480X854_30FPS,
     },
+#if defined (CONFIG_BOARD_K230D_CANMV_ATK_DNK230D)
+    {
+        .connector_name = "st7701",
+        .screen_test_mode = 0,
+        .dsi_test_mode = 0,
+        .bg_color = BACKGROUND_BLACK_COLOR,
+        .intr_line = 9,
+        .pixclk_div = 24,
+        .lan_num = K_DSI_2LAN,
+        .work_mode = K_BURST_MODE,
+        .cmd_mode = K_VO_LP_MODE,
+        .phy_attr = {
+            .n = 11,
+            .m = 278,
+            .voc = 0x27,
+            .hs_freq = 0x84,
+        },
+        .resolution = {
+            .pclk = 23760,
+            .phyclk = 285120,
+            .htotal = 625,
+            .hdisplay = 480,
+            .hsync_len = 6,
+            .hback_porch = 6,
+            .hfront_porch = 133,
+            .vtotal = 686,
+            .vdisplay = 640,
+            .vsync_len = 6,
+            .vback_porch = 14,
+            .vfront_porch = 26,
+        },
+        .type = ST7701_V1_MIPI_2LAN_480X640_30FPS,
+    },
+#else
     {
         .connector_name = "st7701",
         .screen_test_mode = 0,
@@ -276,6 +310,7 @@ k_connector_info connector_info_list[] = {
         },
         .type = ST7701_V1_MIPI_2LAN_480X640_30FPS,
     },
+#endif
     {
         "ili9806",
         0,

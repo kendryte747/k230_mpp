@@ -148,6 +148,7 @@ typedef struct {
     k_u32 pclk;
     k_u32 fps;
     k_dsi_lan_num lan_num;
+    k_u32 intr_line;
 
     k_u32 hdisplay;
     k_u32 hsync_len;

@@ -10,8 +10,8 @@ hfp=32
 
 vactive=800
 vsync=10
-vfp=140
 vbp=150
+vfp=140
 
 [init-sequence]
 0x05,0,1,0x01

@@ -433,7 +433,7 @@ static int kd_mpi_calc_timings(k_connector_debugger_config *config, k_connector_
     info->screen_test_mode = 0;
     info->dsi_test_mode = 0;
     info->bg_color = BACKGROUND_BLACK_COLOR;
-    info->intr_line = intr_line;
+    info->intr_line = (0x00 == config->intr_line) ? intr_line : config->intr_line;
     info->pixclk_div = pclk_div;
     info->lan_num = config->lan_num;
     info->work_mode = K_BURST_MODE;
@@ -444,7 +444,7 @@ static int kd_mpi_calc_timings(k_connector_debugger_config *config, k_connector_
     info->phy_attr.voc = attr_vco;
     info->phy_attr.hs_freq = 0x80 | attr_hs_freq;
 
-    info->resolution.pclk = config->pclk;
+    info->resolution.pclk = config->pclk / 1000;
     info->resolution.phyclk = mipi_clock * 2;
     info->resolution.htotal = htotal;
     info->resolution.hdisplay = config->hdisplay;
@@ -562,6 +562,10 @@ static void parse_config(char *line, k_connector_debugger_config *config) {
             } else {
                 printf("Invalid lane num(%u), should be 1, 2 or 4\n", value);
             }
+        } break;
+        case 0x2FB419E9: /* 'intr_line' */
+        {
+            config->intr_line = value;
         } break;
         case 0x32ED94E9: /* 'hactive' */
         {
@@ -732,6 +736,8 @@ void kd_mpi_connector_parse_setting(k_connector_info *info_list) {
     }
     close(fd);
     fd = -1;
+
+    memset(&config, 0, sizeof(config));
 
     next_line = (char *)file_data;
     do {

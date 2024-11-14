@@ -283,7 +283,7 @@ k_connector_info connector_info_list[] = {
         .screen_test_mode = 0,
         .dsi_test_mode = 0,
         .bg_color = BACKGROUND_BLACK_COLOR,
-        .intr_line = 9, // 512 lines
+        .intr_line = 10, // 1024 lines
         .pixclk_div = 23,
         .lan_num = K_DSI_2LAN,
         .work_mode = K_BURST_MODE,
@@ -295,18 +295,18 @@ k_connector_info connector_info_list[] = {
             .hs_freq = 0x80 | 0x02, // 0b10000010
         },
         .resolution = {
-            .pclk = 24750, // 24750 * 1000 / (480 + 6 + 10 + 133) / (640 + 6 + 14 + 36) = 56.53 fps
+            .pclk = 24750, // 24750 * 1000 / (480 + 6 + 10 + 20) / (640 + 30 + 160 + 200) = 46.57 fps
             .phyclk = 297000,
-            .htotal = (480 + 6 + 10 + 133), // 629
+            .htotal = (480 + 6 + 10 + 20), // 516
             .hdisplay = 480,
             .hsync_len = 6,
             .hback_porch = 10,
-            .hfront_porch = 133,
-            .vtotal = (640 + 6 + 14 + 36), // 696
+            .hfront_porch = 20,
+            .vtotal = (640 + 30 + 160 + 200), // 1030
             .vdisplay = 640,
-            .vsync_len = 6,
-            .vback_porch = 14,
-            .vfront_porch = 36,
+            .vsync_len = 30,
+            .vback_porch = 160,
+            .vfront_porch = 200,
         },
         .type = ST7701_V1_MIPI_2LAN_480X640_30FPS,
     },

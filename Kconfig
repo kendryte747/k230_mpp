@@ -1,6 +1,9 @@
 
 menu "MPP Configuration"
     menu "Sensor Configuration"
+
+        comment "Sensor Devices"
+
         menuconfig MPP_ENABLE_CSI_DEV_0
             bool "Enable CSI0"
 
@@ -127,6 +130,8 @@ menu "MPP Configuration"
                     default 3 if MPP_CSI_DEV2_MCLK_3
             endif
 
+        comment "Sensor Drivers"
+
         menuconfig MPP_ENABLE_SENSOR_GC2093
             bool "Enable GC2093"
 
@@ -218,6 +223,8 @@ menu "MPP Configuration"
             default n
             select APP_ENABLE_DSI_DEBUGGER
 
+        comment "Display Drivers"
+
         menuconfig MPP_ENABLE_DSI_HDMI
             bool "Enable HDMI Display Driver"
 
@@ -245,8 +252,10 @@ menu "MPP Configuration"
             endif
 
         config MPP_DSI_ENABLE_VIRT
-            bool "Enable Display driver VIRT"
+            bool "Enable VIRT Display Driver "
             default y
+
+        comment "Display Connector Drivers"
 
         menuconfig MPP_DSI_ENABLE_HDMI_LT9611
             bool "Enable HDMI Display Converter LT9611"
@@ -263,11 +272,11 @@ menu "MPP Configuration"
             default n
 
         config MPP_DSI_ENABLE_LCD_ST7701
-            bool "Enable LCD Display Driver ST7701s"
+            bool "Enable LCD Display Converter ST7701s"
             default n
-        
+
         config MPP_DSI_ENABLE_LCD_ILI9806
-            bool "Enable LCD Display Driver ili9806"
+            bool "Enable LCD Display Converter ili9806"
             default n
 
     endmenu

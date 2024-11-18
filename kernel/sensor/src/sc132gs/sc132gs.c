@@ -800,7 +800,7 @@ k_s32 sensor_sc132gs_probe(struct k_sensor_probe_cfg *cfg, struct sensor_driver_
     dev->i2c_info.reg_val_size = SENSOR_REG_VALUE_8BIT;
     dev->i2c_info.slave_addr = 0x30; /* SH-M100-GS0-V0 */
     if((0x00 != _sensor_read_chip_id_r(dev, &chip_id)) || (SC123GS_CHIP_ID != chip_id)) {
-        rt_kprintf("sc132gs read chip id failed, 0x%04x\n", chip_id);
+        // rt_kprintf("sc132gs read chip id failed, 0x%04x\n", chip_id);
         goto _on_failed;
     }
     /** NEW SENSOR MODIFY END */

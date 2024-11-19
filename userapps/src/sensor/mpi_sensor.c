@@ -889,6 +889,72 @@ static const k_vicap_sensor_info sensor_info_list[] = {
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 #endif // CONFIG_MPP_ENABLE_SENSOR_SC132GS
 
+#if defined (CONFIG_MPP_ENABLE_SENSOR_XS9950)
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_0)
+    {
+        "xs9950_csi0",
+        "xs9950-1280x720",
+        1280,
+        720,
+        VICAP_CSI0,
+        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_CSI_DATA_TYPE_YUV422_8,
+        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        XS9950_MIPI_CSI0_1280X720_30FPS_YUV422,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_1)
+    {
+        "xs9950_csi1",
+        "xs9950-1280x720",
+        1280,
+        720,
+        VICAP_CSI1,
+        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_SOURCE_CSI1,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_CSI_DATA_TYPE_YUV422_8,
+        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        XS9950_MIPI_CSI1_1280X720_30FPS_YUV422,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined (CONFIG_MPP_ENABLE_CSI_DEV_2)
+    {
+        "xs9950_csi2",
+        "xs9950-1280x720",
+        1280,
+        720,
+        VICAP_CSI2,
+        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_CSI_DATA_TYPE_YUV422_8,
+        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        XS9950_MIPI_CSI2_1280X720_30FPS_YUV422,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
+#endif // CONFIG_MPP_ENABLE_SENSOR_XS9950
+
+
     /* the end of table */
     {
         .sensor_name = NULL,

@@ -45,6 +45,7 @@
 #include "mpi_vb_api.h"
 #include "mpi_venc_api.h"
 #include "mpi_sys_api.h"
+#include "mpi_sensor_api.h"
 #include "k_venc_comm.h"
 #include "k_audio_comm.h"
 #include "k_payload_comm.h"
@@ -451,7 +452,7 @@ static void *_test_ai_aenc_file_sysbind(void *arg)
 #endif
 int main(int argc, char const *argv[])
 {
-    k_vicap_sensor_type sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
+    k_vicap_sensor_type sensor_type = SENSOR_TYPE_MAX;
 
 #ifdef ENABLE_MPI
 
@@ -476,6 +477,24 @@ int main(int argc, char const *argv[])
             _help();
             return -1;
         }
+    }
+
+    if(SENSOR_TYPE_MAX == sensor_type) {
+        k_vicap_probe_config probe_cfg;
+        k_vicap_sensor_info sensor_info;
+
+        probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+        probe_cfg.width = 1920;
+        probe_cfg.height = 1080;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+
+        sensor_type = sensor_info.sensor_type;
     }
 
     k_s32 ch = 0;

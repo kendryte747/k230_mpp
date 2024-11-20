@@ -1,3 +1,5 @@
+include ../../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
@@ -12,7 +14,7 @@ CC_CFLAGS_EX=-mcmodel=medany -march=rv64imafdcv -mabi=lp64d -Wall -O0 -g -gdwarf
 MP4_FORMAT = $(MPP_SRC_DIR)/middleware/src/mp4_format
 KPLAYER = $(MPP_SRC_DIR)/middleware/src/mp4_player
 
-LOCAL_LIBS_PATH = -L$(MP4_FORMAT)/lib -L$(KPLAYER)
+LOCAL_LIBS_PATH = -L$(MPP_MIDDLEWARE_LIB_INSTALL_PATH)
 LOCAL_LIBS =  -lmp4_player -lmp4
 
 LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR) -I$(MP4_FORMAT)/include -I$(KPLAYER)/include
@@ -30,7 +32,7 @@ CPP_SRCS = $(wildcard $(LOCAL_SRC_DIR)/*.cpp)
 CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 
 all:$(BIN)
-	#@-rm -f *.o
+	@-rm -f *.o
 	@echo "${PWD}/Makefile all"
 
 $(OBJS): %.o : %.c

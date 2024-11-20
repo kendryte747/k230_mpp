@@ -1,3 +1,5 @@
+include ../mkenv.mk
+
 include $(MPP_SRC_DIR)/userapps/sample/mpp.mk
 include $(MPP_SRC_DIR)/userapps/sample/rt-smart.mk
 

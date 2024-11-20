@@ -7,6 +7,7 @@
 #include <mutex>
 #include <string.h>
 #include <stdio.h>
+#include "k_sensor_comm.h"
 #include "media.h"
 #include "mp4_format.h"
 
@@ -277,7 +278,7 @@ int main(int argc, char *argv[])
 
     KdMediaInputConfig config = {
         .video_valid = true,
-        .sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR,
+        .sensor_type = SENSOR_TYPE_MAX,
         .sensor_num = 1,
         .video_type = KdMediaVideoType::kVideoTypeH265,
         .venc_width = 1280,

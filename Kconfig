@@ -4,6 +4,24 @@ menu "MPP Configuration"
 
         comment "Sensor Devices"
 
+        choice MPP_DEFAULT_SENSOR_CSI_NUM
+                bool "Default SENSOR on CSI"
+                default MPP_DEFAULT_SENSOR_CSI_0
+
+                config MPP_DEFAULT_SENSOR_CSI_0
+                    bool "0"
+                config MPP_DEFAULT_SENSOR_CSI_1
+                    bool "1"
+                config MPP_DEFAULT_SENSOR_CSI_2
+                    bool "2"
+        endchoice
+
+        config MPP_SENSOR_DEFAULT_CSI
+            int
+            default 0 if MPP_DEFAULT_SENSOR_CSI_0
+            default 1 if MPP_DEFAULT_SENSOR_CSI_1
+            default 2 if MPP_DEFAULT_SENSOR_CSI_2
+
         menuconfig MPP_ENABLE_CSI_DEV_0
             bool "Enable CSI0"
 
@@ -310,6 +328,178 @@ menu "MPP Configuration"
 
             if MPP_ENABLE_USERAPPS_SAMPLES
 
+                config MPP_ENABLE_USER_SAMPLES_FASTBOOT_APP
+                    bool "Fast Boot Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_OPENCV_CAMERA_TEST
+                    bool "OpenCV Camera Test Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_ADC
+                    bool "ADC Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_AHD_SENSOR
+                    bool "AHD Sensor Sample"
+                    default y
+                    depends on MPP_ENABLE_SENSOR_XS9950
+                    help
+                        AHD Sample, Depends on Sensor XS9950
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_AUDIO
+                    bool "Audio Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_AV
+                    bool "AV Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_CANAN_UART_RX
+                    bool "Canaan UART RX Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_CANAN_UART_TX
+                    bool "Canaan UART TX Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_CIPHER
+                    bool "Cipher Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_CSC
+                    bool "CSC Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DMA
+                    bool "DMA Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DMA_BIND
+                    bool "DMA Bind Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DPU
+                    bool "DPU Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DPU_VICAP
+                    bool "DPU VICAP Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DPU_VO
+                    bool "DPU VO Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_DW200
+                    bool "DW200 Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_EEPROM
+                    bool "EEPROM Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_FACE_AE
+                    bool "Face AE Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_FACE_DETECT
+                    bool "Face Detection Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_FFT
+                    bool "FFT Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_GPIO
+                    bool "GPIO Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_I2C_SLAVE
+                    bool "I2C Slave Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_LOG
+                    bool "Log Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_MCM
+                    bool "MCM Sample"
+                    default y
+                    depends on MPP_ENABLE_SENSOR_XS9950
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_MMZ
+                    bool "MMZ Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_NONAI_2D
+                    bool "Non-AI 2D Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_OTP
+                    bool "OTP Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_PM
+                    bool "Power Management Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_PWM
+                    bool "PWM Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_SENSOR_OTP
+                    bool "Sensor OTP Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_TRIPLE_CAMERA_FACEDETECT
+                    bool "Triple Camera Face Detection Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_TS
+                    bool "TS Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VB
+                    bool "VB Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VDD_R
+                    bool "VDD R Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VDEC
+                    bool "VDEC Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VDSS
+                    bool "VDSS Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VDV
+                    bool "VDV Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VENC
+                    bool "VENC Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VICAP
+                    bool "VICAP Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VIRTUAL_VIO
+                    bool "Virtual VIO Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_VO
+                    bool "VO Sample"
+                    default y
+
+                config MPP_ENABLE_USER_SAMPLES_SAMPLE_WDT
+                    bool "WDT Sample"
+                    default y
+
             endif
 
         menuconfig MPP_ENABLE_MIDDLEWARE_SAMPLES
@@ -319,22 +509,23 @@ menu "MPP Configuration"
 
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_DEMUXER
                     bool "Demuxer sample"
-                    default n
+                    default y
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_MUXER
                     bool "Muxer sample"
-                    default n
+                    default y
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_PLAYER
                     bool "Player sample"
-                    default n
+                    default y
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_CLIENT
                     bool "RTSP Client sample"
-                    default n
+                    default y
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_PUSHER
                     bool "RTSP Pusher sample"
                     default n
                 config MPP_ENABLE_MIDDLEWARE_SAMPLES_RTSP_SERVER
                     bool "RTSP Server sample"
-                    default n
+                    default y
+
             endif
 
     endmenu

@@ -33,6 +33,7 @@ using namespace nncase::runtime::detail;
 #include "mpi_vicap_api.h"
 #include "mpi_isp_api.h"
 #include "mpi_sys_api.h"
+#include "mpi_sensor_api.h"
 #include "k_vo_comm.h"
 #include "mpi_vo_api.h"
 #include "vo_test_case.h"
@@ -532,10 +533,25 @@ int sample_vivcap_init(k_vicap_dev dev_chn, k_vicap_sensor_type type)
     memset(&chn_attr, 0 ,sizeof(chn_attr));
     memset(&sensor_info, 0 ,sizeof(sensor_info));
 
-    // sensor_type =  IMX335_MIPI_2LANE_RAW12_2592X1944_30FPS_LINEAR;
-    sensor_type = type ;//OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
-    // kd_mpi_vicap_set_mclk(VICAP_MCLK0, VICAP_PLL0_CLK_DIV4, 16, 1);
-    vicap_dev = dev_chn;//VICAP_DEV_ID_0;
+    vicap_dev = dev_chn;
+    sensor_type = type;
+
+    if(SENSOR_TYPE_MAX == sensor_type) {
+        k_vicap_probe_config probe_cfg;
+
+        probe_cfg.csi_num = dev_chn + 1;
+        probe_cfg.width = 1920;
+        probe_cfg.height = 1080;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+
+        sensor_type = sensor_info.sensor_type;
+    }
 
     memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
     ret = kd_mpi_vicap_get_sensor_info(sensor_type, &sensor_info);
@@ -1125,9 +1141,9 @@ int main(int argc, char *argv[])
     if(ret < 0)
         printf("mutex init failed \n");
 
-    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_0, OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR),"sample_vicap_init");
-    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_1, OV_OV5647_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR),"sample_vicap_init");
-    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_2, OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR),"sample_vicap_init");
+    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_0, SENSOR_TYPE_MAX),"sample_vicap_init");
+    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_1, SENSOR_TYPE_MAX),"sample_vicap_init");
+    TEST_TIME(ret = sample_vivcap_init(VICAP_DEV_ID_2, SENSOR_TYPE_MAX),"sample_vicap_init");
 
     sample_vicap_stream(VICAP_DEV_ID_0, K_TRUE);
     sample_vicap_stream(VICAP_DEV_ID_1, K_TRUE);

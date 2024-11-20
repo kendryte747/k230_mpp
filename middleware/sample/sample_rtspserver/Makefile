@@ -1,3 +1,5 @@
+include ../../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
@@ -15,7 +17,10 @@ LOCAL_LIBS = -lkdmedia -lrtsp_server -lliveMedia -lgroupsock -lBasicUsageEnviron
 
 LIVE555_COMPILE_OPTS = -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -DNO_OPENSSL=1
 
-LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR) -I$(LIVE555_RTSPSERVER)/include -I$(KDMEDIA)/include
+KDMEDIA = $(MPP_SRC_DIR)/middleware/src/kdmedia
+RTSP_SERVER = $(MPP_SRC_DIR)/middleware/src/rtsp_server
+
+LOCAL_CFLAGS = -I$(LOCAL_SRC_DIR) -I$(RTSP_SERVER)/include -I$(KDMEDIA)/include
 
 WERROR_FLAGS = -Wno-register -Wno-multichar -Wno-pessimizing-move -Wno-deprecated-declarations -Wno-unused-result -Wno-unused-variable -Wno-format -Wno-return-type -Wno-sign-compare -Wno-unused-label
 
@@ -31,7 +36,7 @@ CPP_SRCS = $(wildcard $(LOCAL_SRC_DIR)/*.cpp)
 CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 
 all:$(BIN)
-	#@-rm -f *.o
+	@-rm -f *.o
 	@echo "${PWD}/Makefile all"
 
 $(OBJS): %.o : %.c

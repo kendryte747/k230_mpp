@@ -33,6 +33,7 @@ using namespace nncase::runtime::detail;
 #include "mpi_vicap_api.h"
 #include "mpi_isp_api.h"
 #include "mpi_sys_api.h"
+#include "mpi_sensor_api.h"
 #include "k_vo_comm.h"
 #include "mpi_vo_api.h"
 #include "vo_test_case.h"
@@ -535,8 +536,24 @@ int sample_vivcap_init( void )
 int sample_vivcap_init( void )
 {
     k_s32 ret = 0;
-    sensor_type =  IMX335_MIPI_2LANE_RAW12_2592X1944_30FPS_LINEAR;
     vicap_dev = VICAP_DEV_ID_0;
+
+    {
+        k_vicap_probe_config probe_cfg;
+        k_vicap_sensor_info sensor_info;
+
+        probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+        probe_cfg.width = ISP_INPUT_WIDTH;
+        probe_cfg.height = ISP_INPUT_HEIGHT;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+        sensor_type =  sensor_info.sensor_type;
+    }
 
     memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
     ret = kd_mpi_vicap_get_sensor_info(sensor_type, &sensor_info);

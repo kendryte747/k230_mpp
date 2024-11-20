@@ -25,6 +25,8 @@
 
 #include "sample_dpu_vo.h"
 
+#include "mpi_sensor_api.h"
+
 sample_dv_cfg_t g_vdd_cfg[SAMPLE_VDD_CHN_NUM];
 k_u32 g_vo_pool_id;
 k_video_frame_info g_vf_info;
@@ -252,7 +254,7 @@ static void usage(void)
 int main(int argc, char *argv[])
 {
     k_s32 ret;
-    k_s32 sensor_index = OV_OV9286_MIPI_1280X720_30FPS_10BIT_LINEAR_SPECKLE;
+    k_s32 sensor_index = SENSOR_TYPE_MAX;
     k_bool mirror=K_FALSE;
 
     for (int i = 1; i < argc; i += 2)
@@ -270,6 +272,24 @@ int main(int argc, char *argv[])
         {
             mirror = atoi(argv[i + 1]);
         }
+    }
+    
+    if(SENSOR_TYPE_MAX == sensor_index) {
+        k_vicap_probe_config probe_cfg;
+        k_vicap_sensor_info sensor_info;
+
+        probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+        probe_cfg.width = 1920;
+        probe_cfg.height = 1080;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+
+        sensor_index = sensor_info.sensor_type;
     }
 
     g_vdd_cfg[0].img_height = DMA_CHN0_HEIGHT;

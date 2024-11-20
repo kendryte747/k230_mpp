@@ -1,9 +1,11 @@
+include ../mkenv.mk
+
 include $(MPP_SRC_DIR)/userapps/sample/mpp.mk
 include $(MPP_SRC_DIR)/userapps/sample/rt-smart.mk
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
+BIN = $(MPP_USERAPP_SMAPLE_ELF_DIR)/face_detect/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 AI_LIBPATH=$(MPP_SRC_DIR)/../libs/nncase
@@ -53,8 +55,9 @@ $(CPP_OBJS): %.o : %.cc
 
 $(BIN): $(OBJS) $(CPP_OBJS)
 	@echo LD $@
+	@mkdir -p $(MPP_USERAPP_SMAPLE_ELF_DIR)/face_detect/
 	@$(CPP) -o $(BIN)  $(LINKFLAG) -Wl,--whole-archive -Wl,--no-whole-archive -n --static $^ -L$(LIBPATH) $(CXX_FLAGS_AI) -Wl,--start-group $(LIBS) -Wl,--end-group
-	cp $(KMODEL_LIBPATH)/mobile_retinaface/test.kmodel $(MPP_SRC_DIR)/userapps/sample/elf/
+	cp $(KMODEL_LIBPATH)/mobile_retinaface/test.kmodel $(MPP_USERAPP_SMAPLE_ELF_DIR)/face_detect/
 
 clean:
 	echo "${PWD}/Makefile clean"

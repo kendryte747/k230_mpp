@@ -1,3 +1,5 @@
+include ../../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
@@ -16,7 +18,7 @@ CURRECT_DIR_NAME=$(shell pwd)
 CFLAGS=
 DEFINE=
 TARGET_DIR=$(MPP_MIDDLEWARE_LIB_INSTALL_PATH)
-BUILD_DIR=build
+BUILD_DIR=$(MPP_BUILD_DIR)/middleware/mp4_format
 
 MP4_SRC=src
 MOV_SRC=src/libmov/source
@@ -36,12 +38,10 @@ MOV_COBJS:= $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(notdir $(MOV_SRCS))))
 FLV_SRCS:= $(foreach dir, $(FLV_SRC), $(wildcard $(dir)/*.c $()))
 FLV_COBJS:= $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(notdir $(FLV_SRCS))))
 
-
-
 all:$(BIN)
-	#@rm -f $(MP4_COBJS)
-	#@rm -f $(MOV_COBJS)
-	#@rm -f $(FLV_COBJS)
+	# @rm -f $(MP4_COBJS)
+	# @rm -f $(MOV_COBJS)
+	# @rm -f $(FLV_COBJS)
 
 $(MOV_COBJS) : $(BUILD_DIR)/%.o: $(MOV_SRC)/%.c
 	$(CC) -c -fPIC $(CFLAGS) $< -o $@ $(INCS)  $(DEFINE)
@@ -52,9 +52,11 @@ $(FLV_COBJS) : $(BUILD_DIR)/%.o: $(FLV_SRC)/%.c
 $(MP4_COBJS) : $(BUILD_DIR)/%.o: $(MP4_SRC)/%.c
 	$(CC) -c -fPIC $(CFLAGS) $< -o $@ $(INCS)  $(DEFINE)
 
-
 $(BIN):$(MP4_COBJS) $(MOV_COBJS) $(FLV_COBJS)
 	$(AR) -o $(TARGET_DIR)/$(BIN) $(MP4_COBJS) $(MOV_COBJS) $(FLV_COBJS)
+
 clean:
 	@rm -f $(TARGET_DIR)/$(BIN) $(MP4_COBJS) $(MOV_COBJS) $(FLV_COBJS)
 	@rm -rf $(TARGET_DIR) $(BUILD_DIR)
+
+.PHONY: all clean

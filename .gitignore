@@ -1,5 +1,7 @@
 *.o
 
+build
+
 include/comm/k_autoconf_comm.h
 
 # these library is open

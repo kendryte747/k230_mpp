@@ -1,5 +1,3 @@
-include $(SDK_SRC_ROOT_DIR)/.config
-
 subdirs-y := sensor fft connector mediafreq pm
 
 all:

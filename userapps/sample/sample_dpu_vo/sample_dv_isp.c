@@ -77,12 +77,16 @@ void sample_dv_vicap_config(k_u32 ch, k_s32 sensor_index)
     memset(&chn_attr, 0, sizeof(k_vicap_chn_attr));
     memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
 
+    sensor_info.sensor_type = sensor_index;
+
+#if 1
+    printf("If sensor type is OV9286, Modify the code.\n");
+#else
+
     k_u8 *cmu;
     k_s32 mem_fd = -1;
     #define CMU_REG_BASE 0x91100000
     #define CMU_REG_SIZE 0x1000
-
-    sensor_info.sensor_type = sensor_index;
 
     if (sensor_index == OV_OV9286_MIPI_1280X720_30FPS_10BIT_MCLK_25M_LINEAR_SPECKLE ||
         sensor_index == OV_OV9286_MIPI_1280X720_30FPS_10BIT_MCLK_25M_LINEAR_IR)
@@ -103,6 +107,7 @@ void sample_dv_vicap_config(k_u32 ch, k_s32 sensor_index)
 
         *(volatile unsigned int *)(cmu + 0x6c) = 0x803b89f7; //config MCLK for sensor
     }
+#endif
 
     ret = kd_mpi_vicap_get_sensor_info(sensor_info.sensor_type, &sensor_info);
     VDD_CHECK_RET(ret, __func__, __LINE__);

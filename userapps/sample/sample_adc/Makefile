@@ -1,9 +1,11 @@
+include ../mkenv.mk
+
 include $(MPP_SRC_DIR)/userapps/sample/mpp.mk
 include $(MPP_SRC_DIR)/userapps/sample/rt-smart.mk
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
+BIN = $(MPP_USERAPP_SMAPLE_ELF_DIR)/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBPATH += -L$(RTSMART_SRC_DIR)/userapps/sdk/rt-thread/lib/risc-v/rv64
 LIBS = $(MPP_LIBS)
@@ -24,7 +26,7 @@ all: $(BIN)
 	echo "${PWD}/Makefile all"
 
 $(OBJS): %.o : %.c
-	@$(CC) -DHAVE_CCONFIG_H $(CC_CFLAGS) $(LOCAL_CFLAGS) $(DEVICE_CFLAGS) $(BSP_CFLGAS) $(RTSMART_CFLAGS) $(MPP_USER_CFLGAS) -c $< -o $@
+	$(CC) -DHAVE_CCONFIG_H $(CC_CFLAGS) $(LOCAL_CFLAGS) $(DEVICE_CFLAGS) $(BSP_CFLGAS) $(RTSMART_CFLAGS) $(MPP_USER_CFLGAS) -c $< -o $@
 
 $(BIN): $(OBJS)
 	$(CC) -o $(BIN) $(LINKFLAG) -Wl,--whole-archive -Wl,--no-whole-archive -n --static $(OBJS) -L$(LIBPATH) -Wl,--start-group $(LIBS) -Wl,--end-group

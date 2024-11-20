@@ -35,6 +35,7 @@
 #include <signal.h>
 
 #include "k_module.h"
+#include "k_sensor_comm.h"
 #include "k_type.h"
 #include "k_vb_comm.h"
 #include "k_video_comm.h"
@@ -42,6 +43,7 @@
 #include "mpi_vb_api.h"
 #include "mpi_venc_api.h"
 #include "mpi_sys_api.h"
+#include "mpi_sensor_api.h"
 #include "k_venc_comm.h"
 #include "mpi_vvi_api.h"
 
@@ -935,7 +937,7 @@ void sample_venc_usage(char *sPrgNm)
 
 int main(int argc, char *argv[])
 {
-    k_vicap_sensor_type sensor_type = IMX335_MIPI_2LANE_RAW12_1920X1080_30FPS_LINEAR;
+    k_vicap_sensor_type sensor_type = SENSOR_TYPE_MAX;
     pthread_t exit_thread_handle;
     int case_index = 0;
     int ret = 0;
@@ -983,6 +985,24 @@ int main(int argc, char *argv[])
         {
             enc_height = atoi(argv[i + 1]);
         }
+    }
+
+    {
+        k_vicap_probe_config probe_cfg;
+        k_vicap_sensor_info sensor_info;
+
+        probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+        probe_cfg.width = 1920;
+        probe_cfg.height = 1080;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+
+        sensor_type = sensor_info.sensor_type;
     }
 
     memset(&g_venc_conf, 0, sizeof(venc_conf_t));

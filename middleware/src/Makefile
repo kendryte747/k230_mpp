@@ -1,47 +1,23 @@
+include ../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
-$(shell if [ ! -e $(MPP_MIDDLEWARE_LIB_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_LIB_INSTALL_PATH); fi)
-$(shell if [ ! -e $(MPP_MIDDLEWARE_ELF_INSTALL_PATH) ];then mkdir -p $(MPP_MIDDLEWARE_ELF_INSTALL_PATH); fi)
+dir-y := kdmedia live555 mp4_format mp4_player rtsp_client  rtsp_server
 
-AR = riscv64-unknown-linux-musl-ar
-ARFLAGS = -rc
+# dir-y += rtsp_pusher
 
-CURRECT_DIR_NAME=$(shell basename `pwd`)
-LOCAL_SRC_DIR = $(shell pwd)
-
-LIVE555= $(LOCAL_SRC_DIR)/live555
-RTSP_CLIENT= $(LOCAL_SRC_DIR)/rtsp_client
-RTSP_SERVER= $(LOCAL_SRC_DIR)/rtsp_server
-RTSP_PUSHER= $(LOCAL_SRC_DIR)/rtsp_pusher
-MP4_FORMAT = $(LOCAL_SRC_DIR)/mp4_format
-MP4_PLAYER = $(LOCAL_SRC_DIR)/mp4_player
-KDMEDIA = $(LOCAL_SRC_DIR)/kdmedia
-X264    = $(LOCAL_SRC_DIR)/x264/src
-FFMPEG  = $(LOCAL_SRC_DIR)/ffmpeg/src
+# Add directories to the build system
+dirs := $(sort $(dir-y))
 
 all:
-	cd $(LIVE555) ; make
-	cd $(RTSP_CLIENT) ; make
-	cd $(RTSP_SERVER) ; make
-	cd $(MP4_FORMAT) ; make
-	cd $(MP4_PLAYER) ; make
-	# cd $(KDMEDIA) ; make
-	# cd $(X264) ;  make -j8; make install
-	# cd $(FFMPEG) ; make -j8; make install
-	# cd $(RTSP_PUSHER) ; make
+	@rm -rf $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/*
+	@$(foreach dir,$(dirs),$(MAKE) -C $(dir) all || exit $?;)
+	@echo "Make MPP middleware libraries done."
 
 clean:
-	echo "${PWD}/Makefile clean"
-	@cd $(LIVE555); make clean
-	@cd $(RTSP_CLIENT); make clean
-	@cd $(RTSP_SERVER); make clean
-	@cd $(MP4_FORMAT); make clean
-	@cd $(MP4_PLAYER); make clean
-	# @cd $(KDMEDIA); make clean
-	# @cd $(X264) ; make uninstall;make clean
-	# @cd $(FFMPEG) ; make uninstall;make clean
-	# @cd $(RTSP_PUSHER); make clean
-	@rm -rf $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/*.*
+	@rm -rf $(MPP_MIDDLEWARE_LIB_INSTALL_PATH)/*
+	@$(foreach dir,$(dirs),$(MAKE) -C $(dir) clean || exit $?;)
+	@echo "Clean MPP middleware libraries done."
 
 .PHONY: all clean

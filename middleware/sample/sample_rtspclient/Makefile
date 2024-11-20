@@ -1,3 +1,5 @@
+include ../../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
@@ -17,7 +19,7 @@ LIVE555_LIVEMEDIA = $(MPP_SRC_DIR)/middleware/src/live555/liveMedia
 LIVE555_RTSPCLIENT = $(MPP_SRC_DIR)/middleware/src/rtsp_client
 KDMEDIA = $(MPP_SRC_DIR)/middleware/src/kdmedia
 
-LOCAL_LIBS_PATH = -L$(KDMEDIA) -L$(LIVE555_RTSPCLIENT) -L$(LIVE555_USAGEENVIRONMENT) -L$(LIVE555_BASICUSAGEENVIRONMENT) -L$(LIVE555_GROUPSOCK) -L$(LIVE555_LIVEMEDIA)
+LOCAL_LIBS_PATH = -L$(MPP_MIDDLEWARE_LIB_INSTALL_PATH)
 LOCAL_LIBS = -lkdmedia -lrtsp_client -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
 
 LIVE555_COMPILE_OPTS = -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64 -DNO_OPENSSL=1
@@ -38,7 +40,7 @@ CPP_SRCS = $(wildcard $(LOCAL_SRC_DIR)/*.cpp)
 CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 
 all:$(BIN)
-	#@-rm -f *.o
+	@-rm -f *.o
 	@echo "${PWD}/Makefile all"
 
 $(OBJS): %.o : %.c

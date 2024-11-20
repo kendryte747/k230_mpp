@@ -1,9 +1,11 @@
+include ../mkenv.mk
+
 include $(MPP_SRC_DIR)/userapps/sample/mpp.mk
 include $(MPP_SRC_DIR)/userapps/sample/rt-smart.mk
 
 CURRECT_DIR_NAME=$(shell basename `pwd`)
 LOCAL_SRC_DIR = $(shell pwd)
-BIN = $(MPP_SRC_DIR)/userapps/sample/elf/$(CURRECT_DIR_NAME).elf
+BIN = $(MPP_USERAPP_SMAPLE_ELF_DIR)/$(CURRECT_DIR_NAME).elf
 LIBPATH = $(MPP_LIB_PATH)
 LIBS = $(MPP_LIBS)
 

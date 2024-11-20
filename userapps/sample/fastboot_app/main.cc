@@ -31,6 +31,7 @@ using namespace nncase::runtime::detail;
 #include "k_sys_comm.h"
 #include "mpi_vb_api.h"
 #include "mpi_vicap_api.h"
+#include "mpi_sensor_api.h"
 #include "mpi_isp_api.h"
 #include "mpi_sys_api.h"
 #include "k_vo_comm.h"
@@ -372,7 +373,6 @@ k_vicap_chn vicap_chn;
 k_vicap_dev_attr dev_attr;
 k_vicap_chn_attr chn_attr;
 k_vicap_sensor_info sensor_info;
-k_vicap_sensor_type sensor_type;
 k_video_frame_info dump_info;
 
 static void sample_vicap_unbind_vo(k_mpp_chn vicap_mpp_chn, k_mpp_chn vo_mpp_chn)
@@ -443,25 +443,26 @@ int sample_vb_init(void)
     }
     return ret;
 }
-#if defined(CONFIG_BOARD_K230_CANMV) || defined(CONFIG_BOARD_K230_CANMV_V2) || defined(CONFIG_BOARD_K230_CANMV_01STUDIO) || defined(CONFIG_BOARD_K230D_CANMV)  || defined(CONFIG_BOARD_K230_CANMV_DONGSHANPI) || defined(CONFIG_BOARD_K230D_CANMV_BPI)
+
 int sample_vivcap_init( void )
 {
     k_s32 ret = 0;
-#if defined(CONFIG_BOARD_K230_CANMV)
-    sensor_type = OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
-#elif defined(CONFIG_BOARD_K230_CANMV_V2) || defined(CONFIG_BOARD_K230_CANMV_01STUDIO) || defined(CONFIG_BOARD_K230_CANMV_DONGSHANPI)
-    sensor_type = OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR_V2;
-#elif defined(CONFIG_BOARD_K230D_CANMV) || defined(CONFIG_BOARD_K230D_CANMV_BPI)
-    sensor_type = OV_OV5647_MIPI_1920X1080_30FPS_10BIT_LINEAR;
-#endif
-    vicap_dev = VICAP_DEV_ID_0;
 
-    memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
-    ret = kd_mpi_vicap_get_sensor_info(sensor_type, &sensor_info);
-    if (ret) {
-        printf("sample_vicap, the sensor type not supported!\n");
-        return ret;
+    k_vicap_probe_config probe_cfg;
+
+    probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+    probe_cfg.width = ISP_INPUT_WIDTH;
+    probe_cfg.height = ISP_INPUT_HEIGHT;
+    probe_cfg.fps = 30;
+
+    if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+        printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+        return -1;
     }
+
+    probe_cfg.sensor_name[-1] = 0x00;
+    printf("sample_vicap, find sensor(%s) on %d, output %dx%d@%d\n", probe_cfg.sensor_name, probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
 
     memset(&dev_attr, 0, sizeof(k_vicap_dev_attr));
     dev_attr.acq_win.h_start = 0;
@@ -473,7 +474,6 @@ int sample_vivcap_init( void )
     dev_attr.pipe_ctrl.data = 0xFFFFFFFF;
     dev_attr.pipe_ctrl.bits.af_enable = 0;
     dev_attr.pipe_ctrl.bits.ahdr_enable = 0;
-
 
     dev_attr.cpature_frame = 0;
     memcpy(&dev_attr.sensor_info, &sensor_info, sizeof(k_vicap_sensor_info));
@@ -493,7 +493,9 @@ int sample_vivcap_init( void )
     chn_attr.out_win.v_start = 0;
     chn_attr.out_win.width = ISP_CHN0_WIDTH;
     chn_attr.out_win.height = ISP_CHN0_HEIGHT;
+
     chn_attr.crop_win = dev_attr.acq_win;
+
     chn_attr.scale_win = chn_attr.out_win;
     chn_attr.crop_enable = K_FALSE;
     chn_attr.scale_enable = K_FALSE;
@@ -518,122 +520,6 @@ int sample_vivcap_init( void )
     chn_attr.out_win.height = ISP_CHN1_HEIGHT;
 
     chn_attr.crop_win = dev_attr.acq_win;
-    chn_attr.scale_win = chn_attr.out_win;
-    chn_attr.crop_enable = K_FALSE;
-    chn_attr.scale_enable = K_FALSE;
-    // chn_attr.dw_enable = K_FALSE;
-    chn_attr.chn_enable = K_TRUE;
-    chn_attr.pix_format = PIXEL_FORMAT_BGR_888_PLANAR;
-    chn_attr.buffer_num = VICAP_MAX_FRAME_COUNT;//at least 3 buffers for isp
-    chn_attr.buffer_size = VICAP_ALIGN_UP((ISP_CHN1_HEIGHT * ISP_CHN1_WIDTH * 3 ), VICAP_ALIGN_1K);
-
-    // printf("sample_vicap ...kd_mpi_vicap_set_chn_attr, buffer_size[%d]\n", chn_attr.buffer_size);
-    ret = kd_mpi_vicap_set_chn_attr(vicap_dev, VICAP_CHN_ID_1, chn_attr);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_set_chn_attr failed.\n");
-        return ret;
-    }
-    // set to header file database parse mode
-    ret = kd_mpi_vicap_set_database_parse_mode(vicap_dev, VICAP_DATABASE_PARSE_XML_JSON);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_set_database_parse_mode failed.\n");
-        return ret;
-    }
-
-    // printf("sample_vicap ...kd_mpi_vicap_init\n");
-    ret = kd_mpi_vicap_init(vicap_dev);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_init failed.\n");
-        return ret;
-    }
-    ret = kd_mpi_vicap_start_stream(vicap_dev);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_start_stream failed.\n");
-        return ret;
-    }
-    return ret;
-}
-#else
-int sample_vivcap_init( void )
-{
-    k_s32 ret = 0;
-    sensor_type =  IMX335_MIPI_2LANE_RAW12_2592X1944_30FPS_LINEAR;
-    vicap_dev = VICAP_DEV_ID_0;
-
-    memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
-    ret = kd_mpi_vicap_get_sensor_info(sensor_type, &sensor_info);
-    if (ret) {
-        printf("sample_vicap, the sensor type not supported!\n");
-        return ret;
-    }
-
-    memset(&dev_attr, 0, sizeof(k_vicap_dev_attr));
-    dev_attr.acq_win.h_start = 0;
-    dev_attr.acq_win.v_start = 0;
-    dev_attr.acq_win.width = ISP_INPUT_WIDTH;
-    dev_attr.acq_win.height = ISP_INPUT_HEIGHT;
-    dev_attr.mode = VICAP_WORK_ONLINE_MODE;
-
-    dev_attr.pipe_ctrl.data = 0xFFFFFFFF;
-    dev_attr.pipe_ctrl.bits.af_enable = 0;
-    dev_attr.pipe_ctrl.bits.ahdr_enable = 0;
-
-
-    dev_attr.cpature_frame = 0;
-    memcpy(&dev_attr.sensor_info, &sensor_info, sizeof(k_vicap_sensor_info));
-
-    ret = kd_mpi_vicap_set_dev_attr(vicap_dev, dev_attr);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_set_dev_attr failed.\n");
-        return ret;
-    }
-
-    memset(&chn_attr, 0, sizeof(k_vicap_chn_attr));
-
-    //set chn0 output yuv420sp
-    // chn_attr.out_win = dev_attr.acq_win;
-    // chn_attr.crop_win = chn_attr.out_win;
-    chn_attr.out_win.h_start = 0;
-    chn_attr.out_win.v_start = 0;
-    chn_attr.out_win.width = ISP_CHN0_WIDTH;
-    chn_attr.out_win.height = ISP_CHN0_HEIGHT;
-
-    chn_attr.crop_win.h_start = ISP_CROP_W_OFFSET;
-    chn_attr.crop_win.v_start = ISP_CROP_H_OFFSET;
-    chn_attr.crop_win.width = ISP_CHN0_WIDTH;
-    chn_attr.crop_win.height = ISP_CHN0_HEIGHT;
-
-    // chn_attr.crop_win = dev_attr.acq_win;
-
-    chn_attr.scale_win = chn_attr.out_win;
-    chn_attr.crop_enable = K_FALSE;
-    chn_attr.scale_enable = K_FALSE;
-    // chn_attr.dw_enable = K_FALSE;
-    chn_attr.chn_enable = K_TRUE;
-    chn_attr.pix_format = PIXEL_FORMAT_YVU_PLANAR_420;
-    chn_attr.buffer_num = VICAP_MAX_FRAME_COUNT;//at least 3 buffers for isp
-    chn_attr.buffer_size = VICAP_ALIGN_UP((ISP_CHN0_WIDTH * ISP_CHN0_HEIGHT * 3 / 2), VICAP_ALIGN_1K);;
-    vicap_chn = VICAP_CHN_ID_0;
-
-    // printf("sample_vicap ...kd_mpi_vicap_set_chn_attr, buffer_size[%d]\n", chn_attr.buffer_size);
-    ret = kd_mpi_vicap_set_chn_attr(vicap_dev, vicap_chn, chn_attr);
-    if (ret) {
-        printf("sample_vicap, kd_mpi_vicap_set_chn_attr failed.\n");
-        return ret;
-    }
-
-    //set chn1 output rgb888p
-    chn_attr.out_win.h_start = 0;
-    chn_attr.out_win.v_start = 0;
-    chn_attr.out_win.width = ISP_CHN1_WIDTH ;
-    chn_attr.out_win.height = ISP_CHN1_HEIGHT;
-
-    chn_attr.crop_win.h_start = ISP_CROP_W_OFFSET;
-    chn_attr.crop_win.v_start = ISP_CROP_H_OFFSET;
-    chn_attr.crop_win.width = ISP_CHN0_WIDTH;
-    chn_attr.crop_win.height = ISP_CHN0_HEIGHT;
-
-    // chn_attr.crop_win = dev_attr.acq_win;
 
     chn_attr.scale_win = chn_attr.out_win;
     chn_attr.crop_enable = K_FALSE;
@@ -649,8 +535,9 @@ int sample_vivcap_init( void )
         printf("sample_vicap, kd_mpi_vicap_set_chn_attr failed.\n");
         return ret;
     }
+
     // set to header file database parse mode
-    ret = kd_mpi_vicap_set_database_parse_mode(vicap_dev, VICAP_DATABASE_PARSE_XML_JSON ); //VICAP_DATABASE_PARSE_HEADER
+    ret = kd_mpi_vicap_set_database_parse_mode(vicap_dev, VICAP_DATABASE_PARSE_XML_JSON); //VICAP_DATABASE_PARSE_HEADER
     if (ret) {
         printf("sample_vicap, kd_mpi_vicap_set_database_parse_mode failed.\n");
         return ret;
@@ -662,6 +549,7 @@ int sample_vivcap_init( void )
         printf("sample_vicap, kd_mpi_vicap_init failed.\n");
         return ret;
     }
+
     ret = kd_mpi_vicap_start_stream(vicap_dev);
     if (ret) {
         printf("sample_vicap, kd_mpi_vicap_start_stream failed.\n");
@@ -669,7 +557,7 @@ int sample_vivcap_init( void )
     }
     return ret;
 }
-#endif
+
 static void *exit_app(void *arg)
 {
     printf("press 'q' to exit application!!\n");

@@ -23,6 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "rtthread.h"
 #include <string.h>
 #ifdef RT_USING_POSIX
 #include <dfs_posix.h>
@@ -292,46 +293,17 @@ static const struct sensor_type_name sth_table[] = {
     {__UINT32_MAX__, "UNKNOWN"},
 };
 
-static inline __attribute__((always_inline)) k_u32 shash(const char * s)
+static void sensor_list(k_s32 argc, char** argv)
 {
-	uint32_t v = 5381;
-	if(s)
-	{
-		while(*s)
-			v = (v << 5) + v + (*s++);
-	}
-	return v;
-}
-
-static void sth(k_s32 argc, char** argv)
-{
-    k_u32 hash1, hash2;
-    const struct sensor_type_name *tn = NULL;
-
-    if(2 > argc) {
-        printf("uasge: %s sensor_type_string\n");
-        return;
-    }
-    hash1 = shash(argv[1]);
+    rt_kprintf("Sensor Type List:\n");
 
     for(size_t i = 0; i < sizeof(sth_table) / sizeof(sth_table[0]); i++) {
-        tn = &sth_table[i];
-
-        hash2 = shash(tn->name);
-        if(hash1 == hash2) {
-            break;
-        }
-    }
-
-    if ((NULL != tn) && (__UINT32_MAX__ != tn->type)) {
-        printf("Sensor %s type is %d\n", argv[1], tn->type);
-    } else {
-        printf("Can not recognize sensor %s\n", argv[1]);
+        rt_kprintf("%17d -> %s\n", sth_table[i].type, sth_table[i].name);
     }
 
     return;
 }
 
-MSH_CMD_EXPORT(sth, sensor type helper)
+MSH_CMD_EXPORT(sensor_list, sensor type list)
 
 #endif

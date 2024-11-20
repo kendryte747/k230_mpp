@@ -10,6 +10,7 @@
 #include <memory>
 #include <mutex>
 #include <atomic>
+#include "k_sensor_comm.h"
 #include "mpi_sys_api.h"
 #include "mpi_ai_api.h"
 #include "mpi_aenc_api.h"
@@ -18,6 +19,7 @@
 #include "mpi_vvi_api.h"
 #include "mpi_venc_api.h"
 #include "mpi_vicap_api.h"
+#include "mpi_sensor_api.h"
 #include "k_vicap_comm.h"
 #include "k_vb_comm.h"
 #include "mpi_vb_api.h"
@@ -182,6 +184,7 @@ static k_s32 _sys_munmap(k_u64 phys_addr, void *virt_addr, k_u32 size)
 }
 
 static k_vicap_sensor_info sensor_info[VICAP_DEV_ID_MAX];
+
 static k_s32 kd_sample_vicap_set_dev_attr(k_vicap_dev_set_info dev_info)
 {
     k_s32 ret = 0;
@@ -193,7 +196,7 @@ static k_s32 kd_sample_vicap_set_dev_attr(k_vicap_dev_set_info dev_info)
         return K_FAILED;
     }
 
-    if (dev_info.sensor_type > SENSOR_TYPE_MAX || dev_info.sensor_type < OV_OV9732_MIPI_1280X720_30FPS_10BIT_LINEAR)
+    if (SENSOR_TYPE_MAX <= dev_info.sensor_type)
     {
         printf("kd_mpi_vicap_set_dev_attr failed, sensor_type %d out of range\n", dev_info.sensor_type);
         return K_FAILED;
@@ -264,10 +267,7 @@ int KdMedia::Impl::Init(const KdMediaInputConfig &config)
         vb_config.comm_pool[3].mode = VB_REMAP_MODE_NOCACHE;
 
         memset(&vcap_dev_info_, 0, sizeof(vcap_dev_info_));
-        if (config.sensor_type <= OV_OV9286_MIPI_1280X720_60FPS_10BIT_LINEAR_IR_SPECKLE || config.sensor_type >= SC_SC035HGS_MIPI_1LANE_RAW10_640X480_120FPS_LINEAR)
-            vcap_dev_info_.dw_en = K_FALSE;
-        else
-            vcap_dev_info_.dw_en = K_TRUE;
+        vcap_dev_info_.dw_en = K_TRUE;
 
         if (vcap_dev_info_.dw_en)
         {
@@ -304,6 +304,25 @@ int KdMedia::Impl::Init(const KdMediaInputConfig &config)
         vcap_dev_info_.pipe_ctrl.data = 0xFFFFFFFF;
         vcap_dev_info_.sensor_type = config.sensor_type;
         vcap_dev_info_.vicap_dev = vi_dev_id_;
+
+        if(SENSOR_TYPE_MAX == config.sensor_type) {
+            k_vicap_probe_config probe_cfg;
+            k_vicap_sensor_info sensor_info;
+
+            probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI;
+            probe_cfg.width = 1920;
+            probe_cfg.height = 1080;
+            probe_cfg.fps = 30;
+
+            if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+                printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+                return -1;
+            }
+
+            vcap_dev_info_.sensor_type = sensor_info.sensor_type;
+        }
+
         ret = kd_sample_vicap_set_dev_attr(vcap_dev_info_);
         if (ret != K_SUCCESS)
         {
@@ -1043,17 +1062,6 @@ int KdMedia::Impl::CreateVcapVEnc(IOnVEncData *on_venc_data)
     chn_attr.rc_attr.rc_mode = K_VENC_RC_MODE_CBR;
     chn_attr.rc_attr.cbr.src_frame_rate = 30;
     chn_attr.rc_attr.cbr.dst_frame_rate = 30;
-    if (config_.sensor_type == OV_OV9286_MIPI_1280X720_30FPS_10BIT_LINEAR_IR ||
-        config_.sensor_type == OV_OV9286_MIPI_1280X720_30FPS_10BIT_LINEAR_SPECKLE)
-    {
-        chn_attr.rc_attr.cbr.src_frame_rate = 15;
-        chn_attr.rc_attr.cbr.dst_frame_rate = 15;
-    }
-    else if (config_.sensor_type == OV_OV9286_MIPI_1280X720_60FPS_10BIT_LINEAR_IR_SPECKLE)
-    {
-        chn_attr.rc_attr.cbr.src_frame_rate = 60;
-        chn_attr.rc_attr.cbr.dst_frame_rate = 60;
-    }
     chn_attr.rc_attr.cbr.bit_rate = config_.bitrate_kbps;
     if (config_.video_type == KdMediaVideoType::kVideoTypeH264)
     {

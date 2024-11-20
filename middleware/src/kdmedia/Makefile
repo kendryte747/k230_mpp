@@ -1,3 +1,5 @@
+include ../../mkenv.mk
+
 include $(MPP_SRC_DIR)/middleware/mpp.mk
 include $(MPP_SRC_DIR)/middleware/rt-smart.mk
 
@@ -31,6 +33,7 @@ CPP_OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS))
 
 all:$(BIN)
 	@echo "${PWD}/Makefile all"
+	@rm -rf $(OBJS) $(CPP_OBJS)
 
 $(OBJS): %.o : %.c
 	@echo CC $@

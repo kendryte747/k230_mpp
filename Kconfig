@@ -334,7 +334,7 @@ menu "MPP Configuration"
 
                 config MPP_ENABLE_USER_SAMPLES_OPENCV_CAMERA_TEST
                     bool "OpenCV Camera Test Sample"
-                    default y
+                    default n
 
                 config MPP_ENABLE_USER_SAMPLES_SAMPLE_ADC
                     bool "ADC Sample"

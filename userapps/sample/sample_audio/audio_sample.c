@@ -83,6 +83,45 @@ static volatile k_bool g_enable_audio_codec = K_FALSE;
 static volatile uint32_t g_audioout_timestamp_end = 0;
 static volatile uint32_t g_audioout_timestamp_last = 0;
 
+static int _enable_audio3a(int ai_dev_num, int ai_channel,k_audio_bit_width bit_width,int enable_audio3a)
+{
+    if (bit_width != KD_AUDIO_BIT_WIDTH_16)
+    {
+        printf("audio3a only support 16bit\n");
+        return 0;
+    }
+
+    k_ai_vqe_enable vqe_enable;
+    memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+    if (enable_audio3a&0x1)
+    {
+        vqe_enable.ans_enable = K_TRUE;
+        printf("ans_enable\n");
+    }
+    if (enable_audio3a&0x2)
+    {
+        vqe_enable.agc_enable = K_TRUE;
+        printf("agc_enable\n");
+    }
+    if (enable_audio3a&0x4)
+    {
+        vqe_enable.aec_enable = K_TRUE;
+        printf("aec_enable\n");
+    }
+
+    if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, vqe_enable))
+    {
+        printf("kd_mpi_ai_set_vqe_attr failed\n");
+        return K_FAILED;
+    }
+
+    memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
+    kd_mpi_ai_get_vqe_attr(0,0,&vqe_enable);
+    printf("========ans_enable:%d,agc_enable:%d,aec_enable:%d\n",vqe_enable.ans_enable,vqe_enable.agc_enable,vqe_enable.aec_enable);
+
+    return 0;
+}
+
 static int _get_sample_Byte(k_audio_bit_width bit_width)
 {
     if (bit_width == KD_AUDIO_BIT_WIDTH_16)
@@ -519,38 +558,9 @@ k_s32 audio_sample_get_ai_i2s_data(const char *filename, k_audio_bit_width bit_w
         return K_FAILED;
     }
 
-    if (enable_audio3a)
-    {
-        k_ai_vqe_enable vqe_enable;
-        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
-        if (enable_audio3a&0x1)
-        {
-            vqe_enable.ans_enable = K_TRUE;
-            printf("ans_enable\n");
-        }
-        if (enable_audio3a&0x2)
-        {
-            vqe_enable.agc_enable = K_TRUE;
-            printf("agc_enable\n");
-        }
-        if (enable_audio3a&0x4)
-        {
-            vqe_enable.aec_enable = K_TRUE;
-            printf("aec_enable\n");
-        }
-
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(0, 0, vqe_enable))
-        {
-            printf("kd_mpi_ai_set_vqe_attr failed\n");
-            return K_FAILED;
-        }
-
-        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
-        kd_mpi_ai_get_vqe_attr(0,0,&vqe_enable);
-        printf("========ans_enable:%d,agc_enable:%d,aec_enable:%d\n",vqe_enable.ans_enable,vqe_enable.agc_enable,vqe_enable.aec_enable);
-    }
-
     kd_mpi_ai_enable(0);
+    _enable_audio3a(0, 0, bit_width, enable_audio3a);
+
     kd_mpi_ai_enable_chn(0, 0);
     // kd_mpi_ai_enable_chn(0,1);
 
@@ -768,33 +778,8 @@ k_s32 audio_sample_api_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num, 
         return K_FAILED;
     }
 
-    if (enable_audio3a)
-    {
-        k_ai_vqe_enable vqe_enable;
-        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
-        if (enable_audio3a&0x1)
-        {
-            vqe_enable.ans_enable = K_TRUE;
-            printf("ans_enable\n");
-        }
-        if (enable_audio3a&0x2)
-        {
-            vqe_enable.agc_enable = K_TRUE;
-            printf("agc_enable\n");
-        }
-        if (enable_audio3a&0x4)
-        {
-            vqe_enable.aec_enable = K_TRUE;
-            printf("aec_enable\n");
-        }
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, vqe_enable))
-        {
-            printf("kd_mpi_ai_set_vqe_attr failed\n");
-            return K_FAILED;
-        }
-    }
-
     kd_mpi_ai_enable(ai_dev_num);
+    _enable_audio3a(ai_dev_num, ai_channel, bit_width, enable_audio3a);
     kd_mpi_ai_enable_chn(ai_dev_num, ai_channel);
 
     kd_mpi_ao_enable(ao_dev_num);
@@ -895,34 +880,8 @@ k_s32 audio_sample_bind_ai_to_ao(int ai_dev_num, int ai_channel, int ao_dev_num,
         return K_FAILED;
     }
 
-    if (enable_audio3a)
-    {
-        k_ai_vqe_enable vqe_enable;
-        memset(&vqe_enable, 0, sizeof(k_ai_vqe_enable));
-        if (enable_audio3a&0x1)
-        {
-            vqe_enable.ans_enable = K_TRUE;
-            printf("ans_enable\n");
-        }
-        if (enable_audio3a&0x2)
-        {
-            vqe_enable.agc_enable = K_TRUE;
-            printf("agc_enable\n");
-        }
-        if (enable_audio3a&0x4)
-        {
-            vqe_enable.aec_enable = K_TRUE;
-            printf("aec_enable\n");
-        }
-
-        if (K_SUCCESS != kd_mpi_ai_set_vqe_attr(ai_dev_num, ai_channel, vqe_enable))
-        {
-            printf("kd_mpi_ai_set_vqe_attr failed\n");
-            return K_FAILED;
-        }
-    }
-
     kd_mpi_ai_enable(ai_dev_num);
+    _enable_audio3a(ai_dev_num, ai_channel, bit_width, enable_audio3a);
     kd_mpi_ai_enable_chn(ai_dev_num, ai_channel);
 
     kd_mpi_ao_enable(ao_dev_num);
@@ -1238,7 +1197,7 @@ static void _test_ai_aenc_file_sysbind(const char *filename, int ai_dev_num, int
     fclose(fp);
 }
 
-k_s32 audio_sample_ai_encode(k_bool use_sysbind, k_u32 samplerate, k_audio_bit_width bit_width, int encChannel, k_payload_type type, const char *filename)
+k_s32 audio_sample_ai_encode(k_bool use_sysbind, k_u32 samplerate, k_audio_bit_width bit_width, int encChannel, k_payload_type type, const char *filename, k_u32 enable_audio3a)
 {
     int sample_rate = samplerate;
     k_aenc_chn aenc_chn = encChannel;
@@ -1279,6 +1238,7 @@ k_s32 audio_sample_ai_encode(k_bool use_sysbind, k_u32 samplerate, k_audio_bit_w
     }
 
     kd_mpi_ai_enable(ai_dev);
+    _enable_audio3a(ai_dev, ai_chn, bit_width, enable_audio3a);
     kd_mpi_ai_enable_chn(ai_dev, ai_chn);
 
     g_aenc_test_start = K_TRUE;
@@ -1369,6 +1329,7 @@ static void *sample_record_fn(void *arg)
     k_ai_chn ai_chn = 0;
     k_aenc_chn aenc_chn = 0;
     kd_mpi_ai_enable(ai_dev);
+    _enable_audio3a(ai_dev, ai_chn, KD_AUDIO_BIT_WIDTH_16, 1);
     kd_mpi_ai_enable_chn(ai_dev, ai_chn);
 
     k_mpp_chn ai_mpp_chn;
@@ -1491,7 +1452,7 @@ static void *sample_play_fn(void *arg)
     return NULL;
 }
 
-k_s32 audio_sample_ai_aenc_adec_ao(k_audio_dev ai_dev, k_ai_chn ai_chn, k_audio_dev ao_dev, k_ao_chn ao_chn, k_aenc_chn aenc_chn, k_adec_chn adec_chn, k_u32 samplerate, k_audio_bit_width bit_width, k_payload_type type, const char *load_filename)
+k_s32 audio_sample_ai_aenc_adec_ao(k_audio_dev ai_dev, k_ai_chn ai_chn, k_audio_dev ao_dev, k_ao_chn ao_chn, k_aenc_chn aenc_chn, k_adec_chn adec_chn, k_u32 samplerate, k_audio_bit_width bit_width, k_payload_type type, const char *load_filename, k_u32 enable_audio3a)
 {
     pthread_t record_thread_handle;
     pthread_t play_thread_handle;
@@ -1580,7 +1541,7 @@ k_s32 audio_sample_ai_aenc_adec_ao(k_audio_dev ai_dev, k_ai_chn ai_chn, k_audio_
     return K_SUCCESS;
 }
 
-k_s32 audio_sample_ai_aenc_adec_ao_2(k_audio_dev ai_dev, k_ai_chn ai_chn, k_audio_dev ao_dev, k_ao_chn ao_chn, k_aenc_chn aenc_chn, k_adec_chn adec_chn, k_u32 samplerate, k_audio_bit_width bit_width, k_payload_type type)
+k_s32 audio_sample_ai_aenc_adec_ao_2(k_audio_dev ai_dev, k_ai_chn ai_chn, k_audio_dev ao_dev, k_ao_chn ao_chn, k_aenc_chn aenc_chn, k_adec_chn adec_chn, k_u32 samplerate, k_audio_bit_width bit_width, k_payload_type type, k_u32 enable_audio3a)
 {
     g_enable_audio_codec = K_TRUE;
     bit_width = KD_AUDIO_BIT_WIDTH_16;

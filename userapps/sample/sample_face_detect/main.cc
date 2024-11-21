@@ -46,18 +46,25 @@ using namespace nncase::runtime::detail;
 
 #include "k_autoconf_comm.h"
 
+// Display Configure
+#define LCD_TYPE        (ST7701_V1_MIPI_2LAN_480X800_30FPS)
+#define LCD_ROTATE      (K_ROTATION_90)
+#define LCD_WIDTH       (480)
+#define LCD_HEIGHT      (800)
+
+// Sensor Output Resolution
+#define ISP_INPUT_WIDTH     (1920)
+#define ISP_INPUT_HEIGHT    (1080)
+
+// To Display
+#define ISP_CHN0_WIDTH      (800)
+#define ISP_CHN0_HEIGHT     (480)
+
+// To Ai
+#define ISP_CHN1_WIDTH      (1280)
+#define ISP_CHN1_HEIGHT     (720)
+
 #define CHANNEL 3
-
-#define ISP_CHN1_HEIGHT (720)
-#define ISP_CHN1_WIDTH  (1280)
-#define ISP_CHN0_WIDTH  (1920)
-#define ISP_CHN0_HEIGHT (1080)
-
-#define ISP_INPUT_WIDTH (1920)
-#define ISP_INPUT_HEIGHT (1080)
-
-#define LCD_WIDTH       (1080)
-#define LCD_HEIGHT      (1920)
 
 int sample_sys_bind_init(void);
 
@@ -130,7 +137,7 @@ k_s32 sample_connector_init(void)
 {
     k_u32 ret = 0;
     k_s32 connector_fd;
-    k_connector_type connector_type = HX8377_V2_MIPI_4LAN_1080X1920_30FPS;
+    k_connector_type connector_type = LCD_TYPE;
 	k_connector_info connector_info;
 
     memset(&connector_info, 0, sizeof(k_connector_info));
@@ -168,7 +175,7 @@ static k_s32 vo_layer_vdss_bind_vo_config(void)
     info.act_size.width = LCD_WIDTH;
     info.act_size.height = LCD_HEIGHT;
     info.format = PIXEL_FORMAT_YVU_PLANAR_420;
-    info.func = K_ROTATION_270;
+    info.func = LCD_ROTATE;
     info.global_alptha = 0xff;
     info.offset.x = 0;
     info.offset.y = 0;
@@ -470,12 +477,35 @@ int main(int argc, char *argv[])
         for (size_t i = 0, j = 0; i < boxes.size(); i += 1)
         {
             // std::cout << "[" << boxes[i].x1 << ", " << boxes[i].y1 << ", " << boxes[i].x2 <<", " << boxes[i].y2 << "]" << std::endl;
+
             vo_frame.draw_en = 1;
+
+        #if K_ROTATION_0 == LCD_ROTATE
+            /* vo rotation 0 */
+            vo_frame.line_x_start = ((uint32_t)boxes[i].x1) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH;
+            vo_frame.line_y_start = ((uint32_t)boxes[i].y1) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT;
+            vo_frame.line_x_end = ((uint32_t)boxes[i].x2) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH;
+            vo_frame.line_y_end = ((uint32_t)boxes[i].y2) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT;
+        #elif K_ROTATION_90 == LCD_ROTATE
+            /* vo rotation 90 */
+            vo_frame.line_x_start = ISP_CHN0_HEIGHT - (((uint32_t)boxes[i].y2) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT);
+            vo_frame.line_y_start = ((uint32_t)boxes[i].x1) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH;
+            vo_frame.line_x_end = ISP_CHN0_HEIGHT - (((uint32_t)boxes[i].y1) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT);
+            vo_frame.line_y_end = ((uint32_t)boxes[i].x2) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH;
+        #elif K_ROTATION_180 == LCD_ROTATE
+            /* vo rotation 180 */
+            vo_frame.line_x_start = ISP_CHN0_WIDTH - (((uint32_t)boxes[i].x2) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
+            vo_frame.line_y_start = ISP_CHN0_HEIGHT - (((uint32_t)boxes[i].y2) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT);
+            vo_frame.line_x_end = ISP_CHN0_WIDTH - (((uint32_t)boxes[i].x1) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
+            vo_frame.line_y_end = ISP_CHN0_HEIGHT - (((uint32_t)boxes[i].y1) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT);
+        #elif K_ROTATION_270 == LCD_ROTATE
             /* vo rotation 270 */
             vo_frame.line_x_start = ((uint32_t)boxes[i].y1) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT;
-            vo_frame.line_y_start = 1920 - (((uint32_t)boxes[i].x2) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
+            vo_frame.line_y_start = ISP_CHN0_WIDTH - (((uint32_t)boxes[i].x2) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
             vo_frame.line_x_end = ((uint32_t)boxes[i].y2) * ISP_CHN0_HEIGHT / ISP_CHN1_HEIGHT;
-            vo_frame.line_y_end = 1920 - (((uint32_t)boxes[i].x1) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
+            vo_frame.line_y_end = ISP_CHN0_WIDTH - (((uint32_t)boxes[i].x1) * ISP_CHN0_WIDTH / ISP_CHN1_WIDTH);
+        #endif
+
             vo_frame.frame_num = ++j;
             kd_mpi_vo_draw_frame(&vo_frame);
         }

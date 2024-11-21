@@ -29,16 +29,17 @@ static float umeyama_args[] =
 MobileRetinaface::MobileRetinaface(const char *kmodel_file, size_t channel, size_t height, size_t width)
     : Model("MobileRetinaface", kmodel_file), ai2d_input_c_(channel), ai2d_input_h_(height), ai2d_input_w_(width)
 {
-#if ENABLE_DEBUG
-    std::cout << __FUNCTION__ << ": c = " << channel << ", h = " << height << ", w = " << width << std::endl;
-#endif
-
     // ai2d output tensor
     ai2d_out_tensor_ = input_tensor(0);
 
     // ai2d config
     dims_t in_shape { 1, ai2d_input_c_, ai2d_input_h_, ai2d_input_w_ };
     auto out_shape = input_shape(0);
+
+#if ENABLE_DEBUG
+    std::cout << __FUNCTION__ << " input : c = " << channel << ", h = " << height << ", w = " << width << std::endl;
+    std::cout << __FUNCTION__ << " model : c = " << out_shape[1] << ", h = " << out_shape[2] << ", w = " << out_shape[3] << std::endl;
+#endif
 
     ai2d_datatype_t ai2d_dtype { ai2d_format::NCHW_FMT, ai2d_format::NCHW_FMT, typecode_t::dt_uint8, typecode_t::dt_uint8 };
     ai2d_crop_param_t crop_param { false, 0, 0, 0, 0 };

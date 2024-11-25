@@ -106,7 +106,7 @@ static void *sample_thread_fn(void *arg)
         break;
     case 7:
         printf("sample aenc module (sysbind)\n");
-        audio_sample_ai_encode(K_TRUE,g_sample_rate,g_bit_width,0,K_PT_G711A,g_wav_name);
+        audio_sample_ai_encode(K_TRUE,g_sample_rate,g_bit_width,0,K_PT_G711A,g_wav_name,g_enable_audio3a);
         break;
     case 8:
         printf("sample adec module (sysbind)\n");
@@ -114,7 +114,7 @@ static void *sample_thread_fn(void *arg)
         break;
     case 9:
         printf("sample aenc module (api)\n");
-        audio_sample_ai_encode(K_FALSE,g_sample_rate,g_bit_width,0,K_PT_G711A,g_wav_name);
+        audio_sample_ai_encode(K_FALSE,g_sample_rate,g_bit_width,0,K_PT_G711A,g_wav_name,g_enable_audio3a);
         break;
     case 10:
         printf("sample adec module (api)\n");
@@ -122,11 +122,11 @@ static void *sample_thread_fn(void *arg)
         break;
     case 11:
         printf("sample ai->aenc->file file->adec->ao module\n");
-        audio_sample_ai_aenc_adec_ao(0,0,0,0,0,0,g_sample_rate,g_bit_width,K_PT_G711A,g_wav_name);
+        audio_sample_ai_aenc_adec_ao(0,0,0,0,0,0,g_sample_rate,g_bit_width,K_PT_G711A,g_wav_name,g_enable_audio3a);
         break;
     case 12:
         printf("sample ai->aenc  adec->ao module (loopback)\n");
-        audio_sample_ai_aenc_adec_ao_2(0,0,0,0,0,0,g_sample_rate,g_bit_width,K_PT_G711A);
+        audio_sample_ai_aenc_adec_ao_2(0,0,0,0,0,0,g_sample_rate,g_bit_width,K_PT_G711A,g_enable_audio3a);
         break;
     case 13:
         printf("sample  acodec\n");

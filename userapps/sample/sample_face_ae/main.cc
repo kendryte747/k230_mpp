@@ -429,11 +429,23 @@ int sample_vb_init(void)
 int sample_vivcap_init( void )
 {
     k_s32 ret = 0;
-#if defined(CONFIG_BOARD_K230_CANMV)
-    sensor_type = OV_OV5647_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR;
-#elif defined(CONFIG_BOARD_K230_CANMV_V2)
-    sensor_type = OV_OV5647_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR_V2;
-#endif
+
+    {
+        k_vicap_probe_config probe_cfg;
+        k_vicap_sensor_info sensor_info;
+
+        probe_cfg.csi_num = CONFIG_MPP_SENSOR_DEFAULT_CSI + 1;
+        probe_cfg.width = ISP_INPUT_WIDTH;
+        probe_cfg.height = ISP_INPUT_HEIGHT;
+        probe_cfg.fps = 30;
+
+        if(0x00 != kd_mpi_sensor_adapt_get(&probe_cfg, &sensor_info)) {
+            printf("sample_vicap, can't probe sensor on %d, output %dx%d@%d\n", probe_cfg.csi_num, probe_cfg.width, probe_cfg.height, probe_cfg.fps);
+
+            return -1;
+        }
+        sensor_type =  sensor_info.sensor_type;
+    }
 
     memset(&sensor_info, 0, sizeof(k_vicap_sensor_info));
     ret = kd_mpi_vicap_get_sensor_info(sensor_type, &sensor_info);

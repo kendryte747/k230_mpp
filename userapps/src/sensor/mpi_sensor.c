@@ -423,7 +423,7 @@ static const k_vicap_sensor_info sensor_info_list[] = {
     },
     {
         "ov5647_csi1",
-        "ov5647-640x480", 
+        "ov5647-640x480",
         640,
         480,
         VICAP_CSI1,
@@ -897,12 +897,12 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         1280,
         720,
         VICAP_CSI0,
-        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_MIPI_2LANE,
         VICAP_SOURCE_CSI0,
         K_FALSE,
-        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_MIPI_PHY_1200M,
         VICAP_CSI_DATA_TYPE_YUV422_8,
-        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_LINERA_MODE,
         VICAP_FLASH_DISABLE,
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
@@ -918,12 +918,12 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         1280,
         720,
         VICAP_CSI1,
-        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_MIPI_2LANE,
         VICAP_SOURCE_CSI1,
         K_FALSE,
-        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_MIPI_PHY_1200M,
         VICAP_CSI_DATA_TYPE_YUV422_8,
-        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_LINERA_MODE,
         VICAP_FLASH_DISABLE,
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
@@ -939,12 +939,12 @@ static const k_vicap_sensor_info sensor_info_list[] = {
         1280,
         720,
         VICAP_CSI2,
-        VICAP_MIPI_2LANE,   //VICAP_MIPI_4LANE
+        VICAP_MIPI_2LANE,
         VICAP_SOURCE_CSI2,
         K_FALSE,
-        VICAP_MIPI_PHY_1200M,   //VICAP_MIPI_PHY_1200M
+        VICAP_MIPI_PHY_1200M,
         VICAP_CSI_DATA_TYPE_YUV422_8,
-        VICAP_LINERA_MODE,//VICAP_VCID_HDR_3FRAME,  VICAP_LINERA_MODE
+        VICAP_LINERA_MODE,
         VICAP_FLASH_DISABLE,
         VICAP_VI_FIRST_FRAME_FS_TR0,
         0,
@@ -954,6 +954,127 @@ static const k_vicap_sensor_info sensor_info_list[] = {
 #endif // CONFIG_MPP_ENABLE_CSI_DEV_2
 #endif // CONFIG_MPP_ENABLE_SENSOR_XS9950
 
+#if defined(CONFIG_MPP_ENABLE_SENSOR_BF3238)
+#if defined(CONFIG_MPP_ENABLE_CSI_DEV_0)
+    {
+        "bf3238_csi0",
+        "bf3238-1920x1080",
+        1920,
+        1080,
+        VICAP_CSI0,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI0_1920X1080_30FPS_10BIT_LINEAR,
+    },
+
+    {
+        "bf3238_csi0",
+        "bf3238-1920x1080",
+        1280,
+        960,
+        VICAP_CSI0,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI0,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI0_1280X960_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_0
+
+#if defined(CONFIG_MPP_ENABLE_CSI_DEV_1)
+    {
+        "bf3238_csi1",
+        "bf3238-1920x1080",
+        1920,
+        1080,
+        VICAP_CSI1,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI1,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI1_1920X1080_30FPS_10BIT_LINEAR,
+    },
+
+    {
+        "bf3238_csi1",
+        "bf3238-1920x1080",
+        1280,
+        960,
+        VICAP_CSI1,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI1,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI1_1280X960_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_1
+
+#if defined(CONFIG_MPP_ENABLE_CSI_DEV_2)
+    {
+        "bf3238_csi2",
+        "bf3238-1920x1080",
+        1920,
+        1080,
+        VICAP_CSI2,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI2_1920X1080_30FPS_10BIT_LINEAR,
+    },
+
+    {
+        "bf3238_csi2",
+        "bf3238-1920x1080",
+        1280,
+        960,
+        VICAP_CSI2,
+        VICAP_MIPI_1LANE,
+        VICAP_SOURCE_CSI2,
+        K_FALSE,
+        VICAP_MIPI_PHY_1200M,
+        VICAP_CSI_DATA_TYPE_RAW10,
+        VICAP_LINERA_MODE,
+        VICAP_FLASH_DISABLE,
+        VICAP_VI_FIRST_FRAME_FS_TR0,
+        0,
+        30,
+        BF3238_MIPI_CSI2_1280X960_30FPS_10BIT_LINEAR,
+    },
+#endif // CONFIG_MPP_ENABLE_CSI_DEV_2
+#endif // CONFIG_MPP_ENABLE_SENSOR_BF3238
 
     /* the end of table */
     {

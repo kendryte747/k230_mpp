@@ -153,10 +153,6 @@ k_s32 sensor_drv_dev_init(struct sensor_driver_dev *pdriver_dev)
     return 0;
 }
 
-#if !defined (CONFIG_MPP_ENABLE_CSI_DEV_0) && !defined (CONFIG_MPP_ENABLE_CSI_DEV_1) && !(defined (CONFIG_MPP_ENABLE_CSI_DEV_2))
-#error "Must Enable one csi dev"
-#endif
-
 k_s32 sensor_device_init(void) {
   struct k_sensor_probe_cfg probe_cfg[] = {
 #ifdef CONFIG_MPP_ENABLE_CSI_DEV_0
@@ -188,6 +184,11 @@ k_s32 sensor_device_init(void) {
   };
 
   memset(&g_sensor_drv[0], 0, sizeof(g_sensor_drv));
+
+  if (0x00 == (sizeof(probe_cfg) / sizeof(probe_cfg[0]))) {
+    rt_kprintf("not enable any CSI device.\n");
+    return 0;
+  }
 
   for (size_t i = 0; i < (sizeof(probe_cfg) / sizeof(probe_cfg[0])); i++) {
     struct k_sensor_probe_cfg *cfg = &probe_cfg[i];

@@ -263,7 +263,7 @@ k_s32 connector_send_cmd(const k_u8 *cmd_seq, size_t cmd_size, k_bool dump)
             connecter_dsi_send_pkg(cmd->cmd_data, cmd->cmd_size);
 
             if(dump) {
-                rt_kprintf("cmd -> delay %u, data:", cmd->cmd_delay);
+                rt_kprintf("cmd[0x%02x] -> delay %u, data:", cmd->cmd_type, cmd->cmd_delay);
 
                 for(int i = 0; i < cmd->cmd_size; i++) {
                     rt_kprintf("%02X ", cmd->cmd_data[i]);

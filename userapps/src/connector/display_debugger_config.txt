@@ -1,5 +1,5 @@
 [config]
-pclk=33000000
+pclk_hz=33000000
 fps=60
 lane_num=2
 

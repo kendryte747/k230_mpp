@@ -445,7 +445,7 @@ static int kd_mpi_calc_timings(k_connector_debugger_config *config, k_connector_
     info->phy_attr.hs_freq = 0x80 | attr_hs_freq;
 
     info->resolution.pclk = config->pclk / 1000;
-    info->resolution.phyclk = mipi_clock * 2;
+    info->resolution.phyclk = mipi_clock * 2 / 1000;
     info->resolution.htotal = htotal;
     info->resolution.hdisplay = config->hdisplay;
     info->resolution.hsync_len = config->hsync_len;
@@ -543,7 +543,7 @@ static void parse_config(char *line, k_connector_debugger_config *config) {
     // printf("parse %s is %d\n", line, value);
 
     switch(cmd_hash) {
-        case 0x7C9C2D6F: /* 'pclk' */
+        case 0xA0078D10: /* 'pclk_hz' */
         {
             config->pclk = value;
         } break;
@@ -613,7 +613,10 @@ int parse_and_append_command(const char *line, k_u8 *init_seq, k_u32 *init_seq_s
     const char *p = line;
     while (*p) {
         k_u32 value;
-        if (sscanf(p, "%x", &value) == 1 || sscanf(p, "%u", &value) == 1) {
+
+        if (num_values != 1 && num_values != 2 && sscanf(p, "%x", &value) == 1) {
+            parsed_values[num_values++] = value;
+        } else if (sscanf(p, "%u", &value) == 1) {
             parsed_values[num_values++] = value;
         }
         // Move to the next value

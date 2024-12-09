@@ -39,9 +39,9 @@
 
 #define ISP_CHN0_WIDTH              (1280)
 #define ISP_CHN0_HEIGHT             (720)
-#define VICAP_OUTPUT_BUF_NUM        3//4
+#define VICAP_OUTPUT_BUF_NUM        10
 #define VENC_BUF_NUM                6
-#define NONAI_2D_BUF_NUM            3//5
+#define NONAI_2D_BUF_NUM            6
 
 #define TOTAL_ENABLE_2D_CH_NUMS     6
 #define NONAI_2D_RGB_CH             4
@@ -53,22 +53,20 @@
 #define DW200_CHN0_INPUT_HEIGHT 720
 #define DW200_CHN0_OUTPUT_WIDTH 640 //960
 #define DW200_CHN0_OUTPUT_HEIGHT 360//540
-#define DW200_CHN0_VB_NUM 3
+#define DW200_CHN0_VB_NUM 4
 
 #define DW200_CHN1_INPUT_WIDTH 1280
 #define DW200_CHN1_INPUT_HEIGHT 720
 #define DW200_CHN1_OUTPUT_WIDTH 640//960
 #define DW200_CHN1_OUTPUT_HEIGHT 360 //540
-#define DW200_CHN1_VB_NUM 3
+#define DW200_CHN1_VB_NUM 4
 
 #define DW200_CHN2_INPUT_WIDTH 1280
 #define DW200_CHN2_INPUT_HEIGHT 720
 #define DW200_CHN2_OUTPUT_WIDTH 640 //960
 #define DW200_CHN2_OUTPUT_HEIGHT 360//540
-#define DW200_CHN2_VB_NUM 3
+#define DW200_CHN2_VB_NUM 4
 #define GDMA_BUF_NUM 6
-
-#define GDMA_ENABLE             0
 
 static k_u32 g_vo_pool_id;
 static k_u8 exit_flag = 0;
@@ -108,58 +106,60 @@ static int sample_vb_init(void)
     memset(&pool_config, 0, sizeof(pool_config));
     config.max_pool_cnt = 64;
 
+    // for vo install plane data
+    config.comm_pool[0].blk_cnt = 5;
+    config.comm_pool[0].blk_size = PRIVATE_POLL_SZE;          // osd0 - 3 argb 320 x 240
+    config.comm_pool[0].mode = VB_REMAP_MODE_NOCACHE;           //VB_REMAP_MODE_NOCACHE;
 
     k_u16 sride = ISP_CHN0_WIDTH;
     //VB for YUV444 output for dev0
-    config.comm_pool[0].blk_cnt = VICAP_OUTPUT_BUF_NUM;
-    config.comm_pool[0].mode = VB_REMAP_MODE_NOCACHE;
-    config.comm_pool[0].blk_size = VICAP_ALIGN_UP((sride * ISP_CHN0_HEIGHT * 3), 0x1000);
-
-    //VB for YUV444 output for dev1
     config.comm_pool[1].blk_cnt = VICAP_OUTPUT_BUF_NUM;
     config.comm_pool[1].mode = VB_REMAP_MODE_NOCACHE;
-    config.comm_pool[1].blk_size = VICAP_ALIGN_UP((sride * ISP_CHN0_HEIGHT * 3 ), 0x1000);
+    config.comm_pool[1].blk_size = VICAP_ALIGN_UP((sride * ISP_CHN0_HEIGHT * 3), 0x1000);
 
-    //VB for YUV444 output for dev2
+    //VB for YUV444 output for dev1
     config.comm_pool[2].blk_cnt = VICAP_OUTPUT_BUF_NUM;
     config.comm_pool[2].mode = VB_REMAP_MODE_NOCACHE;
     config.comm_pool[2].blk_size = VICAP_ALIGN_UP((sride * ISP_CHN0_HEIGHT * 3 ), 0x1000);
 
-    //VB for nonai_2d
-    config.comm_pool[3].blk_cnt = NONAI_2D_BUF_NUM;
+    //VB for YUV444 output for dev2
+    config.comm_pool[3].blk_cnt = VICAP_OUTPUT_BUF_NUM;
     config.comm_pool[3].mode = VB_REMAP_MODE_NOCACHE;
-    config.comm_pool[3].blk_size = VICAP_ALIGN_UP((ISP_CHN0_WIDTH * ISP_CHN0_HEIGHT * 3), 0x1000);
+    config.comm_pool[3].blk_size = VICAP_ALIGN_UP((sride * ISP_CHN0_HEIGHT * 3 ), 0x1000);
+
+    //VB for nonai_2d
+    config.comm_pool[4].blk_cnt = NONAI_2D_BUF_NUM;
+    config.comm_pool[4].mode = VB_REMAP_MODE_NOCACHE;
+    config.comm_pool[4].blk_size = VICAP_ALIGN_UP((ISP_CHN0_WIDTH * ISP_CHN0_HEIGHT * 3), 0x1000);
 
     // DW output vb CHN 0 vb mem = 11,059,200
-    config.comm_pool[4].blk_cnt = DW200_CHN0_VB_NUM;
-    config.comm_pool[4].blk_size = VICAP_ALIGN_UP((DW200_CHN0_OUTPUT_WIDTH * DW200_CHN0_OUTPUT_HEIGHT * 3), 0x1000);
-    config.comm_pool[4].mode = VB_REMAP_MODE_NOCACHE;
-
-    config.comm_pool[5].blk_cnt = DW200_CHN1_VB_NUM;
-    config.comm_pool[5].blk_size = VICAP_ALIGN_UP((DW200_CHN1_OUTPUT_WIDTH * DW200_CHN1_OUTPUT_HEIGHT * 3), 0x1000);
+    config.comm_pool[5].blk_cnt = DW200_CHN0_VB_NUM;
+    config.comm_pool[5].blk_size = VICAP_ALIGN_UP((DW200_CHN0_OUTPUT_WIDTH * DW200_CHN0_OUTPUT_HEIGHT * 3), 0x1000);
     config.comm_pool[5].mode = VB_REMAP_MODE_NOCACHE;
 
-    config.comm_pool[6].blk_cnt = DW200_CHN2_VB_NUM;
+    config.comm_pool[6].blk_cnt = DW200_CHN1_VB_NUM;
     config.comm_pool[6].blk_size = VICAP_ALIGN_UP((DW200_CHN1_OUTPUT_WIDTH * DW200_CHN1_OUTPUT_HEIGHT * 3), 0x1000);
     config.comm_pool[6].mode = VB_REMAP_MODE_NOCACHE;
 
-#if GDMA_ENABLE
-    // for gdma chn0 
-    config.comm_pool[7].blk_cnt = GDMA_BUF_NUM;
-    config.comm_pool[7].blk_size = VICAP_ALIGN_UP((DW200_CHN0_OUTPUT_WIDTH * DW200_CHN0_OUTPUT_HEIGHT * 3), 0x1000);
+    config.comm_pool[7].blk_cnt = DW200_CHN2_VB_NUM;
+    config.comm_pool[7].blk_size = VICAP_ALIGN_UP((DW200_CHN1_OUTPUT_WIDTH * DW200_CHN1_OUTPUT_HEIGHT * 3), 0x1000);
     config.comm_pool[7].mode = VB_REMAP_MODE_NOCACHE;
 
-    // for gdma chn 1
+    // for gdma chn0 
     config.comm_pool[8].blk_cnt = GDMA_BUF_NUM;
-    config.comm_pool[8].blk_size = VICAP_ALIGN_UP((DW200_CHN1_OUTPUT_WIDTH * DW200_CHN1_OUTPUT_HEIGHT * 3), 0x1000);
+    config.comm_pool[8].blk_size = VICAP_ALIGN_UP((DW200_CHN0_OUTPUT_WIDTH * DW200_CHN0_OUTPUT_HEIGHT * 3), 0x1000);
     config.comm_pool[8].mode = VB_REMAP_MODE_NOCACHE;
 
-     // for gdma chn 1
+    // for gdma chn 1
     config.comm_pool[9].blk_cnt = GDMA_BUF_NUM;
-    config.comm_pool[9].blk_size = VICAP_ALIGN_UP((DW200_CHN2_OUTPUT_WIDTH * DW200_CHN2_OUTPUT_HEIGHT * 3), 0x1000);
+    config.comm_pool[9].blk_size = VICAP_ALIGN_UP((DW200_CHN1_OUTPUT_WIDTH * DW200_CHN1_OUTPUT_HEIGHT * 3), 0x1000);
     config.comm_pool[9].mode = VB_REMAP_MODE_NOCACHE;
 
-#endif
+     // for gdma chn 1
+    config.comm_pool[10].blk_cnt = GDMA_BUF_NUM;
+    config.comm_pool[10].blk_size = VICAP_ALIGN_UP((DW200_CHN2_OUTPUT_WIDTH * DW200_CHN2_OUTPUT_HEIGHT * 3), 0x1000);
+    config.comm_pool[10].mode = VB_REMAP_MODE_NOCACHE;
+
 
     ret = kd_mpi_vb_set_config(&config);
     if (ret) {
@@ -183,7 +183,7 @@ static int sample_vb_init(void)
     }
 
     memset(&pool_config, 0, sizeof(pool_config));
-    pool_config.blk_cnt = 1;
+    pool_config.blk_cnt = PRIVATE_POLL_NUM;
     pool_config.blk_size = PRIVATE_POLL_SZE;
     pool_config.mode = VB_REMAP_MODE_NONE;
     pool_id = kd_mpi_vb_create_pool(&pool_config);          // osd0 - 3 argb 320 x 240
@@ -383,9 +383,6 @@ static k_u32 sample_vo_creat_osd_test(k_vo_osd osd, osd_info *info)
     return 0;
 }
 
-#define DW_DEV1_USE_RGB         1
-#define DW_DEV0_USE_RGB         1
-
 // static k_vb_blk_handle sample_vo_insert_frame(k_video_frame_info *vf_info, void **pic_vaddr)
 // {
 //     k_u64 phys_addr = 0;
@@ -468,8 +465,8 @@ static void sample_vo_init(k_connector_type type)
         osd.format = PIXEL_FORMAT_RGB_888;
         sample_vo_creat_osd_test(K_VO_OSD2, &osd);
 #else
-        info.act_size.width = DW200_CHN0_OUTPUT_WIDTH;//DW200_CHN0_OUTPUT_WIDTH ;
-        info.act_size.height = DW200_CHN0_OUTPUT_HEIGHT;//DW200_CHN0_OUTPUT_HEIGHT;
+        info.act_size.width = DW200_CHN0_OUTPUT_HEIGHT;//DW200_CHN0_OUTPUT_WIDTH ;
+        info.act_size.height = DW200_CHN0_OUTPUT_WIDTH;//DW200_CHN0_OUTPUT_HEIGHT;
         info.format = PIXEL_FORMAT_YVU_PLANAR_420;
         info.func = 0;////K_ROTATION_90;
         info.global_alptha = 0xff;
@@ -489,21 +486,21 @@ static void sample_vo_init(k_connector_type type)
         sample_vo_creat_osd_test(K_VO_OSD1, &osd);
 #else
         // layer2 init
-        info.act_size.width = DW200_CHN1_OUTPUT_WIDTH;//DW200_CHN1_OUTPUT_WIDTH ;
-        info.act_size.height = DW200_CHN1_OUTPUT_HEIGHT; //DW200_CHN1_OUTPUT_HEIGHT;
+        info.act_size.width = DW200_CHN1_OUTPUT_HEIGHT;//DW200_CHN1_OUTPUT_WIDTH ;
+        info.act_size.height = DW200_CHN1_OUTPUT_WIDTH; //DW200_CHN1_OUTPUT_HEIGHT;
         info.format = PIXEL_FORMAT_YVU_PLANAR_420;
         info.func = 0;////K_ROTATION_90;
         info.global_alptha = 0xff;
-        info.offset.x = DW200_CHN1_OUTPUT_WIDTH + 50;//(1080-w)/2,
+        info.offset.x = DW200_CHN1_OUTPUT_HEIGHT + 50;//(1080-w)/2,
         info.offset.y = 0;//(1920-h)/2;
         vo_creat_layer_test(K_VO_LAYER2, &info);
 #endif
 
          // osd0 init
-        osd.act_size.width = DW200_CHN2_OUTPUT_WIDTH  ;
-        osd.act_size.height = DW200_CHN2_OUTPUT_HEIGHT;
+        osd.act_size.width = DW200_CHN2_OUTPUT_HEIGHT ;
+        osd.act_size.height = DW200_CHN2_OUTPUT_WIDTH;
         osd.offset.x = 0;
-        osd.offset.y = DW200_CHN2_OUTPUT_HEIGHT;//540;
+        osd.offset.y = DW200_CHN2_OUTPUT_WIDTH;//540;
         osd.global_alptha = 0xff;// 0x7f;
         osd.format = PIXEL_FORMAT_RGB_888;
         sample_vo_creat_osd_test(K_VO_OSD0, &osd);
@@ -557,8 +554,10 @@ static k_s32 nonai_2d_exit()
     return K_SUCCESS;
 }
 
-
 #define DEWARP_DEV_ID 0
+
+#define DW_DEV1_USE_RGB         0
+#define DW_DEV0_USE_RGB         0
 
 static k_s32 sample_dw200_init(void)
 {
@@ -694,7 +693,6 @@ static void dw_exit(void)
 }
 
 
-#if DMA_ENABLE
 static k_s32 dma_dev_attr_init(void)
 {
     k_dma_dev_attr_t dev_attr;
@@ -772,7 +770,6 @@ static void gdma_exit(k_u8 gdma_chn)
     }
 
 }
-#endif
 
 static void sample_bind()
 {
@@ -781,9 +778,8 @@ static void sample_bind()
     k_mpp_chn nonai_2d_mpp_chn;
     k_mpp_chn dw_mpp_chn;
     k_mpp_chn vo_mpp_chn;
-#if DMA_ENABLE
     k_mpp_chn gdma;
-#endif
+
     // pipe 1 
     vi_mpp_chn.mod_id = K_ID_VI;
     vi_mpp_chn.dev_id = 0;
@@ -800,7 +796,6 @@ static void sample_bind()
     ret = kd_mpi_sys_bind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 0;
@@ -812,24 +807,7 @@ static void sample_bind()
     vo_mpp_chn.chn_id = K_VO_LAYER1;
     ret = kd_mpi_sys_bind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
-#else 
 
-
-#if DW_DEV0_USE_RGB
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = 3 + K_VO_OSD2;
-    ret = kd_mpi_sys_bind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#else
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = K_VO_LAYER1;
-    ret = kd_mpi_sys_bind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#endif
-
-#endif
     // pipe 2 
     vi_mpp_chn.mod_id = K_ID_VI;
     vi_mpp_chn.dev_id = 1;
@@ -846,7 +824,6 @@ static void sample_bind()
     ret = kd_mpi_sys_bind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 1;
@@ -858,23 +835,7 @@ static void sample_bind()
     vo_mpp_chn.chn_id = K_VO_LAYER2;
     ret = kd_mpi_sys_bind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
-#else 
 
-#if DW_DEV1_USE_RGB
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = 3 + K_VO_OSD1;
-    ret = kd_mpi_sys_bind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#else
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = K_VO_LAYER2;
-    ret = kd_mpi_sys_bind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#endif
-    
-#endif
      // pipe 3
     vi_mpp_chn.mod_id = K_ID_VI;
     vi_mpp_chn.dev_id = 2;
@@ -891,8 +852,6 @@ static void sample_bind()
     ret = kd_mpi_sys_bind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 2;
@@ -904,26 +863,18 @@ static void sample_bind()
     vo_mpp_chn.chn_id = 3;
     ret = kd_mpi_sys_bind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
-#else 
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = 3;
-    ret = kd_mpi_sys_bind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#endif
+
     return;
 }
 
 static void sample_unbind()
 {
-    k_s32 ret;
+        k_s32 ret;
     k_mpp_chn vi_mpp_chn;
     k_mpp_chn nonai_2d_mpp_chn;
     k_mpp_chn dw_mpp_chn;
     k_mpp_chn vo_mpp_chn;
-#if DMA_ENABLE
     k_mpp_chn gdma;
-#endif 
 
     // pipe 1 
     vi_mpp_chn.mod_id = K_ID_VI;
@@ -942,7 +893,6 @@ static void sample_unbind()
     ret = kd_mpi_sys_unbind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 0;
@@ -955,15 +905,6 @@ static void sample_unbind()
     ret = kd_mpi_sys_unbind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#else
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = K_VO_LAYER1;
-    ret = kd_mpi_sys_unbind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-
-#endif
-    
     // pipe 2 
     vi_mpp_chn.mod_id = K_ID_VI;
     vi_mpp_chn.dev_id = 1;
@@ -980,7 +921,6 @@ static void sample_unbind()
     ret = kd_mpi_sys_unbind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 1;
@@ -992,13 +932,7 @@ static void sample_unbind()
     vo_mpp_chn.chn_id = K_VO_LAYER2;
     ret = kd_mpi_sys_unbind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
-#else 
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = K_VO_LAYER2;
-    ret = kd_mpi_sys_unbind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#endif
+
      // pipe 3
     vi_mpp_chn.mod_id = K_ID_VI;
     vi_mpp_chn.dev_id = 2;
@@ -1016,7 +950,6 @@ static void sample_unbind()
     ret = kd_mpi_sys_unbind(&nonai_2d_mpp_chn, &dw_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
 
-#if DMA_ENABLE
     gdma.mod_id = K_ID_DMA;
     gdma.dev_id = 0;
     gdma.chn_id = 2;
@@ -1028,15 +961,9 @@ static void sample_unbind()
     vo_mpp_chn.chn_id = 3;
     ret = kd_mpi_sys_unbind(&gdma, &vo_mpp_chn);
     CHECK_RET(ret, __func__, __LINE__);
-#else 
-    vo_mpp_chn.mod_id = K_ID_VO;
-    vo_mpp_chn.dev_id = 0;
-    vo_mpp_chn.chn_id = 3;
-    ret = kd_mpi_sys_unbind(&dw_mpp_chn, &vo_mpp_chn);
-    CHECK_RET(ret, __func__, __LINE__);
-#endif
-    return;
 
+    return;
+    return;
 }
 
 
@@ -1061,12 +988,11 @@ int main(int argc, char *argv[])
     // init bind 
     sample_bind();
 
-#if GDMA_ENABLE
     dma_dev_attr_init();
     gdma_init(0, DEGREE_90, PIXEL_FORMAT_YVU_SEMIPLANAR_420, DW200_CHN0_OUTPUT_WIDTH, DW200_CHN0_OUTPUT_HEIGHT);
     gdma_init(1, DEGREE_90, PIXEL_FORMAT_YVU_SEMIPLANAR_420, DW200_CHN0_OUTPUT_WIDTH, DW200_CHN0_OUTPUT_HEIGHT);
-     gdma_init(2, DEGREE_90, PIXEL_FORMAT_RGB_888, DW200_CHN0_OUTPUT_WIDTH, DW200_CHN0_OUTPUT_HEIGHT);
-#endif
+    gdma_init(2, DEGREE_90, PIXEL_FORMAT_RGB_888, DW200_CHN0_OUTPUT_WIDTH, DW200_CHN0_OUTPUT_HEIGHT);
+
     // three mcm init
     ret = sample_vicap_init(VICAP_DEV_ID_0, XS9950_MIPI_CSI0_1280X720_30FPS_YUV422);
     if(ret < 0)
@@ -1159,10 +1085,8 @@ int main(int argc, char *argv[])
 
     dw_exit();
 
-#if DMA_ENABLE
     gdma_exit(0);
     gdma_exit(1);
-#endif
 
     kd_mpi_vo_disable_video_layer(K_VO_LAYER1);
     kd_mpi_vo_disable_video_layer(K_VO_LAYER2);

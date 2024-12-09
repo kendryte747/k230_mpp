@@ -40,6 +40,8 @@
 #define DBG_COLOR
 #include <rtdbg.h>
 
+#include "drv_ts.h"
+
 #define COPY_FROM_USER(dst, src, size)                                      \
     (size != lwp_get_from_user(dst, src, size))
 #define COPY_TO_USER(dst, src, size)                                        \
@@ -64,18 +66,18 @@ static struct pm_dev pm_device = {
 
 static int pm_core_default(void)
 {
-    pm_device.thermal_shutdown_temp = 20000;
+    pm_device.thermal_shutdown_temp = 100;
 
     pm_device.dev[PM_DOMAIN_CPU]->expect_profile_idx = 0;
     pm_device.dev[PM_DOMAIN_CPU]->actual_profile_idx = 0;
     pm_device.dev[PM_DOMAIN_CPU]->governor = PM_GOVERNOR_MANUAL;
-    pm_device.dev[PM_DOMAIN_CPU]->thermal_protect_temp = 20000;
+    pm_device.dev[PM_DOMAIN_CPU]->thermal_protect_temp = 85;
     pm_device.dev[PM_DOMAIN_CPU]->thermal_protect_idx = 0;
 
     pm_device.dev[PM_DOMAIN_KPU]->expect_profile_idx = 0;
     pm_device.dev[PM_DOMAIN_KPU]->actual_profile_idx = 0;
     pm_device.dev[PM_DOMAIN_KPU]->governor = PM_GOVERNOR_MANUAL;
-    pm_device.dev[PM_DOMAIN_KPU]->thermal_protect_temp = 20000;
+    pm_device.dev[PM_DOMAIN_KPU]->thermal_protect_temp = 85;
     pm_device.dev[PM_DOMAIN_KPU]->thermal_protect_idx = 0;
 
     return 0;
@@ -458,8 +460,16 @@ static const struct dfs_file_ops pm_core_fops = {
 
 static int32_t get_temperature(void)
 {
-    // todo get temperature
-    return 0;
+    double temp = 0.0f;
+    static double last_temp = 0.0f;
+
+    if(0x00 != tsensor_read_temp(&temp)) {
+        return last_temp;
+    }
+
+    last_temp = temp;
+
+    return temp;
 }
 
 static void shutdown(void)
@@ -472,6 +482,8 @@ static void shutdown(void)
 
 static void thermal_detect_thread(void *arg)
 {
+    tsensor_init();
+
     while (1) {
         rt_thread_mdelay(THERMAL_DETECT_POLL_TIME);
 

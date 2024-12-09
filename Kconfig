@@ -477,7 +477,7 @@ menu "MPP Configuration"
                     default y
 
                 config MPP_ENABLE_USER_SAMPLES_SAMPLE_TS
-                    bool "TS Sample"
+                    bool "TSensor Sample"
                     default y
 
                 config MPP_ENABLE_USER_SAMPLES_SAMPLE_VB

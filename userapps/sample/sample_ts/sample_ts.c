@@ -27,59 +27,34 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <pthread.h>
-#include <fcntl.h>
+
 #include <rtthread.h>
 #include <rtdevice.h>
-#include <math.h>
-
-#define TS_DEV_NAME            "ts"
-
 
 int main()
 {
     int ret = -1;
-    int i = 20;
-    uint32_t pos = 0;
-    uint32_t size = 0;
-    uint32_t buffer[1] = {0};
-    uint32_t ts_val = 0;
-    double code = 0, temp = 0;
-
+    double temp;
     rt_device_t ts_dev;
-    printf("ts_driver test\n");
 
-    ts_dev = rt_device_find(TS_DEV_NAME);
-    if (ts_dev == RT_NULL)
-    {
+    if (RT_NULL == (ts_dev = rt_device_find("ts"))) {
         printf("device find error\n");
         return -1;
     }
-    printf("find device success\n");
 
-    ret = rt_device_open(ts_dev, RT_DEVICE_OFLAG_RDONLY);
-    if (ret != RT_EOK)
-    {
+    if (RT_EOK != (ret = rt_device_open(ts_dev, RT_DEVICE_OFLAG_RDONLY))) {
         printf("ts device open err\n");
         return -1;
     }
 
-    while(i--)
-    {
-        ret = rt_device_read(ts_dev, pos, (void *)buffer, size);
-        if(ret <= 0)
-        {
-            printf("read device fail\n");
-            return -1;
-        }
+    if(sizeof(temp) != rt_device_read(ts_dev, 0, &temp, sizeof(temp))) {
+        printf("ts device read err\n");
 
-        ts_val = *(uint32_t *)buffer;
-        code = (double)(ts_val & 0xfff);
-
-        temp = (1e-10 * pow(code, 4) * 1.01472 - 1e-6 * pow(code, 3) * 1.10063 + 4.36150 * 1e-3 * pow(code, 2) - 7.10128 * code + 3565.87);
-        printf("ts_val: 0x%x, TS = %lf C\n", ts_val, temp);
+        rt_device_close(ts_dev);
+        return -1;
     }
+
+    printf("Temperature: %.3f\n", temp);
 
     rt_device_close(ts_dev);
 

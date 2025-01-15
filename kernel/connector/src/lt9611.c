@@ -508,15 +508,19 @@ static k_s32 lt9611_power_on(void* ctx, k_s32 on)
 {
     k_s32 ret = 0;
     struct connector_driver_dev* dev = ctx;
-    struct lt9611_dev *lt9611_dev;
+    static struct lt9611_dev *lt9611_dev;
 
     k230_display_rst();
     lt9611_reset(CONFIG_MPP_DSI_HDMI_RESET_PIN);
-    lt9611_dev = lt9611_dev_create(LT9611_PORTB, CONFIG_MPP_DSI_LT9611_I2C_SLV_ADDR, CONFIG_MPP_DSI_HDMI_I2C_DEV);
+
     if (lt9611_dev == RT_NULL) {
-        LOG_E("lt9611_dev_create failed \n");
-        return K_FAILED;
+        lt9611_dev = lt9611_dev_create(LT9611_PORTB, CONFIG_MPP_DSI_LT9611_I2C_SLV_ADDR, CONFIG_MPP_DSI_HDMI_I2C_DEV);
+        if (lt9611_dev == RT_NULL) {
+            LOG_E("lt9611_dev_create failed \n");
+            return K_FAILED;
+        }
     }
+
     lt9611_set_interface(lt9611_dev);
 
     connector_set_drvdata(dev, lt9611_dev);

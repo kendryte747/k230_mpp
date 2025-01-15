@@ -203,6 +203,9 @@ static void sample_vicap_config(k_u32 ch, k_u32 width, k_u32 height, k_vicap_sen
     dev_attr.acq_win.height = sensor_info.height;
     dev_attr.mode = VICAP_WORK_ONLINE_MODE;
 
+    dev_attr.pipe_ctrl.bits.ae_enable = 1;
+    dev_attr.pipe_ctrl.bits.awb_enable = 1;
+
     memcpy(&dev_attr.sensor_info, &sensor_info, sizeof(k_vicap_sensor_info));
 
     ret = kd_mpi_vicap_set_dev_attr(vicap_dev, dev_attr);

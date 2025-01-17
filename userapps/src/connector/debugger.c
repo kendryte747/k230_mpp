@@ -606,7 +606,7 @@ static void parse_config(char *line, k_connector_debugger_config *config) {
 }
 
 int parse_and_append_command(const char *line, k_u8 *init_seq, k_u32 *init_seq_size, k_u32 max_seq_size) {
-    int parsed_values[256];  // To store the parsed integer values
+    int parsed_values[512];  // To store the parsed integer values
     int num_values = 0;
 
     // Parse the line (hex and decimal numbers)
